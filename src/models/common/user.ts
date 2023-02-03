@@ -1,3 +1,4 @@
+import { uuid } from 'uuidv4';
 import {
   Table,
   AllowNull,
@@ -100,10 +101,20 @@ export default class User extends Model {
   })
   verified?: boolean = false;
 
+  @Column({
+    type: DataType.VIRTUAL,
+  })
+  get role() {
+    return "USER";
+  }
   passwordCompare = async (password: string) =>
     await bcrypt.compare(password, this.password ?? "");
 
   
+  @BeforeCreate
+  static initVer = async (user: User) => {
+    user.verificationCode=uuid().substring(5,12).toUpperCase()
+  };
   @BeforeCreate
   static validatePassword = async (user: User) => {
     const complexityOptions = {
@@ -114,12 +125,6 @@ export default class User extends Model {
     };
   };
 
-  @Column({
-    type: DataType.VIRTUAL,
-  })
-  get role() {
-    return "USER";
-  }
 
   /* @AfterCreate
   static confirmAccount = async (user: User) =>

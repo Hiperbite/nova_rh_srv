@@ -28,7 +28,7 @@ export async function createUserHandler(
       text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
     });
 
-    return res.send("User successfully created");
+    return res.send({user});
   } catch (e: any) {
     if (e.code === 11000) {
       return res.status(409).send("Account already exists");
@@ -46,7 +46,7 @@ export async function verifyUserHandler(
   const verificationCode = req.params.verificationCode;
 
   // find the user by id
-  const user = await User.findByPk(id);
+  const user = await UserRepository.find(id);
 
   if (!user) {
     return res.send("Could not verify user");

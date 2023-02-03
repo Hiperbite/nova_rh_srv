@@ -112,12 +112,11 @@ export default config;
 const AUTHORIZED_CLIENTS = AUTHORIZED?.split(",").map((x: string) =>
     x.split(":")
 );
-
     const smtp= {
-      user: "icqskc5mxzf3bwct@ethereal.email",
-      pass: "mVSU79SbF3WmvGqy4V",
-      host: "smtp.ethereal.email",
-      port: 587,
+      user: MAILER_USER||'',
+      pass: MAILER_PASSWORD||'',
+      host: MAILER_HOST||'',
+      port: MAILER_PORT||'',
       secure: false,
     }
 export {

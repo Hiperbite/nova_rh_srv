@@ -11,10 +11,17 @@ import { smtp } from "../config";
 // createTestCreds();
 
 //const smtp = smtp
-
+console.log(smtp)
 const transporter = nodemailer.createTransport({
-  ...smtp,
-  auth: { user: smtp.user, pass: smtp.pass },
+  
+    host: smtp.host,
+    port: Number(smtp.port),
+    secure: smtp.secure, // true for 465, false for other ports
+    auth: {
+      user: smtp.user , // generated ethereal user
+      pass: smtp.pass , // generated ethereal password
+    },
+  
 });
 
 async function sendEmail(payload: SendMailOptions) {
