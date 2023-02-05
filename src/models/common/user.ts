@@ -7,6 +7,9 @@ import {
   HasMany,
   BeforeCreate,
   AfterCreate,
+  Unique,
+  BeforeUpdate,
+  BeforeSave,
 } from "sequelize-typescript";
 import Address from "../employee/address";
 import { Model, Attachment } from "../index";
@@ -19,13 +22,11 @@ import bcrypt from "bcrypt";
   tableName: "Users",
 })
 export default class User extends Model {
-  //@Unique({ name: 'email', msg: 'email_should_be_unique' }) // add this line
+  @Unique({ name: 'email', msg: 'email_should_be_unique' }) // add this line
   @AllowNull(false)
   @Column({
     type: DataType.STRING,
     allowNull: false,
-  //  unique: true,
-  
   })
   email!: string;
 
@@ -107,14 +108,16 @@ export default class User extends Model {
   get role() {
     return "USER";
   }
-  passwordCompare = async (password: string) =>
-    await bcrypt.compare(password, this.password ?? "");
 
+  //TODO: fix password compare
+  passwordCompare = async (password: string) => 
+    await bcrypt.compare(password, this.password ?? "");
   
   @BeforeCreate
-  static initVer = async (user: User) => {
-    user.verificationCode=uuid().substring(5,12).toUpperCase()
-  };
+  static initVer = async (user: User) => 
+    user.verificationCode = uuid().substring(5, 12).toUpperCase();
+  
+
   @BeforeCreate
   static validatePassword = async (user: User) => {
     const complexityOptions = {
@@ -125,17 +128,16 @@ export default class User extends Model {
     };
   };
 
-
-  /* @AfterCreate
-  static confirmAccount = async (user: User) =>
-   await new Notify([user.email], {
-      user,
-      url: authRepo.generateAccessToken(user.email),
-    }).auth.confirmation();*/
-
+  @BeforeUpdate
+  @BeforeSave
   @BeforeCreate
   static hashPassword = async (user: User) => {
+    
+    if ((user.changed() || []).filter(x => x === 'password').length === 0)
+      return;
+
     const saltRounds = 10;
+
     try {
       // Generate a salt
       user.salt = await bcrypt.genSalt(saltRounds);

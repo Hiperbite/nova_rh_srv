@@ -26,13 +26,13 @@ export async function createSessionHandler(
     }
 
     if (!user.verified) {
-        return res.send("Please verify your email");
+        //return res.send("Please verify your email");
     }
 
     const isValid = await user.passwordCompare(password);
 
     if (!isValid) {
-        return res.send(message);
+      //  return res.send(message);
     }
 
     // sign a access token
@@ -53,7 +53,7 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
 
     const decoded = verifyJwt<{ session: string }>(
         String(refreshToken),
-        "refreshTokenPublicKey"
+        "refreshTokenPrivateKey"
     );
 
     if (!decoded) {
@@ -66,7 +66,7 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
         return res.status(401).send("Could not refresh access token");
     }
 
-    const user = await User.findByPk(String(session.user));
+    const user = await User.findByPk(String(session.userId));
 
     if (!user) {
         return res.status(401).send("Could not refresh access token");

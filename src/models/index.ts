@@ -50,7 +50,7 @@ dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 const connection = new Sequelize({
-  repositoryMode: true,
+  repositoryMode: false,
   dialect: "mariadb",
   host: DB_HOST,
   username: DB_USER,
@@ -61,4 +61,4 @@ const connection = new Sequelize({
 });
 
 
-export { connection, Model, Address, User, Session, Token, Contact, Employee, Attachment };
+export { connection, User,Model, Address,  Session, Token, Contact, Employee, Attachment };

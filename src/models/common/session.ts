@@ -19,7 +19,8 @@ export default class Session extends Model {
   user?: User;
 
   @BeforeCreate
-  static createSession = async (token: Session) => {
+  static createSession = async (session: Session) => {
+    session.valid = true;
    // token.token=authRepo.generateAccessSession(token.user?.email??"")
   }
 }

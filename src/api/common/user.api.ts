@@ -8,7 +8,7 @@ import {
 } from "../../application/schema";
 import { User } from "../../models/index";
 import log from "../../application/logger";
-import  sendEmail  from "../../application/mailler";
+import sendEmail from "../../application/mailler";
 import { uuid } from "uuidv4";
 import { UserRepository } from "../../repository/index";
 
@@ -28,7 +28,7 @@ export async function createUserHandler(
       text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
     });
 
-    return res.send({user});
+    return res.send({ user });
   } catch (e: any) {
     if (e.code === 11000) {
       return res.status(409).send("Account already exists");
@@ -46,7 +46,7 @@ export async function verifyUserHandler(
   const verificationCode = req.params.verificationCode;
 
   // find the user by id
-  const user = await UserRepository.find(id);
+  const user = await User.findByPk(id);
 
   if (!user) {
     return res.send("Could not verify user");
@@ -60,8 +60,18 @@ export async function verifyUserHandler(
   // check to see if the verificationCode matches
   if (user.verificationCode === verificationCode) {
     user.verified = true;
+    const updated = await user.update({ verified: true });
+    const saved = await user.save();
+    const newUser = await user.save().then(async function (u: User) {
+      const t = u.sequelize.transaction();
+      const final = (await t).commit().then((f) => {
+        const p = t;
 
-    await user.save();
+      });
+
+      return u;
+    });
+    console.warn(newUser);
 
     return res.send("User successfully verified");
   }
@@ -78,7 +88,7 @@ export async function forgotPasswordHandler(
 
   const { email } = req.body;
 
-  const user = await User.findOne({where:{email}});
+  const user = await UserRepository.findBy({ email });
 
   if (!user) {
     //log.debug(`User with email ${email} does not exists`);
@@ -86,7 +96,7 @@ export async function forgotPasswordHandler(
   }
 
   if (!user.verified) {
-    return res.send("User is not verified");
+    // return res.send("User is not verified");
   }
 
   const passwordResetCode = uuid().substring(0, 8).toUpperCase();
@@ -124,7 +134,7 @@ export async function resetPasswordHandler(
   ) {
     return res.status(400).send("Could not reset user password");
   }
-
+  
   user.passwordResetCode = null;
 
   user.password = password;

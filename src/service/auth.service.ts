@@ -5,7 +5,7 @@ import { Session, User } from "../models/index";
 
 
 export async function createSession({ userId }: { userId: string }) {
-  return Session.create({ user: userId });
+  return Session.create({ userId });
 }
 
 export async function findSessionById(id: string) {
@@ -33,7 +33,7 @@ export async function signRefreshToken({ userId }: { userId: string }) {
 export function signAccessToken(user: User) {
   const payload = omit(user.toJSON(), User.privateFields);
 
-  const accessToken = signJwt(payload, "accessTokenPrivateKey", {
+  const accessToken = signJwt(payload, "accessTokenPublicKey" /* "accessTokenPrivateKey"*/, {
     expiresIn: "15m",
   });
 

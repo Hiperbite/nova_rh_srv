@@ -32,7 +32,7 @@ const {
     MAILER_PASSWORD,
     MAILER_PORT,
     GOOGLE_MAPS_API_KEY,
-
+    NODE_ENV,
     accessTokenPrivateKey,
     accessTokenPublicKey,
     refreshTokenPrivateKey,
@@ -117,7 +117,7 @@ const AUTHORIZED_CLIENTS = AUTHORIZED?.split(",").map((x: string) =>
       pass: MAILER_PASSWORD||'',
       host: MAILER_HOST||'',
       port: MAILER_PORT||'',
-      secure: false,
+      secure: Number(MAILER_PORT||'')==465,
     }
 export {
     DB_HOST,
@@ -132,7 +132,7 @@ export {
     MAILER_PASSWORD,
     MAILER_PORT,
     GOOGLE_MAPS_API_KEY,
-    
+    NODE_ENV,
     accessTokenPrivateKey,
     accessTokenPublicKey,
     refreshTokenPrivateKey,
