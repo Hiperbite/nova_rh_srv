@@ -1,3 +1,4 @@
+import { CreateEmployeeInput, createEmployeeSchema, UpdateEmployeeInput, updateEmployeeSchema } from './employee/employee.schema';
 import {CreateSessionInput, createSessionSchema} from "./common/auth.schema";
 import {
     CreateUserInput,
@@ -24,6 +25,11 @@ export {
     createUserSchema,
     forgotPasswordSchema,
     verifyUserSchema,
-    resetPasswordSchema
+    resetPasswordSchema,
+
+    CreateEmployeeInput,
+    createEmployeeSchema,
+    UpdateEmployeeInput,
+    updateEmployeeSchema
     
 }

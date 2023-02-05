@@ -20,7 +20,7 @@ import { uuid } from "uuidv4";
 export default class Employee extends Model {
     @Column({
         type: DataType.STRING,
-    //    allowNull: false,
+        //    allowNull: false,
     })
     code!: string;
 
@@ -38,9 +38,8 @@ export default class Employee extends Model {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
     })
-    otherNames!: string;
+    otherNames?: string;
 
     @Column({
         type: DataType.STRING,
@@ -59,19 +58,18 @@ export default class Employee extends Model {
         allowNull: false,
     })
     nationality!: string;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
     idcard!: string;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
     passPortNumber!: string;
-
 
     @HasMany(() => Contact)
     contacts!: Contact[];
@@ -96,10 +94,8 @@ export default class Employee extends Model {
 
     @BeforeCreate
     @BeforeSave
-    static setCode=(employee:Employee)=>{
-        employee.code=uuid().substring(0, 8).toUpperCase()
-        console.log('********************************************')
-        console.log('********************************************')
-        console.log(employee.code)
+    static setCode = (employee: Employee) => {
+        if (employee.code === null)
+            employee.code = uuid().substring(0, 8).toUpperCase()
     }
 }
