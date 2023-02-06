@@ -46,6 +46,9 @@ import Employee from "./employee/employee";
 import Attachment from "./employee/attachment";
 
 import dotenv from "dotenv";
+import Role from "./employee/role";
+import Category from "./employee/category";
+import Department from "./employee/department";
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -57,8 +60,8 @@ const connection = new Sequelize({
   password: DB_PASSWORD,
   database: DB_NAME,
   logging: true,
-  models: [User, Address, Token, Session, Contact, Employee, Attachment],
+  models: [User, Address, Token, Session, Contact, Employee, Attachment, Role, Category, Department],
 });
 
 
-export { connection, User,Model, Address,  Session, Token, Contact, Employee, Attachment };
+export { connection, User,Model, Address,  Session, Token, Contact, Employee, Attachment , Role, Category, Department};
