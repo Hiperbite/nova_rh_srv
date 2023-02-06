@@ -10,7 +10,7 @@ import {
     BeforeSave,
 } from "sequelize-typescript";
 import User from "../common/user";
-import { Contact, Model, Address } from "./../index";
+import { Contact, Model, Address, Role, Category, Department, Attachment, Payroll } from "./../index";
 import { uuid } from "uuidv4";
 
 @Table({
@@ -74,23 +74,38 @@ export default class Employee extends Model {
     @HasMany(() => Contact)
     contacts!: Contact[];
 
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    province!: string;
-
-    @ForeignKey(() => Address)
-    addressId?: string;
-
-    @BelongsTo(() => Address)
-    address?: Address;
+    @HasMany(() => Address)
+    address?: Address[];
 
     @ForeignKey(() => User)
     userId?: string;
 
     @BelongsTo(() => User)
     user?: User;
+
+    @ForeignKey(() => Role)
+    roleId?: string;
+
+    @BelongsTo(() => Role)
+    role?: Role;
+
+    @ForeignKey(() => Category)
+    categoryId?: string;
+
+    @BelongsTo(() => Category)
+    category?: Category;
+
+    @ForeignKey(() => Department)
+    departmentId?: string;
+
+    @BelongsTo(() => Department)
+    department?: Department;
+    
+    @HasMany(() => Attachment)
+    attachments?: Attachment[]
+
+    @HasMany(() => Payroll)
+    payrolls?: Payroll[]
 
     @BeforeCreate
     @BeforeSave

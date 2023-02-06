@@ -4,15 +4,12 @@ import {
   AllowNull,
   Column,
   DataType,
-  HasMany,
   BeforeCreate,
-  AfterCreate,
   Unique,
   BeforeUpdate,
   BeforeSave,
 } from "sequelize-typescript";
-import Address from "../employee/address";
-import { Model, Attachment } from "../index";
+import { Model } from "../index";
 //import passwordComplexity from "joi-password-complexity";
 import bcrypt from "bcrypt";
 // import Notify from "../app/Notify";
@@ -22,25 +19,13 @@ import bcrypt from "bcrypt";
   tableName: "Users",
 })
 export default class User extends Model {
-  @Unique({ name: 'email', msg: 'email_should_be_unique' }) // add this line
+  @Unique({ name: 'username', msg: 'username_should_be_unique' }) // add this line
   @AllowNull(false)
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  email!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  firstName?: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  lastName?: string;
+  username!: string;
 
   @Column({
     type: DataType.STRING,
@@ -49,34 +34,16 @@ export default class User extends Model {
   password?: string;
 
   @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  salt?: string;
-
-  @Column({
     type: DataType.STRING,
-    allowNull: true,
-  })
-  phoneNumber?: string;
-
-  @Column({
-    type: DataType.INTEGER,
     allowNull: false,
   })
-  type?: number;
+  role!: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  description?: string;
-
-  @HasMany(() => Address)
-  address?: Address[];
-
-  @HasMany(() => Attachment)
-  attachments?: Attachment[];
+  salt?: string;;
 
   @Column({
     type: DataType.TEXT,
@@ -102,13 +69,6 @@ export default class User extends Model {
   })
   verified?: boolean = false;
 
-  @Column({
-    type: DataType.VIRTUAL,
-  })
-  get role() {
-    return "USER";
-  }
-
   //TODO: fix password compare
   passwordCompare = async (password: string) => 
     await bcrypt.compare(password, this.password ?? "");
@@ -117,7 +77,6 @@ export default class User extends Model {
   static initVer = async (user: User) => 
     user.verificationCode = uuid().substring(5, 12).toUpperCase();
   
-
   @BeforeCreate
   static validatePassword = async (user: User) => {
     const complexityOptions = {
@@ -139,13 +98,10 @@ export default class User extends Model {
     const saltRounds = 10;
 
     try {
-      // Generate a salt
       user.salt = await bcrypt.genSalt(saltRounds);
 
-      // Hash password
       user.password = await bcrypt.hash(user.password ?? "", user.salt);
 
-      console.log(user.password);
     } catch (error) {
       console.log(error);
     }
