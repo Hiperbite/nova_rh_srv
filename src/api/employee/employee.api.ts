@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Employee } from "../../models/index";
+import { EmployeeRepository } from "../../repository/index";
 
 interface IApi {
     create(req: Request, res: Response): Response;
@@ -11,7 +12,7 @@ class EmployeeApi {
     create = async (req: Request, res: Response): Promise<Response> => {
         const { body } = req;
 
-        const employee: Employee | null = await Employee.create(body);
+        const employee: Employee = await EmployeeRepository.create(body);
 
         return res.json(employee)
     }
@@ -19,8 +20,11 @@ class EmployeeApi {
         const { id } = req.params;
         const { body } = req;
 
-        const employee: Employee | null = await Employee.findByPk(id);
+        const employee = await Employee.findByPk(id);
 
+        if(employee)
+            await EmployeeRepository.update(employee, body);
+            
         employee?.update(body, { returning: true });
 
         const updatedEmployee = await Employee.findByPk(id);

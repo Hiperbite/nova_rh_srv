@@ -20,7 +20,7 @@ import { uuid } from "uuidv4";
 export default class Employee extends Model {
     @Column({
         type: DataType.STRING,
-        //    allowNull: false,
+   //     allowNull: false,
     })
     code!: string;
 
@@ -95,7 +95,7 @@ export default class Employee extends Model {
     @BeforeCreate
     @BeforeSave
     static setCode = (employee: Employee) => {
-        if (employee.code === null)
+        if (employee.code === undefined)
             employee.code = uuid().substring(0, 8).toUpperCase()
     }
 }
