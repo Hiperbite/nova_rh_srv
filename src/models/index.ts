@@ -1,40 +1,6 @@
 import { Sequelize, Table } from "sequelize-typescript";
 
-import {
-  Model as Main,
-  Column,
-  DataType,
-  BeforeCreate,
-  BeforeUpdate,
-} from "sequelize-typescript";
-import { uuid } from "uuidv4";
-
-class Model extends Main {
-
-  @Column({
-    type: DataType.UUID,
-    primaryKey: true,
-  })
-  id?: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-  })
-  isActive!: boolean;
-
-  @BeforeCreate
-  static prepare = (model: Model) => {
-    model.id = uuid();
-    model.isActive = false;
-  };
-
-  @BeforeUpdate
-  static prepareUpdate = (model: Model) => {
-    model.id ||= uuid();
-    model.isActive ||= true;
-  };
-}
-
+import Model from "./model";
 import User from "./common/user";
 import Token from "./common/token";
 import Session from "./common/session";
@@ -55,28 +21,33 @@ import path from "path";
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-const models=[
-  Contact,User, Token, Session, Employee,
-  Address,   Attachment, Role, Category, Department,
+const models = [
+  Contact, User, Token, Session, Employee,
+  Address, Attachment, Role, Category, Department,
   Payroll, Transaction, TransactionType
 ];
 
 const sequelize = new Sequelize({
-  
+
   dialect: "mariadb",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-  //logging: true,
-  repositoryMode: true,
-  models: models
+  logging: true,
+  models: [Contact, User, Token, Session, Employee,
+    Address, Attachment, Role, Category, Department,
+    Payroll, Transaction, TransactionType]
 });
-
+const Repo = sequelize.getRepository;
+sequelize.sync({ alter: true, force: false })
 //sequelize.addModels(models);
+export default sequelize;
 
-export { sequelize, Model,
-  User, Token, Session,  Employee,
-  Address, Contact, Attachment, Role, Category, Department,
+export {
+  sequelize,
+  Repo,
+  Model,Contact, User, Token, Session, Employee,
+  Address, Attachment, Role, Category, Department,
   Payroll, Transaction, TransactionType
 };

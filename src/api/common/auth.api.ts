@@ -10,8 +10,8 @@ import {
 } from "../../service/auth.service";
 
 import { verifyJwt } from "../../application/jwt";
-import { User } from "../../models/index";
-
+import { User, sequelize } from "../../models/index";
+const UserM = sequelize.models.User;
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
     res: Response
@@ -19,7 +19,7 @@ export async function createSessionHandler(
     const message = "Invalid email or password";
     const { email, password } = req.body;
 
-    const user: User | null = await User.findOne({ where: { email } });
+    const user: User | null|any = await UserM.findOne({ where: { id:email } });
 
     if (!user) {
         return res.send(message);

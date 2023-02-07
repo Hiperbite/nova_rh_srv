@@ -12,7 +12,7 @@ import {
   ForeignKey,
   HasOne,
 } from "sequelize-typescript";
-import { Contact, Employee, Model } from "../index";
+import { Contact, Employee, Model } from "../";
 //import passwordComplexity from "joi-password-complexity";
 import bcrypt from "bcrypt";
 // import Notify from "../app/Notify";
@@ -33,6 +33,12 @@ export default class User extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+  })
+  email!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
   })
   password?: string;
 
@@ -77,13 +83,6 @@ export default class User extends Model {
 
   @HasOne(() => Employee)
   employee?: Employee;
-
-  @Column({
-    type: DataType.VIRTUAL
-  })
-  get email(){
-    return this.employee?.contacts.filter((contact:Contact)=>contact.type==="EMAIL")[0]?.descriptions
-  }
 
   //TODO: fix password compare
   passwordCompare = async (password: string) => 

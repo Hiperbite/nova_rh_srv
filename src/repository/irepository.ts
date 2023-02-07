@@ -4,9 +4,6 @@ export default interface IRepository<T> {
   create(data: any): Promise<T | undefined>;
   update(data: any): Promise<T | undefined>;
   delete(data: any): Promise<any>;
-  //all(): Promise<Paginate | undefined>;
-  ////  allBy(query: any): Promise<Paginate | undefined>;
-
 
   first(): Promise<T | undefined>;
   last(): Promise<T | undefined>;

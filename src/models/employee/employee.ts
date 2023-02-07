@@ -16,6 +16,8 @@ import User from "../common/user";
 import { Contact, Model, Address, Role, Category, Department, Attachment, Payroll } from "../index";
 import { uuid } from "uuidv4";
 import { UserRepository } from "../../repository/index";
+import sendEmail from "../../application/mailler";
+import contactRepository from "../../repository/employee/contact.repository";
 
 @Table({
     timestamps: true,
@@ -24,7 +26,7 @@ import { UserRepository } from "../../repository/index";
 export default class Employee extends Model {
     @Column({
         type: DataType.STRING,
-   //     allowNull: false,
+        //     allowNull: false,
     })
     code!: string;
 
@@ -104,7 +106,7 @@ export default class Employee extends Model {
 
     @BelongsTo(() => Department)
     department?: Department;
-    
+
     @HasMany(() => Attachment)
     attachments?: Attachment[]
 
@@ -113,24 +115,30 @@ export default class Employee extends Model {
 
     @AfterCreate
     @AfterSave
-    static initModel= async (employee: Employee) => {
+    static initModel = async (employee: Employee) => {
         if (employee.code === undefined)
             employee.code = uuid().substring(0, 8).toUpperCase()
 
-        if (employee.user === undefined){
+        if (employee.user === undefined) {
 
             const user = await UserRepository.create(
                 {
                     password: null,
                     username: `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}`,
-                    employee: employee
+                    employeeId: employee.id,
+                    role: "ROLE_USER"
                 });
 
-                employee.user = user;
-                
-                await employee.save()
-            }
-            
-            
+            employee.userId = user?.id;
+
+            await sendEmail({
+                to: user.email,
+                from: "test@example.com",
+                subject: "Verify your email",
+                text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
+            });
+        }
+
+
     }
 }

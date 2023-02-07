@@ -6,7 +6,7 @@ import {
   ResetPasswordInput,
   VerifyUserInput,
 } from "../../application/schema";
-import { User } from "../../models/index";
+import { User, sequelize } from "../../models/index";
 import log from "../../application/logger";
 import sendEmail from "../../application/mailler";
 import { uuid } from "uuidv4";

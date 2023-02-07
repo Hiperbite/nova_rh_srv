@@ -12,12 +12,12 @@ import cors from "cors";
 // import helmet from "helmet";
 
 // import router from "./routes";
-import { sequelize } from "./models";
+import sequelize  from "./models";
 
 import winston from "winston";
 import expressWinston from "express-winston";
 
-dotenv.config({path: __dirname + '/../.env'});
+dotenv.config({ path: __dirname + '/../.env' });
 
 const {
     DB_HOST,
@@ -37,11 +37,11 @@ const {
     accessTokenPublicKey,
     refreshTokenPrivateKey,
     refreshTokenPublicKey,
-    
+
 } = process.env;
-const logLevel= "info"
+const logLevel = "info"
 const config = (app: Application, http: any) => {
-     app.use(errorHandler);
+    app.use(errorHandler);
 
     // app.use(helmet());
 
@@ -60,13 +60,13 @@ const config = (app: Application, http: any) => {
 
     const errorLoggerOptions = {
         transports: [
-          new winston.transports.Console()
+            new winston.transports.Console()
         ],
         format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.json()
+            winston.format.colorize(),
+            winston.format.json()
         )
-      }
+    }
     const loggerOptions = {
         transports: [new winston.transports.Console()],
         format: winston.format.combine(
@@ -79,8 +79,8 @@ const config = (app: Application, http: any) => {
         colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
         // ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
     };
-     app.use(expressWinston.logger(loggerOptions));
-     app.use(expressWinston.errorLogger(errorLoggerOptions));
+    app.use(expressWinston.logger(loggerOptions));
+    app.use(expressWinston.errorLogger(errorLoggerOptions));
     // parse requests of content-type - application/json
     app.use(express.json());
     // parse requests of content-type - application/x-www-form-urlencoded
@@ -90,7 +90,7 @@ const config = (app: Application, http: any) => {
 
     const start = async (): Promise<any> => {
         try {
-            await sequelize.sync({ alter: true, force: false })
+            //await sequelize.sync({ alter: true, force: false })
 
             return httpServer.listen(PORT, () => {
                 console.log(
@@ -109,13 +109,13 @@ export default config;
 const AUTHORIZED_CLIENTS = AUTHORIZED?.split(",").map((x: string) =>
     x.split(":")
 );
-    const smtp= {
-      user: MAILER_USER||'',
-      pass: MAILER_PASSWORD||'',
-      host: MAILER_HOST||'',
-      port: MAILER_PORT||'',
-      secure: Number(MAILER_PORT||'')==465,
-    }
+const smtp = {
+    user: MAILER_USER || '',
+    pass: MAILER_PASSWORD || '',
+    host: MAILER_HOST || '',
+    port: MAILER_PORT || '',
+    secure: Number(MAILER_PORT || '') == 465,
+}
 export {
     DB_HOST,
     DB_USER,
@@ -134,7 +134,7 @@ export {
     accessTokenPublicKey,
     refreshTokenPrivateKey,
     refreshTokenPublicKey,
-    
+
     smtp,
     logLevel
 };

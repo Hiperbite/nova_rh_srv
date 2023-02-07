@@ -10,9 +10,8 @@ interface IApi {
 class EmployeeApi {
     create = async (req: Request, res: Response): Promise<Response> => {
         const { body } = req;
-        const e=new Employee(body)
-        
-        const employee: Employee|void = await EmployeeRepository.create(body);
+
+        const employee: Employee | void = await EmployeeRepository.create(body);
 
         return res.json(employee)
     }
@@ -20,24 +19,23 @@ class EmployeeApi {
         const { id } = req.params;
         const { body } = req;
 
-        const employee = await Employee.findByPk(id);
+        const employee = await EmployeeRepository.update({ ...body, id });
 
-        if(employee)
-            await EmployeeRepository.update({...body,id});
-            
-        employee?.update(body, { returning: true });
+        const updatedEmployee = await EmployeeRepository.one(id);
 
-        const updatedEmployee = await Employee.findByPk(id);
+        await updatedEmployee?.update(body, { returning: true })
+
         return res.json(updatedEmployee);
     }
     find = async (req: Request, res: Response): Promise<Response> => {
         const { id } = req.params;
+        const { query } = req;
 
-        const employee: Employee | null = await Employee.findByPk(id);
+        const employee: Employee | undefined = await EmployeeRepository.one(id, query);
         return res.json(employee)
     }
     findBy = async (req: Request, res: Response): Promise<Response> => {
-        const employees: Array<Employee>|undefined = await EmployeeRepository.all();
+        const employees: Array<Employee> | undefined = await EmployeeRepository.all();
         return res.json(employees)
     }
 
