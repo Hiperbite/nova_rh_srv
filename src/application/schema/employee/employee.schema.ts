@@ -1,4 +1,4 @@
-import {any, date, object, string, TypeOf } from "zod";
+import { any, array, z, object, string, TypeOf } from "zod";
 
 export const createEmployeeSchema = object({
   body: object({
@@ -17,6 +17,10 @@ export const createEmployeeSchema = object({
     idcard: string({
       required_error: "ID Card is required",
     }),
+    contacts: array(z.object({
+      descriptions: string(),
+      type: string(),
+    })).min(1).nullable(),
   })
 });
 
@@ -37,6 +41,8 @@ export const updateEmployeeSchema = object({
     idcard: string({
       required_error: "ID Card is required",
     }).optional().nullable(),
+
+
   }),
 });
 

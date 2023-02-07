@@ -1,10 +1,9 @@
-import { connection as Sequelize, User } from "../../models/index";
+import { sequelize , User } from "../../models/index";
 
-const repository = Sequelize.getRepository(User);
-
+const repository = sequelize?.getRepository(User);
 
 export default  class UserRepository {
-    private transaction = async () => await Sequelize.transaction();
+    private transaction = async () => await sequelize.transaction();
     
     public static find= async (id:string) => await repository.findByPk(id);
     public static findBy= async (filter:any) => await repository.findOne({where:filter});

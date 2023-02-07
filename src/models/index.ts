@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize-typescript";
+import { Sequelize, Table } from "sequelize-typescript";
 
 import {
   Model as Main,
@@ -35,7 +35,6 @@ class Model extends Main {
   };
 }
 
-
 import User from "./common/user";
 import Token from "./common/token";
 import Session from "./common/session";
@@ -52,26 +51,32 @@ import Department from "./employee/department";
 import Payroll from "./payroll/payroll";
 import Transaction from "./payroll/transaction";
 import TransactionType from "./payroll/transactionType";
+import path from "path";
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-const connection = new Sequelize({
-  repositoryMode: false,
+const models=[
+  Contact,User, Token, Session, Employee,
+  Address,   Attachment, Role, Category, Department,
+  Payroll, Transaction, TransactionType
+];
+
+const sequelize = new Sequelize({
+  
   dialect: "mariadb",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-  logging: true,
-  models: [
-    User, Token, Session, 
-    Address, Contact, Employee, Attachment, Role, Category, Department,
-    Payroll, Transaction, TransactionType
-  ],
+  //logging: true,
+  repositoryMode: true,
+  models: models
 });
 
-export { connection, Model,
-  User, Token, Session, 
-  Address, Contact, Employee, Attachment, Role, Category, Department,
+//sequelize.addModels(models);
+
+export { sequelize, Model,
+  User, Token, Session,  Employee,
+  Address, Contact, Attachment, Role, Category, Department,
   Payroll, Transaction, TransactionType
 };

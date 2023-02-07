@@ -20,7 +20,7 @@ export async function createUserHandler(
 
   try {
     const user = await UserRepository.create(body);
-
+    
     await sendEmail({
       to: user.email,
       from: "test@example.com",

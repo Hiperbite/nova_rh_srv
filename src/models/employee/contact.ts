@@ -12,7 +12,7 @@ import {
     timestamps: true,
     tableName: "Contacts",
   })
-  export default class Contact extends Model {
+  export default class Contact extends Model  {
     @Column({
       type: DataType.STRING,
       allowNull: true,
@@ -26,8 +26,10 @@ import {
     type?: string;
   
     @ForeignKey(() => Employee)
-    userId?: string;
+    employeeId?: string;
 
     @BelongsTo(() => Employee)
-    user?: Employee;
+    employee?: Employee;
   }
+
+  

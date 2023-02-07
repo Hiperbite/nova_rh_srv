@@ -6,8 +6,7 @@ import {
     BelongsTo,
   } from "sequelize-typescript";
   
-import { Model } from "../index";
-import TransactionType from "./transactionType";
+import { Model , TransactionType } from "../index";
   @Table({
     timestamps: true,
     tableName: "Transactions",

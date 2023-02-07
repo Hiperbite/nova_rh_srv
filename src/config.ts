@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
- import errorHandler from "./routes/hendlers";
+import errorHandler from "./routes/hendlers";
 import { createServer } from 'http';
 import express, { Application, Express, NextFunction, Request, Response } from "express";
 import "reflect-metadata";
@@ -12,7 +12,7 @@ import cors from "cors";
 // import helmet from "helmet";
 
 // import router from "./routes";
-import { connection } from "./models";
+import { sequelize } from "./models";
 
 import winston from "winston";
 import expressWinston from "express-winston";
@@ -86,13 +86,11 @@ const config = (app: Application, http: any) => {
     // parse requests of content-type - application/x-www-form-urlencoded
     app.use(express.urlencoded({ extended: true }));
 
-
     const httpServer = createServer(app);
-    // const io = Socket.getInstance(httpServer);
 
     const start = async (): Promise<any> => {
         try {
-             await connection.sync({ alter: true, force: false })
+            await sequelize.sync({ alter: true, force: false })
 
             return httpServer.listen(PORT, () => {
                 console.log(
@@ -105,7 +103,6 @@ const config = (app: Application, http: any) => {
     };
 
     const server = start();
-    //  socket.init(http);
 };
 export default config;
 

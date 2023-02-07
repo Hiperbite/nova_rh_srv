@@ -8,8 +8,11 @@ import {
   Unique,
   BeforeUpdate,
   BeforeSave,
+  BelongsTo,
+  ForeignKey,
+  HasOne,
 } from "sequelize-typescript";
-import { Model } from "../index";
+import { Contact, Employee, Model } from "../index";
 //import passwordComplexity from "joi-password-complexity";
 import bcrypt from "bcrypt";
 // import Notify from "../app/Notify";
@@ -69,14 +72,29 @@ export default class User extends Model {
   })
   verified?: boolean = false;
 
+  @ForeignKey(() => Employee)
+  employeeId?: string;
+
+  @HasOne(() => Employee)
+  employee?: Employee;
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get email(){
+    return this.employee?.contacts.filter((contact:Contact)=>contact.type==="EMAIL")[0]?.descriptions
+  }
+
   //TODO: fix password compare
   passwordCompare = async (password: string) => 
     await bcrypt.compare(password, this.password ?? "");
   
+  @BeforeSave
   @BeforeCreate
   static initVer = async (user: User) => 
     user.verificationCode = uuid().substring(5, 12).toUpperCase();
   
+  @BeforeSave
   @BeforeCreate
   static validatePassword = async (user: User) => {
     const complexityOptions = {

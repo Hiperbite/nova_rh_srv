@@ -2,9 +2,11 @@ import {
     Table,
     Column,
     DataType,
+    ForeignKey,
+    BelongsTo,
   } from "sequelize-typescript";
   
-  import {  Model } from "../index";
+  import {  Employee, Model } from "../index";
   
   @Table({
     timestamps: true,
@@ -29,4 +31,9 @@ import {
     })
     level?: string;
 
+    @ForeignKey(() => Employee)
+    employeeId?: string;
+  
+    @BelongsTo(() => Employee)
+    employee?: Employee;
   }

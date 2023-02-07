@@ -8,10 +8,14 @@ import {
     HasMany,
     BeforeCreate,
     BeforeSave,
+    HasOne,
+    AfterCreate,
+    AfterSave,
 } from "sequelize-typescript";
 import User from "../common/user";
-import { Contact, Model, Address, Role, Category, Department, Attachment, Payroll } from "./../index";
+import { Contact, Model, Address, Role, Category, Department, Attachment, Payroll } from "../index";
 import { uuid } from "uuidv4";
+import { UserRepository } from "../../repository/index";
 
 @Table({
     timestamps: true,
@@ -80,7 +84,7 @@ export default class Employee extends Model {
     @ForeignKey(() => User)
     userId?: string;
 
-    @BelongsTo(() => User)
+    @HasOne(() => User)
     user?: User;
 
     @ForeignKey(() => Role)
@@ -107,10 +111,26 @@ export default class Employee extends Model {
     @HasMany(() => Payroll)
     payrolls?: Payroll[]
 
-    @BeforeCreate
-    @BeforeSave
-    static setCode = (employee: Employee) => {
+    @AfterCreate
+    @AfterSave
+    static initModel= async (employee: Employee) => {
         if (employee.code === undefined)
             employee.code = uuid().substring(0, 8).toUpperCase()
+
+        if (employee.user === undefined){
+
+            const user = await UserRepository.create(
+                {
+                    password: null,
+                    username: `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}`,
+                    employee: employee
+                });
+
+                employee.user = user;
+                
+                await employee.save()
+            }
+            
+            
     }
 }

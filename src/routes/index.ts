@@ -8,7 +8,7 @@ const router = (app: Application) => {
     app.get("/", async (req: any, res: Response) => {
         const { body, headers } = req;
         const now = new Date();
-        const employee = await EmployeeRepository.findAll();
+        const employee = await EmployeeRepository.all();
         //const employee = await EmployeeRepository.create();
         return res.json({ body, now, headers , employee});
     });
