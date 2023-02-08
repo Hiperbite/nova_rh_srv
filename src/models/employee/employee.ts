@@ -116,29 +116,8 @@ export default class Employee extends Model {
     @AfterCreate
     @AfterSave
     static initModel = async (employee: Employee) => {
+
         if (employee.code === undefined)
             employee.code = uuid().substring(0, 8).toUpperCase()
-
-        if (employee.user === undefined) {
-
-            const user = await UserRepository.create(
-                {
-                    password: null,
-                    username: `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}`,
-                    employeeId: employee.id,
-                    role: "ROLE_USER"
-                });
-
-            employee.userId = user?.id;
-
-            await sendEmail({
-                to: user.email,
-                from: "test@example.com",
-                subject: "Verify your email",
-                text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
-            });
-        }
-
-
     }
 }

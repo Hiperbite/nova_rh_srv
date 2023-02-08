@@ -19,7 +19,7 @@ export async function createSessionHandler(
     const message = "Invalid email or password";
     const { email, password } = req.body;
 
-    const user: User | null|any = await UserM.findOne({ where: { id:email } });
+    const user: User | null|any = await UserM.findOne({ where: { email } });
 
     if (!user) {
         return res.send(message);

@@ -12,7 +12,7 @@ export default class Repository<T extends M> {
 
 
     const toArray = (str: any): string[] => typeof str === 'string' ? str?.split(",") : str;
-    const attr = toArray(attributes)
+    const attr = toArray(attributes??'')
       .filter((x: string) => toArray(exclude).indexOf(x) === -1);
 
     return {

@@ -1,5 +1,7 @@
 
+import sendEmail from "../../application/mailler";
 import { Contact, Employee, User } from "../../models/index";
+import { UserRepository } from "../index";
 import IRepository from "../irepository";
 import Repository from "../repository";
 import contactRepository from "./contact.repository";
@@ -15,11 +17,11 @@ class EmployeeRepository extends Repository<Employee> implements IRepository<Emp
 
     private defaultOptions = async () => ({
         attributes: Object.keys(await Employee.describe()),
-        include: [Contact,User],
+        include: [Contact, User],
     });
 
-    one = async (id: string, {attributes}: any = {}): Promise<Employee | undefined> => {
-        const options = {... await this.defaultOptions(), attributes};
+    one = async (id: string, { attributes }: any = {}): Promise<Employee | undefined> => {
+        const options = { ... await this.defaultOptions(), attributes };
         const employee: Employee | undefined = await this.findOne(id, options);
         return employee;
     };
@@ -31,14 +33,36 @@ class EmployeeRepository extends Repository<Employee> implements IRepository<Emp
 
             const contacts = data?.contacts.map(async (contact: any) => await contactRepository.create({ ...contact, ...{ employeeId: employee.id } }));
             employee.contacts = contacts;
+
+            if (employee.user === undefined) {
+
+                const user = await UserRepository.create(
+                    {
+                        password: null,
+                        username: `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}`,
+                        employeeId: employee.id,
+                        email: data?.contacts[0].descriptions,
+                        role: "ROLE_USER"
+                    });
+
+                employee.userId = user?.id;
+
+                await sendEmail({
+                    to: user.email,
+                    from: "test@example.com",
+                    subject: "Verify your email",
+                    text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
+                });
+            }
+
         }
         return employee;
     };
 
     update = async (data: any): Promise<Employee | undefined> => {
-        
+
         return await this.updateOneBy(data);
-      //  return await this.one(id);
+        //  return await this.one(id);
     };
 
     delete = async (data: any): Promise<boolean> => {

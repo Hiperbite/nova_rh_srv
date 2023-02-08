@@ -76,7 +76,7 @@ export default class User extends Model {
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  verified?: boolean = false;
+  verified?: boolean;
 
   @ForeignKey(() => Employee)
   employeeId?: string;
@@ -85,14 +85,20 @@ export default class User extends Model {
   employee?: Employee;
 
   //TODO: fix password compare
-  passwordCompare = async (password: string) => 
-    await bcrypt.compare(password, this.password ?? "");
-  
+  passwordCompare = async (password: string) => {
+
+    const myPassword = this.password ?? "";
+    const verified = await bcrypt.compare(password, myPassword);
+
+    return verified;
+  }
   @BeforeSave
   @BeforeCreate
-  static initVer = async (user: User) => 
+  static initVer = async (user: User) => {
     user.verificationCode = uuid().substring(5, 12).toUpperCase();
-  
+    user.verified = true;
+  }
+
   @BeforeSave
   @BeforeCreate
   static validatePassword = async (user: User) => {
@@ -108,17 +114,19 @@ export default class User extends Model {
   @BeforeSave
   @BeforeCreate
   static hashPassword = async (user: User) => {
-    
+
     if ((user.changed() || []).filter(x => x === 'password').length === 0)
       return;
 
     const saltRounds = 10;
-
     try {
+      // Generate a salt
       user.salt = await bcrypt.genSalt(saltRounds);
 
+      // Hash password
       user.password = await bcrypt.hash(user.password ?? "", user.salt);
 
+      console.log(user.password);
     } catch (error) {
       console.log(error);
     }

@@ -42,8 +42,8 @@ export async function verifyUserHandler(
   req: Request<VerifyUserInput>,
   res: Response
 ) {
-  const id = req.params.id;
-  const verificationCode = req.params.verificationCode;
+
+  const {id, verificationCode } = req.params;
 
   // find the user by id
   const user = await User.findByPk(id);
@@ -60,19 +60,10 @@ export async function verifyUserHandler(
   // check to see if the verificationCode matches
   if (user.verificationCode === verificationCode) {
     user.verified = true;
-    const updated = await user.update({ verified: true });
-    const saved = await user.save();
-    const newUser = await user.save().then(async function (u: User) {
-      const t = u.sequelize.transaction();
-      const final = (await t).commit().then((f) => {
-        const p = t;
-
-      });
-
-      return u;
-    });
-    console.warn(newUser);
-
+    user.passwordResetCode = uuid().substring(0, 8).toUpperCase();
+    
+    await user.save();
+    
     return res.send("User successfully verified");
   }
 
