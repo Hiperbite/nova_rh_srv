@@ -10,4 +10,5 @@ export default interface IRepository<T> {
   disable(data: any): Promise<T | undefined>;
   enable(data: any): Promise<T | undefined>;
   clear(): Promise<boolean>;
+  all(): Promise<Array<T> | undefined>;
 }

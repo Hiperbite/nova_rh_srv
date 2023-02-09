@@ -1,15 +1,77 @@
-import sequelize , { User } from "../../models/index";
 
-const repository = sequelize?.getRepository(User);
+import sendEmail from "../../application/mailler";
+import { Contact, User } from "../../models/index";
+import IRepository from "../irepository";
+import Repository from "../repository";
 
-export default  class UserRepository {
-    
-    
-    public static find= async (id:string) => await User.findByPk(id);
-    public static findBy= async (filter:any) => await User.findOne({where:filter});
-    public static findAll= async () => await User.findAll();
-    public static create = async (data:any) => await User.create(data);
-    // public static update = async (user:User) => await repository.update(user);
-    
+
+class UserRepository extends Repository<User> implements IRepository<User> {
+    oneBy(query: any): Promise<User | undefined> {
+        throw new Error("Method not implemented.");
+    }
+
+    constructor() {
+        super(User);
+    }
+
+    private defaultOptions = async () => ({
+        attributes: Object.keys(await User.describe()),
+        include: [Contact, User],
+    });
+
+    one = async (id: string, { attributes }: any = {}): Promise<User | undefined> => {
+        const options = { ... await this.defaultOptions(), attributes };
+        const user: User | undefined = await this.findOne(id, options);
+        return user;
+    };
+
+    create = async (data: any): Promise<User | undefined> => {
+
+        const user = await this.createOne(data);
+        if (user?.id !== undefined) {
+                await sendEmail({
+                    to: user.email,
+                    from: "test@example.com",
+                    subject: "Verify your email",
+                    text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
+                });
+
+        }
+        return user;
+    };
+
+    update = async (data: any): Promise<User | undefined> => {
+        return await this.updateOneBy(data);
+    };
+
+    delete = async (data: any): Promise<boolean> => {
+        return await this.deleteOneBy(data.id);
+    };
+
+    all = async (): Promise<User[] | undefined> => {
+        const options = { include: null, attributes: null };
+
+        const data: User[] | undefined = await this.findAll(options);
+        return data;
+    };
+
+    allBy = async (query: any): Promise<User[] | undefined> => {
+        const where = query;
+        const options = { include: null, attributes: {}, where };
+
+        const data: User[] | undefined = await this.findAll({});
+        return data;
+    };
+
+    first = async (): Promise<User | undefined> => await this.findFirst();
+    last = async (): Promise<User | undefined> => await this.findLast();
+    disable = async (data: any): Promise<User | undefined> =>
+        await this.disableBy(data.id);
+    enable = async (data: any): Promise<User | undefined> =>
+        await this.enableBy(data.id);
+
+    clear = async () => {
+        return true;
+    };
 }
-
+export default new UserRepository();

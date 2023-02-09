@@ -4,9 +4,10 @@ import {
     DataType,
     ForeignKey,
     BelongsTo,
+    HasMany,
   } from "sequelize-typescript";
   
-  import {  Employee, Model } from "../index";
+  import {  Employee, Model, Transaction } from "../index";
   
   @Table({
     timestamps: true,
@@ -36,4 +37,7 @@ import {
   
     @BelongsTo(() => Employee)
     employee?: Employee;
+
+    @HasMany(() => Transaction)
+    transactions?: Transaction;
   }

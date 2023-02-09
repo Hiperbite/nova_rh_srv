@@ -6,7 +6,7 @@ import {
     BelongsTo,
   } from "sequelize-typescript";
   
-import { Model , TransactionType } from "../index";
+import { Model , Payroll, TransactionType } from "../index";
   @Table({
     timestamps: true,
     tableName: "Transactions",
@@ -29,4 +29,10 @@ import { Model , TransactionType } from "../index";
 
     @BelongsTo(() => TransactionType)
     type?: TransactionType;
+
+    @ForeignKey(() => Payroll)
+    payrollId?: string;
+
+    @BelongsTo(() => Payroll)
+    payroll?: Payroll;
   }

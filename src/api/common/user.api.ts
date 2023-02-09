@@ -6,7 +6,7 @@ import {
   ResetPasswordInput,
   VerifyUserInput,
 } from "../../application/schema";
-import { User, sequelize } from "../../models/index";
+import { User } from "../../models/index";
 import log from "../../application/logger";
 import sendEmail from "../../application/mailler";
 import { uuid } from "uuidv4";
@@ -20,13 +20,14 @@ export async function createUserHandler(
 
   try {
     const user = await UserRepository.create(body);
-    
-    await sendEmail({
-      to: user.email,
-      from: "test@example.com",
-      subject: "Verify your email",
-      text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
-    });
+    if (user) {
+      await sendEmail({
+        to: user.email,
+        from: "test@example.com",
+        subject: "Verify your email",
+        text: `verification code: ${user.verificationCode}. Id: ${user.id}`,
+      });
+    }
 
     return res.send({ user });
   } catch (e: any) {
@@ -42,8 +43,7 @@ export async function verifyUserHandler(
   req: Request<VerifyUserInput>,
   res: Response
 ) {
-
-  const {id, verificationCode } = req.params;
+  const { id, verificationCode } = req.params;
 
   // find the user by id
   const user = await User.findByPk(id);
@@ -61,9 +61,9 @@ export async function verifyUserHandler(
   if (user.verificationCode === verificationCode) {
     user.verified = true;
     user.passwordResetCode = uuid().substring(0, 8).toUpperCase();
-    
+
     await user.save();
-    
+
     return res.send("User successfully verified");
   }
 
@@ -79,7 +79,7 @@ export async function forgotPasswordHandler(
 
   const { email } = req.body;
 
-  const user = await UserRepository.findBy({ email });
+  const user = await UserRepository.oneBy({ email });
 
   if (!user) {
     //log.debug(`User with email ${email} does not exists`);
@@ -125,7 +125,7 @@ export async function resetPasswordHandler(
   ) {
     return res.status(400).send("Could not reset user password");
   }
-  
+
   user.passwordResetCode = null;
 
   user.password = password;

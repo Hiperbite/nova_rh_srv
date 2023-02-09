@@ -1,41 +1,42 @@
-import { Model as M, ModelCtor, Repository as Repo } from "sequelize-typescript";
+import {
+  Model as M,
+  ModelCtor,
+  Repository as Repo,
+} from "sequelize-typescript";
 import sequelize, { Employee } from "../models/index";
 
 export default class Repository<T extends M> {
   repo: Repo<T>;
-
-  constructor(Model: ModelCtor<T>) {
-    this.repo = sequelize.getRepository(Model)
+  constructor(private Model: ModelCtor<T>) {
+    this.repo = sequelize.getRepository(Model);
   }
 
-  private refactorOptions = ({ attributes, exclude = "", include }: any): any => {
-
-
-    const toArray = (str: any): string[] => typeof str === 'string' ? str?.split(",") : str;
-    const attr = toArray(attributes??'')
+  private refactorOptions = async ({
+    attributes: attr,
+    exclude = "",
+    include,
+  }: any): Promise<any> => {
+    const modelAttrs = Object.keys(await this.Model.describe());
+    const toArray = (str: any): string[] =>
+      typeof str === "string" ? str?.split(",") : str;
+    const attributes = toArray(attr ?? "")
+      .filter((x: string) => toArray(modelAttrs).indexOf(x) !== -1)
       .filter((x: string) => toArray(exclude).indexOf(x) === -1);
 
     return {
       include,
-      attributes: attr,
-      exclude
-    }
-  }
-  protected findOne = async (
-    id: string,
-    opts: any
-  ): Promise<T | undefined> => {
-    const options = this.refactorOptions(opts);
-
+      attributes: attributes.length === 0 ? null : attributes,
+      exclude,
+    };
+  };
+  protected findOne = async (id: string, opts: any): Promise<T | undefined> => {
+    const options = await this.refactorOptions(opts);
     const data = await this.repo.findByPk(id, options);
 
     return data ?? undefined;
   };
 
-  protected createOne = async (
-    data: any
-  ): Promise<T | undefined | any> => {
-
+  protected createOne = async (data: any): Promise<T | undefined | any> => {
     try {
       return await this.repo.create(data);
     } catch (err: any) {
@@ -65,18 +66,14 @@ export default class Repository<T extends M> {
     }
   };
 
-  protected updateOneBy = async (
-    data: any
-  ): Promise<Employee | any> => {
+  protected updateOneBy = async (data: any): Promise<Employee | any> => {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
     const model = await this.repo.update(d, { where: { id }, returning: true });
     return model ? 1 : 0;
   };
 
-  protected deleteOneBy = async (
-    id: any | string
-  ): Promise<boolean> => {
+  protected deleteOneBy = async (id: any | string): Promise<boolean> => {
     const model = await this.repo.destroy({
       where: { id },
       truncate: true,
@@ -85,9 +82,7 @@ export default class Repository<T extends M> {
     return model == 1;
   };
 
-  protected findOneBy = async (
-    options: any
-  ): Promise<any> => {
+  protected findOneBy = async (options: any): Promise<any> => {
     try {
       const data: M | undefined = await this.repo.findOne(options);
       return data;
@@ -97,9 +92,7 @@ export default class Repository<T extends M> {
     }
   };
 
-  protected findAll = async (
-    options: any
-  ): Promise<T[] | any> => {
+  protected findAll = async (options: any): Promise<T[] | any> => {
     const { where, include, attributes, limit = 6, offset = 0 } = options;
     const data: T[] = await this.repo.findAll({
       where,
@@ -110,11 +103,15 @@ export default class Repository<T extends M> {
     });
     return data;
   };
-  protected findAllBy = async (
-    options: any
-  ): Promise<T[] | undefined> => {
+  protected findAllBy = async (options: any): Promise<T[] | undefined> => {
     const { where, include, attributes, limit = 6, offset = 0 } = options;
-    return await this.repo.findAll({ where, attributes, include, offset, limit });
+    return await this.repo.findAll({
+      where,
+      attributes,
+      include,
+      offset,
+      limit,
+    });
   };
   protected paginate = async (
     Model: ModelCtor<T>,
@@ -136,16 +133,16 @@ export default class Repository<T extends M> {
       Number(page) < 1
         ? 0
         : Number(page) > limit
-          ? limit
-          : (Number(page) - 1) * limit;
+        ? limit
+        : (Number(page) - 1) * limit;
 
     return new Paginate(
       await this.repo.findAll({
         where,
         attributes: attributes
           ? attributes
-            ?.split(",")
-            .filter((x: string) => exclude.indexOf(x) === -1)
+              ?.split(",")
+              .filter((x: string) => exclude.indexOf(x) === -1)
           : { exclude },
         include,
         offset,
@@ -173,18 +170,14 @@ export default class Repository<T extends M> {
   ): Promise<T | undefined | number | any> =>
     await this.repo.update({ isActive: false }, { where: { id } });
 
-  protected enableBy = async (
-    id: any
-  ): Promise<T | undefined | number | any> =>
+  protected enableBy = async (id: any): Promise<T | undefined | number | any> =>
     await this.repo.update({ isActive: false }, { where: { id } });
 
   protected clearAll = function (Model: ModelCtor<T>) {
     //  - Delete all the records from the collection
   };
 
-  protected size = async (
-    options: any
-  ): Promise<number> => {
+  protected size = async (options: any): Promise<number> => {
     const { where } = options;
     return await this.repo.count({ where });
   };
