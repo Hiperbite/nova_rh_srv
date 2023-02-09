@@ -29,7 +29,7 @@ export default class Repository<T extends M> {
       exclude,
     };
   };
-  protected findOne = async (id: string, opts: any): Promise<T | undefined> => {
+  protected findOne = async (id: string, opts: any={}): Promise<T | undefined> => {
     const options = await this.refactorOptions(opts);
     const data = await this.repo.findByPk(id, options);
 
@@ -66,14 +66,14 @@ export default class Repository<T extends M> {
     }
   };
 
-  protected updateOneBy = async (data: any): Promise<Employee | any> => {
+  protected updateOne = async (data: any): Promise<Employee | any> => {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
     const model = await this.repo.update(d, { where: { id }, returning: true });
     return model ? 1 : 0;
   };
 
-  protected deleteOneBy = async (id: any | string): Promise<boolean> => {
+  protected deleteBy = async (id: any | string): Promise<boolean> => {
     const model = await this.repo.destroy({
       where: { id },
       truncate: true,
@@ -133,16 +133,16 @@ export default class Repository<T extends M> {
       Number(page) < 1
         ? 0
         : Number(page) > limit
-        ? limit
-        : (Number(page) - 1) * limit;
+          ? limit
+          : (Number(page) - 1) * limit;
 
     return new Paginate(
       await this.repo.findAll({
         where,
         attributes: attributes
           ? attributes
-              ?.split(",")
-              .filter((x: string) => exclude.indexOf(x) === -1)
+            ?.split(",")
+            .filter((x: string) => exclude.indexOf(x) === -1)
           : { exclude },
         include,
         offset,
@@ -173,7 +173,7 @@ export default class Repository<T extends M> {
   protected enableBy = async (id: any): Promise<T | undefined | number | any> =>
     await this.repo.update({ isActive: false }, { where: { id } });
 
-  protected clearAll = function (Model: ModelCtor<T>) {
+  protected clear = function (Model: ModelCtor<T>) {
     //  - Delete all the records from the collection
   };
 

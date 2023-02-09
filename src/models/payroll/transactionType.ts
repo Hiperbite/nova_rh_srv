@@ -2,6 +2,9 @@ import {
     Table,
     Column,
     DataType,
+    BelongsTo,
+    ForeignKey,
+    HasMany,
   } from "sequelize-typescript";
   
   import {  Model } from "../index";
@@ -13,9 +16,15 @@ import {
   export default class TransactionType extends Model {
     @Column({
         type: DataType.STRING,
-        allowNull: true,
+        allowNull: false,
     })
-    name?: string;
+    code!: string;
+    
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    name!: string;
     
     @Column({
         type: DataType.STRING,
@@ -24,21 +33,47 @@ import {
     description?: string;
 
     @Column({
-      type: DataType.DOUBLE,
+      type: DataType.DECIMAL,
       allowNull: true,
     })
-    value?: string;
+    defaultValue?: number;
 
     @Column({
       type: DataType.STRING,
       allowNull: true,
     })
     unit?: string;
-  
+
+    @Column({
+      type: DataType.STRING,
+      allowNull: true,
+    })
+    calc?: string;
+
     @Column({
       type: DataType.BOOLEAN,
       allowNull: true,
     })
-    debit?: boolean;
+    required?: boolean;
+  
+    @Column({
+      type: DataType.BOOLEAN,
+      allowNull: false,
+    })
+    debit!: boolean;
 
+    @Column({
+      type: DataType.INTEGER,
+      allowNull: true,
+    })
+    order?: number;
+
+    @ForeignKey(() => TransactionType)
+    referenceTypeId?: string;
+
+    @BelongsTo(() => TransactionType)
+    reference?: TransactionType;
+
+    @HasMany(() => TransactionType)
+    references?: TransactionType
   }

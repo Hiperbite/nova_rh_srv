@@ -8,12 +8,15 @@ class TransactionTypeRepository
   extends Repository<TransactionType>
   implements IRepository<TransactionType>
 {
-  oneBy(query: any): Promise<TransactionType | undefined> {
+  /*oneBy(query: any): Promise<TransactionType | undefined> {
     throw new Error("Method not implemented.");
-  }
+  }*/
 
   constructor() {
     super(TransactionType);
+  }
+  oneBy(query: any): Promise<TransactionType | undefined> {
+    throw new Error("Method not implemented.");
   }
 
   private defaultOptions = async () => ({
@@ -40,12 +43,12 @@ class TransactionTypeRepository
   };
 
   update = async (data: any): Promise<TransactionType | undefined> => {
-    return await this.updateOneBy(data);
-    //  return await this.one(id);
+    return await this.updateOne(data);
+    //  return await this.findOne(id);
   };
 
   delete = async (data: any): Promise<boolean> => {
-    return await this.deleteOneBy(data.id);
+    return await this.deleteBy(data.id);
   };
 
   all = async ({ attributes = {} }: any = {}): Promise<
@@ -66,13 +69,13 @@ class TransactionTypeRepository
   };
 
   first = async (): Promise<TransactionType | undefined> =>
-    await this.findFirst();
+    await this.first();
   last = async (): Promise<TransactionType | undefined> =>
-    await this.findLast();
+    await this.last();
   disable = async (data: any): Promise<TransactionType | undefined> =>
-    await this.disableBy(data.id);
+    await this.disable(data.id);
   enable = async (data: any): Promise<TransactionType | undefined> =>
-    await this.enableBy(data.id);
+    await this.enable(data.id);
 
   clear = async () => {
     return true;

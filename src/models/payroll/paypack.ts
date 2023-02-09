@@ -18,7 +18,7 @@ import {
       type: DataType.DECIMAL,
       allowNull: true,
     })
-    value?: DoubleRange;
+    value?: Number;
 
     @Column({
       type: DataType.STRING,

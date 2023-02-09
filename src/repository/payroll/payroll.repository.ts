@@ -7,12 +7,15 @@ class PayrollRepository
   extends Repository<Payroll>
   implements IRepository<Payroll>
 {
-  oneBy(query: any): Promise<Payroll | undefined> {
+  /*oneBy(query: any): Promise<Payroll | undefined> {
     throw new Error("Method not implemented.");
-  }
+  }*/
 
   constructor() {
     super(Payroll);
+  }
+  oneBy(query: any): Promise<Payroll | undefined> {
+    throw new Error("Method not implemented.");
   }
 
   private defaultOptions = async () => ({
@@ -36,12 +39,12 @@ class PayrollRepository
   };
 
   update = async (data: any): Promise<Payroll | undefined> => {
-    return await this.updateOneBy(data);
-    //  return await this.one(id);
+    return await this.updateOne(data);
+    //  return await this.findOne(id);
   };
 
   delete = async (data: any): Promise<boolean> => {
-    return await this.deleteOneBy(data.id);
+    return await this.deleteBy(data.id);
   };
 
   all = async ({ attributes = {} }: any = {}): Promise<
@@ -61,12 +64,12 @@ class PayrollRepository
     return data;
   };
 
-  first = async (): Promise<Payroll | undefined> => await this.findFirst();
-  last = async (): Promise<Payroll | undefined> => await this.findLast();
+  first = async (): Promise<Payroll | undefined> => await this.first();
+  last = async (): Promise<Payroll | undefined> => await this.last();
   disable = async (data: any): Promise<Payroll | undefined> =>
-    await this.disableBy(data.id);
+    await this.disable(data.id);
   enable = async (data: any): Promise<Payroll | undefined> =>
-    await this.enableBy(data.id);
+    await this.enable(data.id);
 
   clear = async () => {
     return true;

@@ -6,12 +6,12 @@ import Repository from "../repository";
 
 
 class UserRepository extends Repository<User> implements IRepository<User> {
-    oneBy(query: any): Promise<User | undefined> {
-        throw new Error("Method not implemented.");
-    }
-
+    
     constructor() {
         super(User);
+    }
+    oneBy(query: any): Promise<User | undefined> {
+        throw new Error("Method not implemented.");
     }
 
     private defaultOptions = async () => ({
@@ -41,11 +41,11 @@ class UserRepository extends Repository<User> implements IRepository<User> {
     };
 
     update = async (data: any): Promise<User | undefined> => {
-        return await this.updateOneBy(data);
+        return await this.updateOne(data);
     };
 
     delete = async (data: any): Promise<boolean> => {
-        return await this.deleteOneBy(data.id);
+        return await this.deleteBy(data.id);
     };
 
     all = async (): Promise<User[] | undefined> => {
@@ -63,12 +63,12 @@ class UserRepository extends Repository<User> implements IRepository<User> {
         return data;
     };
 
-    first = async (): Promise<User | undefined> => await this.findFirst();
-    last = async (): Promise<User | undefined> => await this.findLast();
+    first = async (): Promise<User | undefined> => await this.first();
+    last = async (): Promise<User | undefined> => await this.last();
     disable = async (data: any): Promise<User | undefined> =>
-        await this.disableBy(data.id);
+        await this.disable(data.id);
     enable = async (data: any): Promise<User | undefined> =>
-        await this.enableBy(data.id);
+        await this.enable(data.id);
 
     clear = async () => {
         return true;

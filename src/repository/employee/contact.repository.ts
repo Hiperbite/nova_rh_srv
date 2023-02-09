@@ -4,12 +4,12 @@ import IRepository from "../irepository";
 import Repository from "../repository";
 
 class ContactRepository extends Repository<Contact> implements IRepository<Contact> {
-    oneBy(query: any): Promise<Contact | undefined> {
-        throw new Error("Method not implemented.");
-    }
-
+   
     constructor() {
       super(Contact);
+    }
+    oneBy(query: any): Promise<Contact | undefined> {
+        throw new Error("Method not implemented.");
     }
 
     private defaultOptions = async () => ({
@@ -39,7 +39,7 @@ class ContactRepository extends Repository<Contact> implements IRepository<Conta
             cover,
             user: { id: userId },
         } = data;
-        await this.updateOneBy({
+        await this.updateOne({
             id,
             title,
             category,
@@ -48,11 +48,11 @@ class ContactRepository extends Repository<Contact> implements IRepository<Conta
             isActive,
             userId,
         });
-        return await this.one(id);
+        return await this.findOne(id);
     };
 
     delete = async (data: any): Promise<boolean> => {
-        return await this.deleteOneBy(data.id);
+        return await this.deleteBy(data.id);
     };
 
     all = async (): Promise<Contact[] | undefined> => {
@@ -70,12 +70,12 @@ class ContactRepository extends Repository<Contact> implements IRepository<Conta
         return data;
     };
 
-    first = async (): Promise<Contact | undefined> => await this.findFirst();
-    last = async (): Promise<Contact | undefined> => await this.findLast();
+    first = async (): Promise<Contact | undefined> => await this.first();
+    last = async (): Promise<Contact | undefined> => await this.last();
     disable = async (data: any): Promise<Contact | undefined> =>
-        await this.disableBy(data.id);
+        await this.disable(data.id);
     enable = async (data: any): Promise<Contact | undefined> =>
-        await this.enableBy(data.id);
+        await this.enable(data.id);
 
     clear = async () => {
         return true;

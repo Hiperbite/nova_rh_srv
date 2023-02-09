@@ -40,7 +40,7 @@ const sequelize = new Sequelize({
     Payroll, Transaction, TransactionType]
 });
 const Repo = sequelize.getRepository;
-//sequelize.sync({ alter: true, force: false })
+//sequelize.sync({ alter: true, force: true })
 //sequelize.addModels(models);
 export default sequelize;
 

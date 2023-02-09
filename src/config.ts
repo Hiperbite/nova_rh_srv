@@ -90,8 +90,6 @@ const config = (app: Application, http: any) => {
 
     const start = async (): Promise<any> => {
         try {
-            //await sequelize.sync({ alter: true, force: false })
-
             return httpServer.listen(PORT, () => {
                 console.log(
                     `⚡️[server]: Server is running at https://localhost:${PORT}`

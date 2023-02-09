@@ -15,10 +15,10 @@ import {
   })
   export default class Payroll extends Model {
     @Column({
-      type: DataType.STRING,
+      type: DataType.DATE,
       allowNull: true,
     })
-    name?: string;
+    date?: Date;
 
     @Column({
       type: DataType.STRING,
@@ -27,10 +27,10 @@ import {
     descriptions?: string;
   
     @Column({
-      type: DataType.INTEGER,
+      type: DataType.STRING,
       allowNull: true,
     })
-    level?: string;
+    status?: string;
 
     @ForeignKey(() => Employee)
     employeeId?: string;

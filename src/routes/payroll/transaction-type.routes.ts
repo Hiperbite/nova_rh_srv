@@ -35,6 +35,6 @@ routes.get(
   api.findBy
 );
 
-router.use('/transaction-type',routes) 
+router.use('/transaction-types',routes) 
 
-export default routes;
+export default router;

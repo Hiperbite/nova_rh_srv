@@ -23,6 +23,24 @@ import { Model , Payroll, TransactionType } from "../index";
       allowNull: true,
     })
     quantity?: number;
+    
+    @Column({
+      type: DataType.STRING,
+      allowNull: true,
+    })
+    status?: string;
+  
+    @Column({
+      type: DataType.STRING,
+      allowNull: true,
+    })
+    unit?: string;
+  
+    @Column({
+      type: DataType.STRING,
+      allowNull: true,
+    })
+    descriptions?: string;
   
     @ForeignKey(() => TransactionType)
     transactionTypeId?: string;
