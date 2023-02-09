@@ -13,7 +13,7 @@ import {
     AfterSave,
 } from "sequelize-typescript";
 import User from "../common/user";
-import { Contact, Model, Address, Role, Category, Department, Attachment, Payroll } from "../index";
+import { Contact, Model, Address, Role, Category, Department, Attachment, Payroll, Paypack } from "../index";
 import { uuid } from "uuidv4";
 import { UserRepository } from "../../repository/index";
 import sendEmail from "../../application/mailler";
@@ -112,6 +112,9 @@ export default class Employee extends Model {
 
     @HasMany(() => Payroll)
     payrolls?: Payroll[]
+    
+    @HasMany(() => Paypack)
+    paypacks?: Paypack[]
 
     @AfterCreate
     @AfterSave

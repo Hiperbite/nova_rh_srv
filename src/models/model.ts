@@ -12,6 +12,12 @@ import {
   export default class Model extends Main {
    
     @Column({
+      type: DataType.UUID,
+      primaryKey: true,
+    })
+    id?: string;
+  
+    @Column({
       type: DataType.BOOLEAN,
     })
     isActive!: boolean;

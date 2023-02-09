@@ -32,6 +32,9 @@ import {
     @BelongsTo(() => Employee)
     employee?: Employee;
 
+    @ForeignKey(() => TransactionType)
+    transactionTypeId?: string
+
     @BelongsTo(() => TransactionType)
     transactionsType?: TransactionType;
   }

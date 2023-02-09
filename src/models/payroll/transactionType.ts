@@ -7,7 +7,7 @@ import {
     HasMany,
   } from "sequelize-typescript";
   
-  import {  Model } from "../index";
+  import {  Model, Paypack } from "../";
   
   @Table({
     timestamps: true,
@@ -75,5 +75,9 @@ import {
     reference?: TransactionType;
 
     @HasMany(() => TransactionType)
-    references?: TransactionType
+    references?: TransactionType[]
+
+    @HasMany(() => Paypack)
+    paypacks?: Paypack[];
+
   }
