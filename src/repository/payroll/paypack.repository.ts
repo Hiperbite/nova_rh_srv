@@ -19,7 +19,7 @@ class PaypackRepository
 
   private defaultOptions = async () => ({
     attributes: Object.keys(await Paypack.describe()),
-    include: [Employee, TransactionType],
+    include: [{model:Employee,attributes:['code','firstName','lastName','birthDate','roleId']}, TransactionType],
   });
 
   one = async (

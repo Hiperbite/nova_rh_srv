@@ -37,4 +37,4 @@ routes.get(
 
 router.use('/transaction-types',routes) 
 
-export default router;
+export default routes;

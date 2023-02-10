@@ -21,7 +21,7 @@ class TransactionTypeRepository
 
   private defaultOptions = async () => ({
     attributes: Object.keys(await TransactionType.describe()),
-    include: [],
+    include: [TransactionType],
   });
 
   one = async (
