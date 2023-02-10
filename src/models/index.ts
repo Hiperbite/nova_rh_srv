@@ -19,21 +19,14 @@ import Payroll from "./payroll/payroll";
 import Transaction from "./payroll/transaction";
 import TransactionType from "./payroll/transactionType";
 
-
-
-import path from "path";
 import Paypack from "./payroll/paypack";
+import Sequence from "./common/sequence";
+import Document from "./document/document";
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-const models = [
-  Contact, User, Token, Session, Employee,
-  Address, Attachment, Role, Category, Department,
-  Payroll, Transaction, TransactionType, Paypack
-];
 
 const sequelize = new Sequelize({
-
   dialect: "mariadb",
   host: DB_HOST,
   username: DB_USER,
@@ -42,8 +35,9 @@ const sequelize = new Sequelize({
   logging: true,
   models: [Contact, User, Token, Session, Employee,
     Address, Attachment, Role, Category, Department,
-    Payroll, Transaction, TransactionType, Paypack]
+    Payroll, Transaction, TransactionType, Paypack, Sequence, Document]
 });
+
 const Repo = sequelize.getRepository;
 //sequelize.sync({ alter: true, force: false })
 //sequelize.addModels(models);
@@ -54,5 +48,5 @@ export {
   Repo,
   Model,Contact, User, Token, Session, Employee,
   Address, Attachment, Role, Category, Department,
-  Payroll, Transaction, TransactionType, Paypack
+  Payroll, Transaction, TransactionType, Paypack, Sequence, Document
 };

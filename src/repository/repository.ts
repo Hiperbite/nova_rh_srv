@@ -29,14 +29,14 @@ export default class Repository<T extends M> {
       exclude,
     };
   };
-  protected findOne = async (id: string, opts: any={}): Promise<T | undefined> => {
+  public  findOne = async (id: string, opts: any={}): Promise<T | undefined> => {
     const options = await this.refactorOptions(opts);
     const data = await this.repo.findByPk(id, options);
 
     return data ?? undefined;
   };
 
-  protected createOne = async (data: any): Promise<T | undefined | any> => {
+  public  createOne = async (data: any): Promise<T | undefined | any> => {
     try {
       return await this.repo.create(data);
     } catch (err: any) {
@@ -66,14 +66,14 @@ export default class Repository<T extends M> {
     }
   };
 
-  protected updateOne = async (data: any): Promise<Employee | any> => {
+  public  updateOne = async (data: any): Promise<Employee | any> => {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
     const model = await this.repo.update(d, { where: { id }, returning: true });
     return model ? 1 : 0;
   };
 
-  protected deleteBy = async (id: any | string): Promise<boolean> => {
+  public  deleteBy = async (id: any | string): Promise<boolean> => {
     const model = await this.repo.destroy({
       where: { id },
       truncate: true,
@@ -82,7 +82,7 @@ export default class Repository<T extends M> {
     return model == 1;
   };
 
-  protected findOneBy = async (options: any): Promise<any> => {
+  public  findOneBy = async (options: any): Promise<any> => {
     try {
       const data: M | undefined = await this.repo.findOne(options);
       return data;
@@ -92,7 +92,7 @@ export default class Repository<T extends M> {
     }
   };
 
-  protected findAll = async (options: any): Promise<T[] | any> => {
+  public  findAll = async (options: any): Promise<T[] | any> => {
     const { where, include, attributes, limit = 6, offset = 0 } = options;
     const data: T[] = await this.repo.findAll({
       where,
@@ -103,7 +103,7 @@ export default class Repository<T extends M> {
     });
     return data;
   };
-  protected findAllBy = async (options: any): Promise<T[] | undefined> => {
+  public  findAllBy = async (options: any): Promise<T[] | undefined> => {
     const { where, include, attributes, limit = 6, offset = 0 } = options;
     return await this.repo.findAll({
       where,
@@ -113,7 +113,7 @@ export default class Repository<T extends M> {
       limit,
     });
   };
-  protected paginate = async (
+  public  paginate = async (
     Model: ModelCtor<T>,
     options: any
   ): Promise<Paginate<T> | undefined> => {
@@ -155,34 +155,34 @@ export default class Repository<T extends M> {
     );
   };
 
-  protected findFirst = async (): Promise<T | undefined> => {
+  public  findFirst = async (): Promise<T | undefined> => {
     const object = await this.repo.findOne({ order: [["createdAt", "DESC"]] });
     return object ?? undefined;
   };
 
-  protected findLast = async (): Promise<T | undefined> => {
+  public  findLast = async (): Promise<T | undefined> => {
     const object = await this.repo.findOne({ order: [["createdAt", "ASC"]] });
     return object ?? undefined;
   };
 
-  protected disableBy = async (
+  public  disableBy = async (
     id: any
   ): Promise<T | undefined | number | any> =>
     await this.repo.update({ isActive: false }, { where: { id } });
 
-  protected enableBy = async (id: any): Promise<T | undefined | number | any> =>
+  public  enableBy = async (id: any): Promise<T | undefined | number | any> =>
     await this.repo.update({ isActive: false }, { where: { id } });
 
-  protected clear = function (Model: ModelCtor<T>) {
+  public  clear = function (Model: ModelCtor<T>) {
     //  - Delete all the records from the collection
   };
 
-  protected size = async (options: any): Promise<number> => {
+  public  size = async (options: any): Promise<number> => {
     const { where } = options;
     return await this.repo.count({ where });
   };
 
-  protected classOf = (className: string) => eval(className);
+  public  classOf = (className: string) => eval(className);
 }
 
 export class Paginate<T> {

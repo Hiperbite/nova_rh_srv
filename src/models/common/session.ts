@@ -1,4 +1,5 @@
-import { Table, Column, DataType, BeforeCreate, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Table, Column, DataType, BeforeCreate, BelongsTo, ForeignKey, AfterUpdate } from "sequelize-typescript";
+import Repository from "../../repository/repository";
 import { Model , User} from "../index";
 
 @Table({
@@ -23,4 +24,5 @@ export default class Session extends Model {
     session.valid = true;
    // token.token=authRepo.generateAccessSession(token.user?.email??"")
   }
+
 }

@@ -45,7 +45,7 @@ import {
       type: DataType.VIRTUAL,
     })
     get typeDescriptio() {
-      return ;// TYPES[this.type ?? 0];
+      return TYPES[this.type ?? 0];
     }
     
     @ForeignKey(() => Employee)
