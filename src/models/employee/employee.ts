@@ -27,6 +27,7 @@ import {
 } from "../index";
 
 import SequenceApp, { CODES } from "../../application/common/sequence.app";
+import Person from "./person";
 type MaritalstatusType =
   | "SINGLE"
   | "MARrIED"
@@ -48,7 +49,7 @@ export default class Employee extends Model {
   id?: string;
 
   @HasOne(() => User)
-  peson?: Pers;
+  peson?: Person;
 
   @ForeignKey(() => Role)
   roleId?: string;
