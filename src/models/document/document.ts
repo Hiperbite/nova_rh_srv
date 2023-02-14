@@ -6,7 +6,7 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 
-import { Attachment, Model } from "../index";
+import { Attachment, Model, Person } from "../index";
 
 type DocumenttypeType = "PASSPORT" | "IDCARD" | "OTHER";
 
@@ -56,6 +56,12 @@ export default class Document extends Model {
 
   @BelongsTo(() => Attachment)
   attachment?: Attachment;
+
+  @ForeignKey(() => Person)
+  personId?: string;
+
+  @BelongsTo(() => Person)
+  person?: Person;
 }
 
 export { DocumenttypeType };

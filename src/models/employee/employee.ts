@@ -11,7 +11,6 @@ import {
   AfterCreate,
   AfterSave,
 } from "sequelize-typescript";
-import User from "../common/user";
 import {
   Contact,
   Model,
@@ -22,12 +21,12 @@ import {
   Attachment,
   Payroll,
   Paypack,
-  Sequence,
-  Document,
+  User,
+  Person,
 } from "../index";
 
 import SequenceApp, { CODES } from "../../application/common/sequence.app";
-import Person from "./person";
+
 type MaritalstatusType =
   | "SINGLE"
   | "MARrIED"

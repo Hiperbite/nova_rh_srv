@@ -6,7 +6,7 @@ import {
     ForeignKey,
   } from "sequelize-typescript";
   
-  import { Employee, Model } from "../index";
+  import { Employee, Model, Person } from "../index";
   
   @Table({
     timestamps: true,
@@ -25,11 +25,11 @@ import {
     })
     type?: string;
   
-    @ForeignKey(() => Employee)
-    employeeId?: string;
+    @ForeignKey(() => Person)
+    personId?: string;
 
-    @BelongsTo(() => Employee)
-    employee?: Employee;
+    @BelongsTo(() => Person)
+    person?: Person;
   }
 
   

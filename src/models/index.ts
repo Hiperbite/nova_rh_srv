@@ -22,6 +22,7 @@ import TransactionType from "./payroll/transactionType";
 import Paypack from "./payroll/paypack";
 import Sequence from "./common/sequence";
 import Document from "./document/document";
+import Person from "./employee/person";
 dotenv.config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -35,12 +36,12 @@ const sequelize = new Sequelize({
   logging: true,
   models: [Contact, User, Token, Session, Employee,
     Address, Attachment, Role, Category, Department,
-    Payroll, Transaction, TransactionType, Paypack, Sequence, Document]
+    Payroll, Transaction, TransactionType, Paypack, Sequence, Document, Person]
 });
 
 const Repo = sequelize.getRepository;
-//sequelize.sync({ alter: true, force: false })
-//sequelize.addModels(models);
+sequelize.sync({ alter: true, force: false })
+
 export default sequelize;
 
 export {
@@ -48,5 +49,5 @@ export {
   Repo,
   Model,Contact, User, Token, Session, Employee,
   Address, Attachment, Role, Category, Department,
-  Payroll, Transaction, TransactionType, Paypack, Sequence, Document
+  Payroll, Transaction, TransactionType, Paypack, Sequence, Document, Person
 };
