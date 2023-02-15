@@ -29,7 +29,7 @@ import SequenceApp, { CODES } from "../../application/common/sequence.app";
 
 type MaritalstatusType =
   | "SINGLE"
-  | "MARrIED"
+  | "MARRIED"
   | "DIVORCED"
   | "WIDOWED"
   | "OTHER";
@@ -45,10 +45,10 @@ export default class Employee extends Model {
   })
   code!: string;
   @ForeignKey(() => User)
-  id?: string;
+  userId?: string;
 
   @HasOne(() => User)
-  peson?: Person;
+  person?: Person;
 
   @ForeignKey(() => Role)
   roleId?: string;
@@ -67,9 +67,6 @@ export default class Employee extends Model {
 
   @BelongsTo(() => Department)
   department?: Department;
-
-  @HasMany(() => Attachment)
-  attachments?: Attachment[];
 
   @HasMany(() => Payroll)
   payrolls?: Payroll[];

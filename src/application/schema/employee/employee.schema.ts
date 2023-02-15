@@ -1,26 +1,10 @@
-import { any, array, z, object, string, TypeOf } from "zod";
+import { any, array, z, object, string, TypeOf, boolean } from "zod";
+import { createPersonSchema } from './person.schema';
 
 export const createEmployeeSchema = object({
   body: object({
-    firstName: string({
-      required_error: "First name is required",
-    }),
-    lastName: string({
-      required_error: "Last name is required",
-    }),
-    birthDate: any()/*date({
-      required_error: "Birth date is required",
-    })*/,
-    nationality: string({
-      required_error: "Nationality is required",
-    }),
-    idcard: string({
-      required_error: "ID Card is required",
-    }),
-    contacts: array(z.object({
-      descriptions: string(),
-      type: string(),
-    })).min(1).nullable(),
+    isActive: boolean(),
+    person: createPersonSchema
   })
 });
 

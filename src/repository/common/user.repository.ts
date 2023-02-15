@@ -25,9 +25,9 @@ class UserRepository extends Repository<User> implements IRepository<User> {
         return user;
     };
 
-    create = async (data: any): Promise<User | undefined> => {
+    create = async (data: any,transaction:any=null): Promise<User | undefined> => {
 
-        const user = await this.createOne(data);
+        const user = await this.createOne(data, transaction);
         if (user?.id !== undefined) {
                 await sendEmail({
                     to: user.email,

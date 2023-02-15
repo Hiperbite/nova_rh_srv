@@ -44,7 +44,7 @@ class PayrollApi {
   };
 
   findBy = async (req: Request, res: Response): Promise<Response> => {
-    const payrolls: Array<Payroll> | undefined = await this.repo.all();
+    const payrolls: Array<Payroll> | undefined = await this.repo.all({});
     return res.json(payrolls);
   };
 

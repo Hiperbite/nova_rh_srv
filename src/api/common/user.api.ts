@@ -9,7 +9,7 @@ import {
 import { User } from "../../models/index";
 import log from "../../application/logger";
 import sendEmail from "../../application/mailler";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { UserRepository } from "../../repository/index";
 
 export async function createUserHandler(

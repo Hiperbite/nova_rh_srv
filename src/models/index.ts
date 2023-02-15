@@ -36,11 +36,11 @@ const sequelize = new Sequelize({
   logging: true,
   models: [Contact, User, Token, Session, Employee,
     Address, Attachment, Role, Category, Department,
-    Payroll, Transaction, TransactionType, Paypack, Sequence, Document, Person]
+    Payroll, Transaction, TransactionType, Paypack, Sequence,Person, Document, ]
 });
 
 const Repo = sequelize.getRepository;
-sequelize.sync({ alter: true, force: false })
+//sequelize.sync({ alter: true, force: false })
 
 export default sequelize;
 

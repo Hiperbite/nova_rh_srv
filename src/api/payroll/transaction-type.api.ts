@@ -48,7 +48,7 @@ class TransactionTypeApi {
 
   findBy = async (req: Request, res: Response): Promise<Response> => {
     const transactionTypes: Array<TransactionType> | undefined =
-      await this.repo.all();
+      await this.repo.all({});
     return res.json(transactionTypes);
   };
 }

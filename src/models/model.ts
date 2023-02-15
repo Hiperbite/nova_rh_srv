@@ -1,13 +1,13 @@
+
 import {
-    Table,
     Model as Main,
     Column,
     DataType,
-    HasMany,
     BeforeCreate,
     BeforeUpdate,
   } from "sequelize-typescript";
-  import { uuid } from "uuidv4";
+  
+  import { v4 as uuidv4 } from "uuid";
   
   export default class Model extends Main {
    
@@ -24,13 +24,13 @@ import {
   
     @BeforeCreate
     static prepare = (model: Model) => {
-      model.id = uuid();
+      model.id = uuidv4();
       model.isActive = false;
     };
   
     @BeforeUpdate
     static prepareUpdate = (model: Model) => {
-      model.id ||= uuid();
+      model.id ||= uuidv4();
       model.isActive ||= true;
     };
   }

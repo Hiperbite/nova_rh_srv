@@ -21,7 +21,7 @@ export default class Sequence extends Model {
   sequence?: number;
   @Unique({ name: "code", msg: "code_should_be_unique" }) // add this line
   @Column({
-    type: DataType.TEXT,
+    type: DataType.STRING,
     allowNull: true,
   })
   code?: string;

@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import errorHandler from "./routes/hendlers";
 import { createServer } from 'http';
 import express, { Application, Express, NextFunction, Request, Response } from "express";
+
+import bodyParser from 'body-parser'
 import "reflect-metadata";
 
 // TODO:***
@@ -12,7 +14,7 @@ import cors from "cors";
 // import helmet from "helmet";
 
 // import router from "./routes";
-import sequelize  from "./models";
+import sequelize from "./models";
 
 import winston from "winston";
 import expressWinston from "express-winston";
@@ -42,7 +44,9 @@ const {
 const logLevel = "info"
 const config = (app: Application, http: any) => {
     app.use(errorHandler);
-
+    /*app.use(bodyParser.urlencoded({
+        extended: true
+    }));
     // app.use(helmet());
 
     /*
@@ -52,8 +56,23 @@ const config = (app: Application, http: any) => {
       });
       app.use(limiter);*/
 
+    const allowedOrigins: string[] = [
+        'https://www.yoursite.com',
+        'http://127.0.0.1:5500',
+        'http://localhost:3500',
+        'http://localhost:3000',
+        '*'
+    ];
+
     const corsOptions = {
-        origin: "*",
+        origin: (origin: any, callback: any) => {
+            if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+                callback(null, true)
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        optionsSuccessStatus: 200
     };
 
     app.use(cors(corsOptions));

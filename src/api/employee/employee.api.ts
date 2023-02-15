@@ -42,7 +42,7 @@ class EmployeeApi {
   };
   findBy = async (req: Request, res: Response): Promise<Response> => {
     const employees: Array<Employee> | undefined =
-      await this.repo.all();
+      await this.repo.all({});
     return res.json(employees);
   };
 }

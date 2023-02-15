@@ -1,4 +1,4 @@
-import { uuid } from 'uuidv4';
+
 import {
   Table,
 
@@ -31,6 +31,7 @@ export default class Person extends Model {
     
       @Column({
         type: DataType.STRING,
+        allowNull: true,
       })
       otherNames?: string;
     

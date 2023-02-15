@@ -1,21 +1,19 @@
 import sendEmail from "../../application/mailler";
-import { Contact, Employee, User } from "../../models/index";
+import sequelize, { Contact, Employee, User } from "../../models/index";
 import { UserRepository } from "../index";
 import IRepository from "../irepository";
 import Repository from "../repository";
 import contactRepository from "./contact.repository";
+import PersonRepository from "./person.repository";
 
-class EmployeeRepository
+export default class EmployeeRepository
   extends Repository<Employee>
   implements IRepository<Employee>
 {
-  oneBy=(query: any): Promise<Employee | undefined> =>{
-    throw new Error("Method not implemented.");
-  }
 
-  constructor() {
-    super(Employee);
-  }
+  constructor() { super(Employee); }
+  //protected t: any;
+  
 
   private defaultOptions = async () => ({
     attributes: Object.keys(await Employee.describe()),
@@ -30,39 +28,49 @@ class EmployeeRepository
     const employee: Employee | undefined = await this.findOne(id, options);
     return employee;
   };
+  oneBy = (query: any): Promise<Employee | undefined> => {
+    throw new Error("Method not implemented.");
+  }
 
   create = async (data: any): Promise<Employee | undefined> => {
-    const employee = await this.createOne(data);
-    if (employee?.id !== undefined) {
-      const contacts = data?.contacts.map(
-        async (contact: any) =>
-          await contactRepository.create({
-            ...contact,
-            ...{ employeeId: employee.id },
-          })
-      );
-      employee.contacts = contacts;
+    await this.startTransaction()
+try{
+    const employee = await this.createOne(data, this.t);
+
+    const newContacts = data?.person?.contacts
+    if (employee.person === undefined) {
+      const newPeron = { ...data.person, ...{ employeeId: employee.id } }
+
+      delete data?.person?.contacts
+      const person = await PersonRepository.create(data.person, this.t);
+      employee.update({ personId: person?.id })
+
+      if (employee?.id !== undefined) {
+        const contacts = newContacts?.map(
+          async (contact: any) =>
+            await contactRepository.create({
+              ...contact,
+              ...{ personId: person?.id },
+            }, this.t)
+        );
+      }
 
       if (employee.user === undefined) {
         const user = await UserRepository.create({
           password: null,
-          username: `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}`,
+          username: `${employee.person.firstName.toLowerCase()}.${employee.person.lastName.toLowerCase()}`,
           employeeId: employee.id,
           email: data?.contacts[0].descriptions,
           role: "ROLE_USER",
-        });
+        }, this.t);
 
-        employee.userId = user?.id;
-        if (user?.id)
-          await sendEmail({
-            to: user?.email,
-            from: "test@example.com",
-            subject: "Verify your email",
-            text: `verification code: ${user?.verificationCode}. Id: ${user?.id}`,
-          });
       }
     }
-    return employee;
+    this.t.commit();
+  }catch(e:any){
+    console.log(e);
+  }
+    return /*employee || */new Employee({});
   };
 
   update = async (data: any): Promise<Employee | undefined> => {
@@ -70,11 +78,12 @@ class EmployeeRepository
     //  return await this.findOne(id);
   };
 
-  delete = async (data: any): Promise<boolean> => {
+  deleteOne = async (data: any): Promise<boolean> => {
     return await this.deleteBy(data.id);
   };
 
-  all = async (opts:any={}): Promise<Employee[] | undefined> => {
+
+  all = async (opts: any = {}): Promise<Employee[] | undefined> => {
     const options = { include: null, attributes: null };
 
     const data: Employee[] | undefined = await this.findAll(options);
@@ -92,12 +101,12 @@ class EmployeeRepository
   first = async (): Promise<Employee | undefined> => await this.first();
   last = async (): Promise<Employee | undefined> => await this.last();
   disable = async (data: any): Promise<Employee | undefined> =>
-    await this.disable(data.id);
-  public enable = async (data: any): Promise<Employee | undefined> =>
-    await this.enable(data.id);
+    await this.disableBy(data.id);
+  enable = async (data: any): Promise<Employee | undefined> => await this.enableBy(data.id);
 
-  clear = async () => {
-    return true;
-  };
+  delete = (data: any): Promise<any> => {
+    throw new Error("Method not implemented.");
+  }
 }
-export default EmployeeRepository;
+
+//export default EmployeeRepository;

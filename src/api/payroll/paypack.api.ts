@@ -44,7 +44,7 @@ class PaypackApi {
   };
 
   findBy = async (req: Request, res: Response): Promise<Response> => {
-    const paypacks: Array<Paypack> | undefined = await this.repo.all();
+    const paypacks: Array<Paypack> | undefined = await this.repo.all({});
     return res.json(paypacks);
   };
 
