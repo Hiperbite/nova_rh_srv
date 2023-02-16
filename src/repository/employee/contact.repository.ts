@@ -23,9 +23,9 @@ class ContactRepository extends Repository<Contact> implements IRepository<Conta
         return contact;
     };
 
-    create = async (data: any, transaction:any=null): Promise<Contact | undefined> => {
+    create = async (data: any): Promise<Contact | undefined> => {
         
-        const contact = await this.createOne(data,{transaction});
+        const contact = await this.createOne(data);
         return contact;
     };
 

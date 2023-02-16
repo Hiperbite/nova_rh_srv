@@ -44,11 +44,15 @@ export default class Employee extends Model {
     //     allowNull: false,
   })
   code!: string;
+
+  @HasOne(() => Person)
+  person?: Person;
+  
   @ForeignKey(() => User)
   userId?: string;
 
   @HasOne(() => User)
-  person?: Person;
+  user?: User;
 
   @ForeignKey(() => Role)
   roleId?: string;
@@ -77,9 +81,9 @@ export default class Employee extends Model {
   @BeforeCreate
   @BeforeSave
   static initModel = async (employee: Employee) => {
-    if (employee.code === undefined) {
-      employee.update({ code: await SequenceApp.count(CODES.EMPLOYEE) });
-    }
+    
+      employee.code ||= await SequenceApp.count(CODES.EMPLOYEE) ;
+    
   };
 }
 

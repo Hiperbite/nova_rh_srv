@@ -1,5 +1,5 @@
 import sendEmail from "../../application/mailler";
-import sequelize, { Contact, Employee, User } from "../../models/index";
+import sequelize, { Contact, Employee, Person, User } from "../../models/index";
 import { UserRepository } from "../index";
 import IRepository from "../irepository";
 import Repository from "../repository";
@@ -13,11 +13,11 @@ export default class EmployeeRepository
 
   constructor() { super(Employee); }
   //protected t: any;
-  
+
 
   private defaultOptions = async () => ({
     attributes: Object.keys(await Employee.describe()),
-    include: [Contact, User],
+    include: [Person, User],
   });
 
   one = async (
@@ -34,42 +34,47 @@ export default class EmployeeRepository
 
   create = async (data: any): Promise<Employee | undefined> => {
     await this.startTransaction()
-try{
-    const employee = await this.createOne(data, this.t);
+    try {
+      const employee = await this.createOne(data);
 
-    const newContacts = data?.person?.contacts
-    if (employee.person === undefined) {
-      const newPeron = { ...data.person, ...{ employeeId: employee.id } }
+      const newContacts = data?.person?.contacts
+      if (employee.person === undefined) {
+        const newPeron = { ...data.person, ...{ employeeId: employee.id } }
 
-      delete data?.person?.contacts
-      const person = await PersonRepository.create(data.person, this.t);
-      employee.update({ personId: person?.id })
-
-      if (employee?.id !== undefined) {
-        const contacts = newContacts?.map(
-          async (contact: any) =>
-            await contactRepository.create({
-              ...contact,
+        delete data?.person?.contacts
+        const person = await PersonRepository.create(data.person);
+       // employee.personId= person?.id 
+                const contacts: any[] = [];
+        if (employee?.id !== undefined && person !== undefined) {
+          for (let i = 0; i < newContacts.length; i++) {
+            contacts.push(await contactRepository.create({
+              ...newContacts[i],
               ...{ personId: person?.id },
-            }, this.t)
-        );
-      }
+            }))
+          }
 
-      if (employee.user === undefined) {
-        const user = await UserRepository.create({
-          password: null,
-          username: `${employee.person.firstName.toLowerCase()}.${employee.person.lastName.toLowerCase()}`,
-          employeeId: employee.id,
-          email: data?.contacts[0].descriptions,
-          role: "ROLE_USER",
-        }, this.t);
+          person.contacts = contacts
+        }
 
+        employee.person = person;
+        if (employee.user === undefined) {
+          const user = await UserRepository.create({
+            password: null,
+            username: `${employee.person.firstName.toLowerCase()}.${employee.person.lastName.toLowerCase()}`,
+            employeeId: employee.id,
+            email: employee.person.contacts[0].descriptions,
+            role: "ROLE_USER",
+          });
+
+        }
       }
+      employee.save()
+      this.t.commit();
+
+      return employee;
+    } catch (e: any) {
+      console.log(e);
     }
-    this.t.commit();
-  }catch(e:any){
-    console.log(e);
-  }
     return /*employee || */new Employee({});
   };
 
