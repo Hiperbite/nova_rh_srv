@@ -28,7 +28,9 @@ dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const sequelize = new Sequelize({
-  dialect: "mariadb",
+  //dialect: "mariadb",
+  dialect: 'sqlite',
+  storage: './database.sqlite',
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
