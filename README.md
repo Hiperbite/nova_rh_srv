@@ -30,28 +30,6 @@ validacao de candidaturas
 
 
 TO ADD
-+- Adicionar coluna de media das provas 1,2,...)
-- aredondaras notas das medias 
-+- calssificacao so quando tem todas as notas preenchidas
-
-+Resultado : -, Aprovado, Reprovado e Recurso
-
-
-para pr1 e pr2
-+se a media for  < 7 -> reporvado
-+se a mdeia for de 7 a 14 -> exame
-+se a media for >= 14 e cadeira for despensavel -> aprovado
-
-para exames
-+se a nota for < 10 -> recurso 
-+e a nota for >= 10 -> aprovado
-
-para recurso
-+se a nota for < 10 -> reprovado 
-+se a nota for >= 10 -> aprovado
-
-para Exames Melhora, estraordinario e Especial
-concorem ao resultado final
 
 
 Biometria e controlo de ponto
@@ -61,23 +39,6 @@ nacionalidades
 
 documentos
 -
-
-grau academic
-
-Lic, MsC, Dr
-
-+ACL
--
-Professores
-+lancar notas,
-+imprimir as pautas,
-
-+Estudantes
-+Tecnicos
-+Gestor
-+Chefe de departamento
-
-email instituicional para todos
 
 
 #VER PEDFS
