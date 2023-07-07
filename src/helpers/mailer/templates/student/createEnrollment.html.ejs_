@@ -1,0 +1,17 @@
+<div class="v-font-size"
+    style="line-height: 140%; text-align: left; word-wrap: break-word;font-family:'Open Sans',sans-serif;">
+    <br /><br /><br />
+    <p>
+        Olá <%= data.person.fullName%>!
+    </p>
+    <p>
+        Parabéns, você passou no processo de selecao e foste apurado para nossa instituicao sob o numero de matricula:
+    </p>
+        <p>
+           <h2> <%=data.student.code%></h2>
+        </p>
+    <p>
+        Estamos entusiasmados por você se juntar a nós em nossa missão de garantir que as oportunidades sejam distribuídas uniformemente e queremos dar as boas-vindas oficialmente a você na nossa instituicao.
+    </p>
+    <br /><br />
+</div>

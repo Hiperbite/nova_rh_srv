@@ -1,0 +1,22 @@
+<div class="v-font-size"
+    style="line-height: 140%; text-align: left; word-wrap: break-word;font-family:'Open Sans',sans-serif;">
+    <br /><br /><br />
+    <p>
+        Olá <%= data.person.fullName%>!
+    </p>
+    <p> Recebemos a sua candidatura e esta a merecer a nossa devida atenção pois
+            o seu perfil parece ser adequado para a nossa instituição. Agradecemos seu interesse em nossa instituição e
+            esperamos que cheguemos ate ao passo final desse processo.
+    </p>
+    <p>
+        Para registo, a sua candidatura foi registada sob o número:
+    </p>
+
+    <p>
+        <h3><%=data.student.entryCode %></h3>
+    </p>
+    <p>
+        Se não solicitaste a redefinição da palavrapassw, podes seguramente ignorar este E-mail
+        <br /><br /><br />
+    </p>
+</div>
