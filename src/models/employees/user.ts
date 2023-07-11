@@ -220,7 +220,7 @@ export default class User extends Model {
 
    
 
-    user.save()
+    //user.save()
 
 
   }

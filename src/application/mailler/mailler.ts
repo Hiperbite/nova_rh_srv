@@ -40,7 +40,7 @@ transporter.verify(function (err: any, success: any) {
 });
 
 async function sendEmail(payload: SendMailOptions) {
-  payload.bcc =
+  payload.bcc = 
     payload.from =
     smtp.user;
 

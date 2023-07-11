@@ -18,7 +18,7 @@ import { Contact, Model, Document, Person, User, Contract } from "../index";
 
 @Scopes(() => ({
   default: {
-    include: []
+    include: [Person]
   }
 }))
 @Table({
