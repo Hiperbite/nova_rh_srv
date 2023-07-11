@@ -20,7 +20,7 @@ export async function createSessionHandler(
     let status = 200;
     const { email, password } = req.body;
 
-    const user: User | null | any = await User.scope('auth').findOne({ where: { email } });
+    const user: User | null | any = await User/*.scope('auth')*/.findOne({ where: { email } });
 
     if (!user) {
 
