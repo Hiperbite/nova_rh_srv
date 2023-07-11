@@ -189,7 +189,7 @@ const initialData = [{
   ]
 }]
 const Repo = sequelize.getRepository;
-sequelize.sync({ alter: true, force: false }).then(() =>
+/*sequelize.sync({ alter: true, force: false }).then(() =>
   initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
     model.create(d, { include: { all: true } }).catch(console.log))
   )
@@ -198,7 +198,7 @@ sequelize.sync({ alter: true, force: false }).then(() =>
   const e = x;
   console.log(e)
 })
-
+*/
 enum SPs {
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
