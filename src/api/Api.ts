@@ -77,7 +77,7 @@ class Api<T extends M> implements IApi {
 
     const { id } = req.params;
 
-    const model: M | undefined = await this.repo.delete(id);
+    const model: M | undefined = await this.repo.deleteBy(id);
 
     return res.json(model);
   };

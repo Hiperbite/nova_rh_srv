@@ -14,7 +14,7 @@ import {
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
-const api = new Api(Contact);
+const api = new Api(Employee);
 // asyncHandler(
 const router = express.Router();
 

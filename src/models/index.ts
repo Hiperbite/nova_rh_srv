@@ -36,6 +36,7 @@ import Contract from './employees/contract';
 import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
 import SalaryPackage from "./employees/salary_package";
+import Department from "./employees/department";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -70,8 +71,6 @@ const sequelize = new Sequelize({
     Attachment,
     Sequence,
 
-    RoleLevel,
-    Role,
     Contract,
     AdditionalPaymentType,
     AdditionalPayment,
@@ -91,6 +90,11 @@ const sequelize = new Sequelize({
     DocumentSetting,
     LicenseSetting,
     Setting,
+
+    Department,
+
+    RoleLevel,
+    Role,
   ],
 });
 
@@ -147,28 +151,40 @@ const initialData = [{
   ]
 }, {
   model: Role, data: [
-    { name: 'Project manager' },
-    { name: 'Software Architect' },
-    { name: 'Data science' },
-    { name: 'Front-end web development' },
-    { name: 'Software Testing' },
-    { name: 'Product Manager' },
-    { name: 'System Administrator' },
-    { name: 'Marketing' },
-    { name: 'Data analysis' },
-    { name: 'Technical Project Manager' },
-    { name: 'Machine learning' },
-    { name: 'Sales engineering' },
-    { name: 'Developer Analyst - Trainee' },
-    { name: 'Developer Analyst - Junior' },
-    { name: 'Developer Analyst - Full' },
-    { name: 'Developer Analyst - Senior' },
-    { name: 'Assistente Comercial I' },
-    { name: 'Assistente Comercial II' },
-    { name: 'Assistente Comercial III' },
-    { name: 'Commercial Manager' },
+    { code: '1', name: 'Project manager' },
+    { code: '2', name: 'Software Architect' },
+    { code: '3', name: 'Data science' },
+    { code: '4', name: 'Front-end web development' },
+    { code: '5', name: 'Software Testing' },
+    { code: '6', name: 'Product Manager' },
+    { code: '7', name: 'System Administrator' },
+    { code: '8', name: 'Marketing' },
+    { code: '9', name: 'Data analysis' },
+    { code: '10', name: 'Technical Project Manager' },
+    { code: '11', name: 'Machine learning' },
+    { code: '12', name: 'Sales engineering' },
+    { code: '13', name: 'Developer Analyst - Trainee' },
+    { code: '14', name: 'Developer Analyst - Junior' },
+    { code: '15', name: 'Developer Analyst - Full' },
+    { code: '16', name: 'Developer Analyst - Senior' },
+    { code: '17', name: 'Assistente Comercial I' },
+    { code: '18', name: 'Assistente Comercial II' },
+    { code: '19', name: 'Assistente Comercial III' },
+    { code: '20', name: 'Commercial Manager' },
   ]
-}, {
+},
+{
+  model: Department, data: [
+    {
+      name: 'Executive Council',
+      childs: [
+        { name: 'Direcção de Recursos Humanos' },
+        { name: 'Direcção Comercial' },
+        { name: 'Direcção Financeira e de Contabilidades' },
+        { name: 'Direcção de Tecnologia' }]
+    }]
+},
+{
   model: Setting, data: [
     /*{
       code: 'NOVA',
@@ -189,6 +205,7 @@ const initialData = [{
   ]
 }]
 const Repo = sequelize.getRepository;
+
 sequelize.sync({ alter: true, force: false }).then(() =>
   initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
     model.create(d, { include: { all: true } }).catch(console.log))
@@ -255,4 +272,5 @@ export {
   DocumentSetting,
   LicenseSetting,
   Setting,
+  Department
 };

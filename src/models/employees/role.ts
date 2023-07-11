@@ -29,13 +29,13 @@ export default class Role extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: true,
+    unique:true,
   })
   code?: string;
 
   @Column({
     type: DataType.STRING(64),
     allowNull: true,
-    unique:true,
   })
   name!: string;
 

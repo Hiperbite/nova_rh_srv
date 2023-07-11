@@ -1,11 +1,7 @@
+import Api from "../../api/Api";
 import express from "express";
-import { ModelCtor } from "sequelize-typescript";
-import { ModelApi } from "../../api/common/common.api";
-
-
 import {
   Address,
-  Contact,
   Document,
   EventType,
   Notification,
@@ -21,6 +17,8 @@ import {
   DocumentSetting,
   LicenseSetting,
   Setting,
+  Department,
+  Contact,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -36,9 +34,10 @@ interface modelsType {
 
 const models: modelsType[] = [
   { key: "contacts", model: Contact },
+  { key: "departments", model: Department },
   { key: "address", model: Address },
 
-  
+
   { key: "persons", model: Person },
   { key: "documents", model: Document },
   { key: "notifications", model: Notification },
@@ -59,7 +58,9 @@ const models: modelsType[] = [
 ];
 
 models.forEach(({ model, key }: modelsType) => {
-  let api:any ={}// new ModelApi<typeof model>(new Repository(model.scope('default')));
+
+  const api = new Api(model);
+  //let api:any ={}// new ModelApi<typeof model>(new Repository(model.scope('default')));
   router
     .post(
       `/commons/${key}/`,

@@ -17,7 +17,7 @@ routes.use('/users', userRoutes)
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)
 routes.use('/commons/address', addressRoutes)
-routes.use('/commons/contacts', contactRoutes)
+//routes.use('/commons/contacts', contactRoutes)
 routes.use('/commons/dashboards', dashboards)
 routes.use('/commons/helpers', helpers)
 

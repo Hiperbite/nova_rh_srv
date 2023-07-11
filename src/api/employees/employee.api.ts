@@ -1,5 +1,5 @@
 
-import { Employee, Person } from "../../models/index";
+import { Employee } from "../../models/index";
 
 import Api from "../Api";
 
