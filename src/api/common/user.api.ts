@@ -68,7 +68,7 @@ export async function forgotPasswordHandler(
 
   const { email } = req.body;
 
-  const user = await User.findOne({ where: { email }, include: [Person] });
+  const user = await User.findOne({ where: { email }});
 
   if (!user) {
     log.debug(`User with email ${email} does not exists`);
