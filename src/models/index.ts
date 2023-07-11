@@ -41,9 +41,10 @@ dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const sequelize = new Sequelize({
-  /* dialect: "sqlite",
-  storage: "./database.sqlite", */
-  dialect: "mysql",
+  //dialect: "mariadb",
+  //dialect: "mariadb",
+  dialect: "sqlite",
+  storage: "./database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -197,8 +198,8 @@ const Repo = sequelize.getRepository;
 
   const e = x;
   console.log(e)
-})
-*/
+})*/
+
 enum SPs {
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',

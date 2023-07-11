@@ -6,7 +6,7 @@ import {
   ResetPasswordInput,
   VerifyUserInput,
 } from "../../application/schema";
-import { Person, User } from "../../models/index";
+import { Employee, Person, User } from "../../models/index";
 import log from "../../application/logger";
 import sendEmail, { mailServices } from "../../application/mailler/index";
 import { v4 as uuid } from "uuid";
@@ -68,7 +68,7 @@ export async function forgotPasswordHandler(
 
   const { email } = req.body;
 
-  const user = await User.findOne({ where: { email }});
+  const user = await User.findOne({ where: { email }, include: [Employee] });
 
   if (!user) {
     log.debug(`User with email ${email} does not exists`);
@@ -81,7 +81,7 @@ export async function forgotPasswordHandler(
 
   const passwordResetCode = uuid().substring(0, 8).toUpperCase();
 
-  user.passwordResetCode = passwordResetCode;
+  user.passwordResetCode = user.verificationCode = passwordResetCode;
 
   await user.save();
 
@@ -174,6 +174,7 @@ export async function getCurrent(
 
   return res.send(user);
 }
+
 export async function updateAvatar(
   req: Request,
   res: Response
@@ -185,6 +186,7 @@ export async function updateAvatar(
   }
   return res.send(user);
 }
+
 export async function updateUser(
   req: Request,
   res: Response
