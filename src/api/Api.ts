@@ -42,7 +42,9 @@ class Api<T extends M> implements IApi {
 
     const { body: models, } = req;
 
-    const updatedM = await this.repo.update(models)
+    const { id } = req.params;
+
+    const updatedM = await this.repo.updateOne({id,...models})
 
     return res.json(updatedM);
 
