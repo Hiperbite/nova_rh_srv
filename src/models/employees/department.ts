@@ -6,17 +6,22 @@ import {
   BelongsTo,
   ForeignKey,
   HasMany,
+  DefaultScope,
 } from "sequelize-typescript";
 
 import { Model, RoleLevel as Level, Department as Dep } from "../index";
 
-
+/*
+@DefaultScope(() => ({
+  include: [{ as: 'department', model: Dep }]
+}))
+*/
 @Scopes(() => ({
   default: {
-    include: [{as: 'department',model:Dep}, {as:'childs',model:Dep}]
+    include: [{ as: 'department', model: Dep }, { as: 'childs', model: Dep }]
   },
   full: {
-    include: [{as: 'department',model:Dep}, {as:'childs',model:Dep,include: [{as: 'department',model:Dep}, {as:'childs',model:Dep}]}]
+    include: [{ as: 'department', model: Dep }, { as: 'childs', model: Dep, include: [{ as: 'department', model: Dep }, { as: 'childs', model: Dep }] }]
   }
 }))
 @Table({
@@ -29,7 +34,7 @@ export default class Department extends Model {
     allowNull: true,
   })
   descriptions?: string;
-  
+
   @Column({
     type: DataType.STRING,
     allowNull: true,
@@ -39,7 +44,7 @@ export default class Department extends Model {
   @Column({
     type: DataType.STRING(64),
     allowNull: true,
-    unique:true,
+    unique: true,
   })
   name!: string;
 
@@ -49,12 +54,12 @@ export default class Department extends Model {
   })
   no?: number;
 
-  @HasMany(()=>Dep)
-  childs?:Dep[];
+  @HasMany(() => Dep)
+  childs?: Dep[];
 
   @BelongsTo(() => Dep)
   department?: Dep;
-  
+
   @ForeignKey(() => Dep)
   departmentId?: string;
 }

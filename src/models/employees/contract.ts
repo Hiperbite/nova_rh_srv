@@ -13,7 +13,7 @@ import {
 import { Model, Employee, Role, SalaryPackage, Department } from "../index";
 
 @DefaultScope(() => ({
-  include: [Role]
+  include: [Role, { model: Department, include: [{ as: 'department', model: Department }] }]
 }))
 @Scopes(() => ({
   default: {
