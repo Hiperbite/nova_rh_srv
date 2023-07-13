@@ -10,7 +10,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage } from "../index";
+import { Model, Employee, Role, SalaryPackage, Department } from "../index";
 
 @DefaultScope(() => ({
   include: [Role]
@@ -59,6 +59,12 @@ export default class Contract extends Model {
 
   @ForeignKey(() => Role)
   roleId?: string;
+
+  @BelongsTo(() => Department)
+  department?: Department;
+
+  @ForeignKey(() => Department)
+  departmentId?: string;
 
   @HasOne(() => SalaryPackage)
   salaryPackage?: SalaryPackage;
