@@ -39,7 +39,11 @@ const router = (app: Application) => {
 
   app.use(
     "/api/v1/",
-   // [deserializeUser, requireAuthentication, validateRequest],
+    [
+      deserializeUser, 
+    //  requireAuthentication, 
+      validateRequest
+    ],
     routes
   );
 

@@ -14,6 +14,9 @@ import { Model, RoleLevel as Level, Department as Dep } from "../index";
 @Scopes(() => ({
   default: {
     include: [{as: 'department',model:Dep}, {as:'childs',model:Dep}]
+  },
+  full: {
+    include: [{as: 'department',model:Dep}, {as:'childs',model:Dep,include: [{as: 'department',model:Dep}, {as:'childs',model:Dep}]}]
   }
 }))
 @Table({

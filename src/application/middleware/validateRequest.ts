@@ -13,6 +13,8 @@ const validateRequest = (
         where[key] = where[key].split(',');
       if (where[key] === 'true' || where[key] === 'false')
         where[key] = where[key] === 'true' ? true : false;
+      if (where[key] === 'null')
+        where[key] = null;
     })
     req.query.where = where
   }
