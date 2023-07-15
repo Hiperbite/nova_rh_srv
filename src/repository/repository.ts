@@ -7,11 +7,11 @@ import {
 import sequelize from "../models/index";
 
 export default class Repository<T extends M>  {
-   repo: Repo<T>;
+  repo: Repo<T>;
   constructor(private Model: ModelCtor<T>, public transaction?: Transaction) {
     this.repo = sequelize.getRepository(Model);
   }
-  
+
   protected start = async () => this.transaction = await sequelize.transaction();
   protected commit = async () => this.transaction?.commit();
   protected rollback = async () => this.transaction?.rollback().catch(console.warn);
@@ -34,7 +34,7 @@ export default class Repository<T extends M>  {
       exclude,
     };
   };
-  
+
   public findOne = async (id: string, opts: any = {}): Promise<T | null> => {
     const options = await this.refactorOptions(opts);
     const data = await this.repo.findByPk(id, options);
@@ -42,7 +42,7 @@ export default class Repository<T extends M>  {
     return data;
   };
 
-  public createOne = async (data: any, options: any = null): Promise<T | void > => {
+  public createOne = async (data: any, options: any = null): Promise<T | void> => {
 
     return await this.Model.create(data, options);
 
@@ -52,13 +52,12 @@ export default class Repository<T extends M>  {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
     const model = await this.repo.update(d, { where: { id }, returning: true });
-    return model ? 1 : 0;
+    return model ? this.findOne(id) : model;
   };
 
   public deleteBy = async (id: any | string): Promise<boolean> => {
     const model = await this.repo.destroy({
       where: { id },
-      truncate: true,
     });
 
     return model == 1;
@@ -95,7 +94,7 @@ export default class Repository<T extends M>  {
       limit,
     });
   };
-  
+
   public paginate = async (
     options: any
   ): Promise<Paginate<T> | undefined> => {

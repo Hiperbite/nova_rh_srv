@@ -19,6 +19,7 @@ import {
   Setting,
   Department,
   Contact,
+  Role,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -36,6 +37,7 @@ const models: modelsType[] = [
   { key: "contacts", model: Contact },
   { key: "departments", model: Department },
   { key: "address", model: Address },
+  { key: "roles", model: Role },
 
 
   { key: "persons", model: Person },

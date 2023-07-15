@@ -10,7 +10,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage, Department } from "../index";
+import { Model, Employee, Role, SalaryPackage, Department, Person } from "../index";
 
 @DefaultScope(() => ({
   include: [Role, { model: Department, include: [{ as: 'department', model: Department }] }]
@@ -18,6 +18,9 @@ import { Model, Employee, Role, SalaryPackage, Department } from "../index";
 @Scopes(() => ({
   default: {
     include: []
+  },
+  employee: {
+    include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }]
   }
 }))
 @Table({
