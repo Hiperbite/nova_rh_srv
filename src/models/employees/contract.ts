@@ -44,12 +44,12 @@ export default class Contract extends Model {
     type: DataType.DATEONLY,
     allowNull: true,
   })
-  endDate?: string;
+  endDate?: Date | null;
   @Column({
     type: DataType.DATEONLY,
     allowNull: true,
   })
-  startDate?: string;
+  startDate?: Date | null;
 
   @BelongsTo(() => Employee)
   employee?: Employee;

@@ -20,6 +20,7 @@ import {
   Department,
   Contact,
   Role,
+  AdditionalPaymentType,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -38,6 +39,7 @@ const models: modelsType[] = [
   { key: "departments", model: Department },
   { key: "address", model: Address },
   { key: "roles", model: Role },
+  { key: "additional-payment-types", model: AdditionalPaymentType  },
 
 
   { key: "persons", model: Person },

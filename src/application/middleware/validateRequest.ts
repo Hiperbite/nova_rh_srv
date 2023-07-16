@@ -6,7 +6,7 @@ const validateRequest = (
   next: NextFunction
 ) => {
 
-  const { where, order }: any = req.query
+  const { where, order: o }: any = req.query
   if (where) {
     Object.keys(where).forEach((key: string) => {
       if (where[key] && where[key].indexOf(',') > -1)
@@ -18,9 +18,10 @@ const validateRequest = (
     })
     req.query.where = where
   }
-  if (order) {
-    const newOrder: any = Object.keys(order).map((key) => [key, order[key]])
-    req.query.order = newOrder
+  if (o) {
+    const order = o.split(',').map((p: any) => p.split('.'));
+    //const newOrder: any = Object.keys(order).map((key) => [key, order[key]])
+    req.query.order = order
   }
   if (req.params.id && !uuidPattern.test(req.params.id)) {
     throw { code: 400, message: `required a valid uuid param, ${req.params.id} given` }
