@@ -58,6 +58,7 @@ export default class Employee extends Model {
   })
   get currentContract() {
     return this.contracts?.
+      filter(({ isActive, startDate }: any) => isActive && moment(startDate).isBefore(moment())).
       sort((n: Contract, p: Contract) =>
         moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
   }

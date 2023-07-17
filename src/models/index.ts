@@ -176,12 +176,12 @@ const initialData = [{
 {
   model: Department, data: [
     {
-      name: 'Executive Council',
+      name: 'Executive Council', code:'CEX',
       childs: [
-        { name: 'Direcção de Recursos Humanos' },
-        { name: 'Direcção Comercial' },
-        { name: 'Direcção Financeira e de Contabilidades' },
-        { name: 'Direcção de Tecnologia' }]
+        { name: 'Direcção de Recursos Humanos', code:'DRH' },
+        { name: 'Direcção Comercial' , code:'DCO'},
+        { name: 'Direcção Financeira e de Contabilidades' , code:'DFC'},
+        { name: 'Direcção de Tecnologia' , code:'DTI'}]
     }]
 },
 {
