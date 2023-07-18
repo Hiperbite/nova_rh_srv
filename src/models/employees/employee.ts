@@ -1,3 +1,4 @@
+import { includes } from 'lodash';
 import moment from "moment";
 import {
   Table,
@@ -14,11 +15,11 @@ import {
 } from "sequelize-typescript";
 import SequenceApp from "../../application/common/sequence.app";
 
-import { Contact, Model, Document, Person, User, Contract } from "../index";
+import { Contact, Model, Document, Person, User, Contract, Role, Department, AdditionalField } from "../index";
 
 @Scopes(() => ({
   default: {
-    include: [Person]
+    include: [Person, { model: Contract, includes: [AdditionalField, { model: Role, includes: [Department] }] }]
   }
 }))
 @Table({
@@ -57,10 +58,46 @@ export default class Employee extends Model {
     type: DataType.VIRTUAL
   })
   get currentContract() {
-    return this.contracts?.
-      filter(({ isActive, startDate }: any) => isActive && moment(startDate).isBefore(moment())).
+    let c: any = this.contracts
+    c = c?.filter(({ isActive }: any) => isActive)
+    c = c?.
+      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate))
+    c = c?.
       sort((n: Contract, p: Contract) =>
         moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+
+    return c;
+  }
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get role() {
+
+    let c: any = this.contracts
+    c = c?.filter(({ isActive }: any) => isActive)
+    c = c?.
+      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate) || moment().isBefore(startDate))
+    c = c?.
+      sort((n: Contract, p: Contract) =>
+        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+
+    return c?.role
+  }
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get department() {
+
+    let c: any = this.contracts
+    c = c?.filter(({ isActive }: any) => isActive).
+      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate) || moment().isBefore(startDate))
+    c = c?.
+      sort((n: Contract, p: Contract) =>
+        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+
+    return c?.department
   }
 
   @HasMany(() => Document)

@@ -1,4 +1,4 @@
-import { includes } from "lodash";
+import { includes, orderBy } from "lodash";
 import {
   Table,
   Column,
@@ -8,19 +8,22 @@ import {
   Scopes,
   HasOne,
   DefaultScope,
+  HasMany,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage, Department, Person } from "../index";
+import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalField } from "../index";
 
 @DefaultScope(() => ({
-  include: [Role, { model: Department, include: [{ as: 'department', model: Department }] }]
+  include: [Role, AdditionalField, { model: Department, include: [{ as: 'department', model: Department }] }],
+  orderBy: [['startDate', 'DESC']]
 }))
 @Scopes(() => ({
   default: {
     include: []
   },
   employee: {
-    include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }]
+    include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
+    orderBy: [['startDate', 'DESC']]
   }
 }))
 @Table({
@@ -68,6 +71,9 @@ export default class Contract extends Model {
 
   @ForeignKey(() => Department)
   departmentId?: string;
+
+  @HasMany(() => AdditionalField)
+  additionalFields?: AdditionalField[]
 
   @HasOne(() => SalaryPackage)
   salaryPackage?: SalaryPackage;

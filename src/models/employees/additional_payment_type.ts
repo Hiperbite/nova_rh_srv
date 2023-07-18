@@ -28,9 +28,9 @@ import {
     descriptions?: string;
     
     @Column({
-      type: DataType.STRING,
+      type: DataType.STRING(64),
       allowNull: true,
-      unique:true
+      //unique:true
     })
     name!: string;
   

@@ -37,6 +37,8 @@ import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
 import SalaryPackage from "./employees/salary_package";
 import Department from "./employees/department";
+import ContractAdditionalField from "./employees/additional_field";
+import AdditionalField from "./employees/additional_field";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -60,6 +62,7 @@ const sequelize = new Sequelize({
   logging: (msg: any) => logger.info(msg),
   models: [
     Contact,
+    AdditionalField,
     User,
     Address,
     Person,
@@ -176,12 +179,12 @@ const initialData = [{
 {
   model: Department, data: [
     {
-      name: 'Executive Council', code:'CEX',
+      name: 'Executive Council', code: 'CEX',
       childs: [
-        { name: 'Direcção de Recursos Humanos', code:'DRH' },
-        { name: 'Direcção Comercial' , code:'DCO'},
-        { name: 'Direcção Financeira e de Contabilidades' , code:'DFC'},
-        { name: 'Direcção de Tecnologia' , code:'DTI'}]
+        { name: 'Direcção de Recursos Humanos', code: 'DRH' },
+        { name: 'Direcção Comercial', code: 'DCO' },
+        { name: 'Direcção Financeira e de Contabilidades', code: 'DFC' },
+        { name: 'Direcção de Tecnologia', code: 'DTI' }]
     }]
 },
 {
@@ -205,16 +208,16 @@ const initialData = [{
   ]
 }]
 const Repo = sequelize.getRepository;
+if (true) {
+  sequelize.sync({ alter: true, force: false }).then(() =>
+    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
+      model.create(d, { include: { all: true } }).catch(console.log)))
+  ).catch((x: any) => {
 
-sequelize.sync({ alter: true, force: false }).then(() =>
-  initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
-    model.create(d, { include: { all: true } }).catch(console.log))
-  )
-).catch((x: any) => {
-
-  const e = x;
-  console.log(e)
-})
+    const e = x;
+    console.log(e)
+  })
+}
 
 enum SPs {
   GetStudentsCountOlder = 'GetStudentsCountOlder',
@@ -245,6 +248,7 @@ export {
   RoleLevel,
   Role,
   Contract,
+  AdditionalField,
   AdditionalPaymentType,
   AdditionalPayment,
   SalaryPackage,
