@@ -10,6 +10,7 @@ import dashboards from "./common/dashBoard.routes";
 import helpers from "./common/helper.routes";
 import employees from "./employees/employee.routes";
 import contracts from "./employees/contract.routes";
+import personal from "./employees/person.routes";
 
 const routes = Router();
 
@@ -23,6 +24,7 @@ routes.use('/commons/helpers', helpers)
 
 routes.use('/employees/employees', employees)
 routes.use('/employees/contracts', contracts)
+routes.use('/employees/personal', personal)
 
 routes.use(commonRoutes)
 
