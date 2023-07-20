@@ -1,44 +1,40 @@
 import express from "express";
-import api from "api/common/contact.api";
+import Api from "../../api/Api";
 
 import {
-  Address,
-  Contact,
-  
-  Document,
   Person,
-  
-} from "models/index";
-import { DefaultRepository as Repository } from "repository/index";
+} from "../../models/index";
+
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 // asyncHandler(
 const router = express.Router();
+const api = new Api(Person);
 
 
-  router
-    .post(
-      "/",
-      // validateResource(createStudentSchema),
-      asyncHandler(api.create)
-    )
+router
+  .post(
+    "/",
+    // validateResource(createStudentSchema),
+    asyncHandler(api.create)
+  )
 
-    .put(
-      "/:id",
-      // validateResource(updateStudentSchema),
-      asyncHandler(api.update)
-    )
+  .put(
+    "/:id",
+    // validateResource(updateStudentSchema),
+    asyncHandler(api.update)
+  )
 
-    .delete(
-      "/:id",
-      // validateResource(updateStudentSchema),
-      asyncHandler(api.delete)
-    )
+  .delete(
+    "/:id",
+    // validateResource(updateStudentSchema),
+    asyncHandler(api.delete)
+  )
 
-    .get("/:id", asyncHandler(api.find))
+  .get("/:id", asyncHandler(api.find))
 
-    .get("/", asyncHandler(api.findBy));
+  .get("/", asyncHandler(api.findBy));
 ;
 
 export default router;
