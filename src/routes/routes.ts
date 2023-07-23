@@ -3,7 +3,6 @@ import commonRoutes from "./common/common.routes";
 import userRoutes from "./common/user.routes";
 import authRoutes from "./common/auth.routes";
 import trackRoutes from "./common/track.routes";
-import addressRoutes from "./common/address.routes";
 
 import dashboards from "./common/dashBoard.routes";
 import helpers from "./common/helper.routes";

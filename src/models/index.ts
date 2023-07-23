@@ -39,6 +39,7 @@ import SalaryPackage from "./employees/salary_package";
 import Department from "./employees/department";
 import ContractAdditionalField from "./employees/additional_field";
 import AdditionalField from "./employees/additional_field";
+import WorkingHour from "./employees/working_hour";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -78,7 +79,7 @@ const sequelize = new Sequelize({
     AdditionalPaymentType,
     AdditionalPayment,
     SalaryPackage,
-
+    WorkingHour,
     Notification,
 
     Ticket,
@@ -276,5 +277,6 @@ export {
   DocumentSetting,
   LicenseSetting,
   Setting,
-  Department
+  Department,
+  WorkingHour
 };

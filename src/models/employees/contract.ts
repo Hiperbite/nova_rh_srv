@@ -11,7 +11,7 @@ import {
   HasMany,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalField } from "../index";
+import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalField, WorkingHour } from "../index";
 
 @DefaultScope(() => ({
   include: [Role, AdditionalField, { model: Department, include: [{ as: 'department', model: Department }] }],
@@ -61,22 +61,25 @@ export default class Contract extends Model {
   employeeId?: string;
 
   @BelongsTo(() => Role)
-  role?: Role;
+  role!: Role;
 
   @ForeignKey(() => Role)
-  roleId?: string;
+  roleId!: string;
 
   @BelongsTo(() => Department)
-  department?: Department;
+  department!: Department;
 
   @ForeignKey(() => Department)
-  departmentId?: string;
+  departmentId!: string;
 
   @HasMany(() => AdditionalField)
   additionalFields?: AdditionalField[]
 
   @HasOne(() => SalaryPackage)
   salaryPackage?: SalaryPackage;
+
+  @HasOne(() => WorkingHour)
+  workingHour?: WorkingHour;
 }
 
 
