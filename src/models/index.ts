@@ -7,6 +7,7 @@ import Token from "./common/token";
 import Session from "./common/session";
 import Address from "./common/address";
 import Contact from "./employees/contact";
+import Company from "./company/company";
 import Role from './employees/role';
 import RoleLevel from './employees/role_level';
 import Attachment from "./common/attachment";
@@ -45,9 +46,9 @@ dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const sequelize = new Sequelize({
-  dialect: "mariadb",
+  dialect: "mysql",
   //dialect: "sqlite",
-  storage: "./database.sqlite",
+  //storage: "./database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -66,6 +67,7 @@ const sequelize = new Sequelize({
     AdditionalField,
     User,
     Address,
+    Company,
     Person,
     Document,
     Employee,
@@ -243,6 +245,7 @@ export {
   Contact,
   Employee,
   Address,
+  Company,
   Attachment,
   Document,
   Person,

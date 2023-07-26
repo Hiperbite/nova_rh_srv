@@ -8,7 +8,7 @@ import {
     HasOne,
   } from "sequelize-typescript";
   
-  import {  Employee, Model, Person } from "../index";
+  import {  Employee, Model, Company } from "../index";
   
 
 @Scopes(() => ({
@@ -44,6 +44,12 @@ import {
 
     @ForeignKey(() => Employee)
     employeeId?: string;
+
+    @BelongsTo(() => Company)
+    company?: Company
+
+    @ForeignKey(() => Company)
+    companyId?: string
 
   }
 

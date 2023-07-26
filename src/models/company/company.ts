@@ -2,11 +2,11 @@ import {
     Scopes,
     Table,
     DataType,
-    HasOne,
     HasMany,
     Column
 } from "sequelize-typescript";
-import { Model } from "models";
+
+import {Contact, Address, Model} from "../index";
 
 @Scopes(() => ({
     default: {
@@ -65,6 +65,12 @@ export default class Company extends Model {
         allowNull: true
     })
     logos?: string;
+
+    @HasMany(() => Contact)
+    contacts?: Contact[];
+
+    @HasMany(() => Address)
+    address?: Address[];
 
     
 }

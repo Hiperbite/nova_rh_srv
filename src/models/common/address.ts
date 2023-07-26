@@ -3,9 +3,11 @@ import {
     Column,
     DataType,
     Scopes,
+    BelongsTo,
+    ForeignKey,
 } from "sequelize-typescript";
 
-import { Model } from "../index";
+import { Company, Model } from "../index";
 
 @Scopes(() => ({
     default: {
@@ -50,5 +52,11 @@ export default class Address extends Model {
         allowNull: false,
     })
     countryCode!: string;
+
+    @BelongsTo(() => Company)
+    company?: Company
+    
+    @ForeignKey(() => Company)
+    companyId?: string
 
 }
