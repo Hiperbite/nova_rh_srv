@@ -37,6 +37,8 @@ import Contract from './employees/contract';
 import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
 import SalaryPackage from "./employees/salary_package";
+import Payroll from "./payroll/payroll";
+import PayrollLine from "./payroll/payroll_line";
 import Department from "./employees/department";
 import ContractAdditionalField from "./employees/additional_field";
 import AdditionalField from "./employees/additional_field";
@@ -46,9 +48,9 @@ dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const sequelize = new Sequelize({
-  dialect: "mysql",
-  //dialect: "sqlite",
-  //storage: "./database.sqlite",
+  //dialect: "mysql",
+  dialect: "sqlite",
+  storage: "./database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -81,6 +83,9 @@ const sequelize = new Sequelize({
     AdditionalPaymentType,
     AdditionalPayment,
     SalaryPackage,
+    Payroll,
+    PayrollLine,
+
     WorkingHour,
     Notification,
 
@@ -256,6 +261,8 @@ export {
   AdditionalPaymentType,
   AdditionalPayment,
   SalaryPackage,
+  Payroll,
+  PayrollLine,
 
   User,
   Track,

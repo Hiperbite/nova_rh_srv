@@ -11,7 +11,7 @@ import {
   HasMany,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalField, WorkingHour } from "../index";
+import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalField, WorkingHour, Payroll } from "../index";
 
 @DefaultScope(() => ({
   include: [Role, AdditionalField, { model: Department, include: [{ as: 'department', model: Department }] }],
@@ -74,6 +74,9 @@ export default class Contract extends Model {
 
   @HasMany(() => AdditionalField)
   additionalFields?: AdditionalField[]
+
+  @HasMany(() => Payroll)
+  payrolls?: Payroll[]
 
   @HasOne(() => SalaryPackage)
   salaryPackage?: SalaryPackage;
