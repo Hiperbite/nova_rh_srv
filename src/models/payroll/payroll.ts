@@ -63,6 +63,43 @@ export default class Payroll extends Model {
     @HasMany(() => PayrollLine)
     lines?: PayrollLine[];
 
+    
+
+    @Column({
+        type: DataType.VIRTUAL,
+        allowNull: true,
+    })
+    get proposalLines(){
+        const  salaryPackage= payroll?.contract?.salaryPackage
+        const additionalPayments= salaryPackage?.additionalPayments
+        
+        let lines: PayrollLine[] =
+            additionalPayments?.
+            filter(({ startDate }: any) => moment().before(startDate)).
+            map(({descriptions,startDate,baseValue,baseValuePeriod,typeId}: any)
+                 => {descriptions,startDate,baseValue, debit: true,baseValuePeriod,typeId})
+
+
+        lines.push({
+                            code: 'string'
+
+            date: new Date(),
+
+                            value: salaryPackage?.baseValue    
+        
+            debit: true,
+
+                            quantity: 1;
+
+                            baseValuePeriod: salaryPackage?.baseValuePeriod,
+
+                            descriptions: ''
+        
+            typeId: 'AdditionalPaymentType;',
+
+                        })
+    }
+
     @BeforeCreate
     @BeforeSave
     static initModel = async (payroll: Payroll) => {
@@ -73,54 +110,6 @@ export default class Payroll extends Model {
         /***
          * GENERATE LINES
          */
-        let lines: PayrollLine[] =
-
-
-            payroll?.
-                contract?.
-                additionalPayments?.
-                filter(({ startDate }: any) => moment() <= moment(startDate))
-                .map((
-                                {
-                                    descriptions,
-
-                                    startDate,
-
-                                    baseValue,
-
-                                    baseValuePeriod,
-
-                                    typeId
-                                }: any
-                            ) => {
-                                descriptions,
-
-                                 startDate,
-
-                                baseValue,
-
-                                baseValuePeriod,
-
-                                typeId
-                            })
-
-            lines.push({
-                                code: 'string'
-    
-                date: new Date(),
-
-                                value: 'number'    
-            
-                debit: true,
-
-                                quantity: 1;
-
-                                baseValuePeriod: 2,
-
-                                descriptions: ''
-            
-                typeId: 'AdditionalPaymentType;',
-
-                            })
+        
     }
 }
