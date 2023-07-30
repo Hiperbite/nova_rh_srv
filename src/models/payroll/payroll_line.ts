@@ -10,7 +10,7 @@ import {
     HasMany,
 } from "sequelize-typescript";
 import moment from "moment";
-import { Model, PayrollType, PayrollSchedule } from "../index";
+import { AdditionalPaymentType, Model, Payroll } from "../index";
 
 import SequenceApp, { CODES } from "../../application/common/sequence.app";
 

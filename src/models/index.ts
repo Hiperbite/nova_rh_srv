@@ -51,7 +51,7 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 const sequelize = new Sequelize({
   dialect: "mysql",
   //dialect: "sqlite",
-  storage: "./database.sqlite",
+  //storage: "./database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -219,14 +219,17 @@ const initialData = [{
 }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: true, force: false }).then(() =>
-    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
-      model.create(d, { include: { all: true } }).catch(console.log)))
-  ).catch((x: any) => {
+  sequelize.sync({ alter: false, force: false }).then(() =>
+    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
+      if (model.find({ where: d })) { } else {
+        model.create(d, { include: { all: true } }).catch(console.log)
+      }
+    }))
+  ).catch ((x: any) => {
 
-    const e = x;
-    console.log(e)
-  })
+  const e = x;
+  console.log(e)
+})
 }
 
 enum SPs {

@@ -28,7 +28,7 @@ export default class Payroll extends Model {
         type: DataType.DATE,
         allowNull: true,
     })
-    date?: date;
+    date?: Date;
 
     @Column({
         type: DataType.INTEGER,
@@ -63,41 +63,43 @@ export default class Payroll extends Model {
     @HasMany(() => PayrollLine)
     lines?: PayrollLine[];
 
-    
-
     @Column({
         type: DataType.VIRTUAL,
         allowNull: true,
     })
-    get proposalLines(){
-        const  salaryPackage= payroll?.contract?.salaryPackage
-        const additionalPayments= salaryPackage?.additionalPayments
-        
-        let lines: PayrollLine[] =
-            additionalPayments?.
-            filter(({ startDate }: any) => moment().before(startDate)).
-            map(({descriptions,startDate,baseValue,baseValuePeriod,typeId}: any)
-                 => {descriptions,startDate,baseValue, debit: true,baseValuePeriod,typeId})
+    get proposalLines() {
+        const salaryPackage = this?.contract?.salaryPackage
+        const additionalPayments = salaryPackage?.additionalPayments
 
+        let lines: any =
+            additionalPayments?.
+                filter(({ startDate }: any) => moment().isBefore(startDate)).
+                map(({ descriptions, startDate, baseValue, baseValuePeriod, typeId }: any)=> (
+                    {
+                        code: '',
+                        date: new Date(),
+                        descriptions, 
+                        startDate, 
+                        baseValue,
+                        property:1,
+                        debit: true,
+                        baseValuePeriod, 
+                        typeId }
+                    )
+                    )
 
         lines.push({
-                            code: 'string'
-
+            code: 'string',
             date: new Date(),
-
-                            value: salaryPackage?.baseValue    
-        
+            value: salaryPackage?.baseValue    ,
             debit: true,
+            quantity: 1,
+            baseValuePeriod: salaryPackage?.baseValuePeriod,
+            descriptions: '',
+            typeId: 'AdditionalPaymentType;'
+        })
 
-                            quantity: 1;
-
-                            baseValuePeriod: salaryPackage?.baseValuePeriod,
-
-                            descriptions: ''
-        
-            typeId: 'AdditionalPaymentType;',
-
-                        })
+        return lines;
     }
 
     @BeforeCreate
@@ -110,6 +112,6 @@ export default class Payroll extends Model {
         /***
          * GENERATE LINES
          */
-        
+
     }
 }

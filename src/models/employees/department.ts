@@ -44,7 +44,6 @@ export default class Department extends Model {
   @Column({
     type: DataType.STRING(64),
     allowNull: true,
-    unique: true,
   })
   name!: string;
 
