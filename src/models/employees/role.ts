@@ -29,7 +29,6 @@ export default class Role extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: true,
-    unique:true,
   })
   code?: string;
 

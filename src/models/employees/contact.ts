@@ -32,13 +32,7 @@ import {
       allowNull: true,
     })
     type?: string;
-  
-    @Column({
-      type: DataType.TEXT,
-      allowNull: true,
-    })
-    postalCode?: string;
-  
+    
     @BelongsTo(()=>Employee)
     employee?: Employee;
 

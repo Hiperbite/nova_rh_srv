@@ -37,6 +37,9 @@ import Contract from './employees/contract';
 import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
 import SalaryPackage from "./employees/salary_package";
+import Payroll from "./payroll/payroll";
+import PayrollLine from "./payroll/payroll_line";
+import PayrollLineType from "./payroll/payroll_line_type";
 import Department from "./employees/department";
 import ContractAdditionalField from "./employees/additional_field";
 import AdditionalField from "./employees/additional_field";
@@ -81,6 +84,10 @@ const sequelize = new Sequelize({
     AdditionalPaymentType,
     AdditionalPayment,
     SalaryPackage,
+    Payroll,
+    PayrollLine,
+    PayrollLineType,
+
     WorkingHour,
     Notification,
 
@@ -212,14 +219,17 @@ const initialData = [{
 }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: true, force: false }).then(() =>
-    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
-      model.create(d, { include: { all: true } }).catch(console.log)))
-  ).catch((x: any) => {
+  sequelize.sync({ alter: false, force: false }).then(() =>
+    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
+      if (model.find({ where: d })) { } else {
+        model.create(d, { include: { all: true } }).catch(console.log)
+      }
+    }))
+  ).catch ((x: any) => {
 
-    const e = x;
-    console.log(e)
-  })
+  const e = x;
+  console.log(e)
+})
 }
 
 enum SPs {
@@ -256,6 +266,9 @@ export {
   AdditionalPaymentType,
   AdditionalPayment,
   SalaryPackage,
+  Payroll,
+  PayrollLine,
+  PayrollLineType,
 
   User,
   Track,
