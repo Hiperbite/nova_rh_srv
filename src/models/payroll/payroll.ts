@@ -96,7 +96,7 @@ export default class Payroll extends Model {
             quantity: 1,
             baseValuePeriod: salaryPackage?.baseValuePeriod,
             descriptions: '',
-            typeId: 'AdditionalPaymentType;'
+            typeId: 'AdditionalPaymentType'
         })
 
         return lines;
