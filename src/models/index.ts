@@ -50,8 +50,8 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const sequelize = new Sequelize({
   dialect: "mysql",
-  //dialect: "sqlite",
-  //storage: "./database.sqlite",
+  /* dialect: "sqlite",
+  storage: "./database.sqlite", */
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -225,11 +225,11 @@ if (true) {
         model.create(d, { include: { all: true } }).catch(console.log)
       }
     }))
-  ).catch ((x: any) => {
+  ).catch((x: any) => {
 
-  const e = x;
-  console.log(e)
-})
+    const e = x;
+    console.log(e)
+  })
 }
 
 enum SPs {
