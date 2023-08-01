@@ -8,7 +8,7 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 
-import { AdditionalPaymentType, Model, RoleLevel as Level, SalaryPackage } from "../index";
+import { AdditionalPaymentType, Model, /* RoleLevel as Level */ SalaryPackage } from "../index";
 
 
 @DefaultScope(() => ({
