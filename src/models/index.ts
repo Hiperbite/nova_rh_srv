@@ -107,7 +107,7 @@ const sequelize = new Sequelize({
     Department,
 
     RoleLevel,
-    Role,
+    //Role,
   ],
 });
 
@@ -145,24 +145,25 @@ const initialData = [{
   ]
 }, {
   model: AdditionalPaymentType, data: [
-    { name: 'Bônus' },
-    { name: 'Horas extras' },
-    { name: 'Adiantamento salarial' },
-    { name: 'Trabalho em feriados' },
-    { name: 'Feriados' },
-    { name: 'Horas extras' },
-    { name: 'Variável' },
-    { name: 'Comissões' },
-    { name: 'Complemento' },
-    { name: 'Disponibilidade' },
-    { name: 'Acomodação' },
-    { name: 'Transporte' },
-    { name: 'Espaço de trabalho' },
-    { name: 'Refeição' },
-    { name: 'Aprendizado' },
-    { name: 'Outro' }
+    { code: 'BN', name: 'Bônus' },
+    { code: 'HE', name: 'Horas extras' },
+    { code: 'AS', name: 'Adiantamento salarial' },
+    { code: 'TF', name: 'Trabalho em feriados' },
+    { code: 'VC', name: 'Feriados' },
+    { code: 'HE', name: 'Horas extras' },
+    { code: 'VA', name: 'Variável' },
+    { code: 'CM', name: 'Comissões' },
+    { code: 'CP', name: 'Complemento' },
+    { code: 'DS', name: 'Disponibilidade' },
+    { code: 'AC', name: 'Acomodação' },
+    { code: 'TR', name: 'Transporte' },
+    { code: 'ET', name: 'Espaço de trabalho' },
+    { code: 'RF', name: 'Refeição' },
+    { code: 'AP', name: 'Aprendizado' },
+    { code: 'OU', name: 'Outro' }
   ]
-}, {
+},
+{
   model: Role, data: [
     { code: '1', name: 'Project manager' },
     { code: '2', name: 'Software Architect' },
@@ -219,17 +220,16 @@ const initialData = [{
 }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: false, force: false }).then(() =>
+  sequelize.sync({ alter: true, force: false }).then(() =>
     initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
-      if (model.find({ where: d })) { } else {
-        model.create(d, { include: { all: true } }).catch(console.log)
-      }
-    }))
-  ).catch((x: any) => {
-
-    const e = x;
-    console.log(e)
-  })
+      model.find({ where: { code: d.code } }).then((f: any) => {
+        if (f) { } else
+          model.create(d, { include: { all: true } }).catch(console.log)
+      })
+    }))).catch((x: any) => {
+      const e = x;
+      console.log(e)
+    })
 }
 
 enum SPs {
