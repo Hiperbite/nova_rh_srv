@@ -98,16 +98,17 @@ const sequelize = new Sequelize({
     EventType,
     EventSchedule,
 
-    LocalSetting,
+    /*LocalSetting,
     SystemSetting,
     DocumentSetting,
     LicenseSetting,
     Setting,
-
+*/
     Department,
 
     RoleLevel,
-    Role,
+    //  Role,
+    Role
   ],
 });
 
@@ -219,11 +220,11 @@ const initialData = [{
 }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: false, force: false }).then(() =>
+  sequelize.sync({ alter: true, force: false }).then(() =>
     initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
-      if (model.find({ where: d })) { } else {
+     // if (model.find({ where: d })) { } else {
         model.create(d, { include: { all: true } }).catch(console.log)
-      }
+     // }
     }))
   ).catch((x: any) => {
 
