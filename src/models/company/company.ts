@@ -71,6 +71,5 @@ export default class Company extends Model {
 
     @HasMany(() => Address)
     address?: Address[];
-
     
 }
