@@ -11,10 +11,10 @@ import {
   HasMany,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalField, WorkingHour, Payroll } from "../index";
+import { Model, Employee, /* Role, */ SalaryPackage, Department, Person, AdditionalField, WorkingHour, Payroll, Role } from "../index";
 
 @DefaultScope(() => ({
-  include: [Role, AdditionalField, { model: Department, include: [{ as: 'department', model: Department }] }],
+  include: [ Role, AdditionalField, { model: Department, include: [{ as: 'department', model: Department }] }],
   orderBy: [['startDate', 'DESC']]
 }))
 @Scopes(() => ({
@@ -22,7 +22,7 @@ import { Model, Employee, Role, SalaryPackage, Department, Person, AdditionalFie
     include: []
   },
   employee: {
-    include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
+    include: [ Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
     orderBy: [['startDate', 'DESC']]
   }
 }))

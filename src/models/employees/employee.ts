@@ -15,11 +15,13 @@ import {
 } from "sequelize-typescript";
 import SequenceApp from "../../application/common/sequence.app";
 
-import { Contact, Model, Document, Person, User, Contract, Role, Department, AdditionalField } from "../index";
+import { Contact, Model, Document, Person, User, Contract, /* Role, */ Department, AdditionalField, Role } from "../index";
 
 @Scopes(() => ({
   default: {
-    include: [Person, { model: Contract, includes: [AdditionalField, { model: Role, includes: [Department] }] }]
+    include: [Person, { model: Contract, includes: [AdditionalField, 
+      Role
+    ] }]
   }
 }))
 @Table({

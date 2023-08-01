@@ -9,7 +9,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, RoleLevel as Level, Department as Dep } from "../index";
+import { Model,/*  RoleLevel as Level, */ Department as Dep } from "../index";
 
 /*
 @DefaultScope(() => ({
