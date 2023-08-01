@@ -7,7 +7,7 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 
-import { Model, RoleLevel as Level } from "../index";
+import { Model , RoleLevel as Level  } from "../index";
 
 
 @Scopes(() => ({

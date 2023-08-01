@@ -98,16 +98,17 @@ const sequelize = new Sequelize({
     EventType,
     EventSchedule,
 
-    LocalSetting,
+    /*LocalSetting,
     SystemSetting,
     DocumentSetting,
     LicenseSetting,
     Setting,
-
+*/
     Department,
 
     RoleLevel,
-    //Role,
+    //  Role,
+    Role
   ],
 });
 
