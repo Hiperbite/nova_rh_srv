@@ -9,7 +9,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { AdditionalPayment, Contract, Model, RoleLevel as Level } from "../index";
+import { AdditionalPayment, Contract, Model, /* RoleLevel as Level */ } from "../index";
 
 
 

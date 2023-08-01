@@ -7,7 +7,7 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 
-import { Model, RoleLevel as Level } from "../index";
+import { Model , RoleLevel as Level  } from "../index";
 
 
 @Scopes(() => ({
@@ -29,7 +29,6 @@ export default class Role extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: true,
-    unique:true,
   })
   code?: string;
 

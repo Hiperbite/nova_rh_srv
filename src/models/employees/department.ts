@@ -9,7 +9,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, RoleLevel as Level, Department as Dep } from "../index";
+import { Model,/*  RoleLevel as Level, */ Department as Dep } from "../index";
 
 /*
 @DefaultScope(() => ({
@@ -44,7 +44,6 @@ export default class Department extends Model {
   @Column({
     type: DataType.STRING(64),
     allowNull: true,
-    unique: true,
   })
   name!: string;
 
