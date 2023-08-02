@@ -12,6 +12,8 @@ import employees from "./employees/employee.routes";
 import contracts from "./employees/contract.routes";
 import personal from "./employees/person.routes";
 
+import payroll from "./payrolls/payroll.routes";
+
 const routes = Router();
 
 routes.use('/users', userRoutes)
@@ -26,6 +28,8 @@ routes.use('/company', company)
 routes.use('/employees/employees', employees)
 routes.use('/employees/contracts', contracts)
 routes.use('/employees/personal', personal)
+
+routes.use('/payrolls/payroll', payroll)
 
 routes.use(commonRoutes)
 

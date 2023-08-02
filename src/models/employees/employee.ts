@@ -15,13 +15,24 @@ import {
 } from "sequelize-typescript";
 import SequenceApp from "../../application/common/sequence.app";
 
-import { Contact, Model, Document, Person, User, Contract, /* Role, */ Department, AdditionalField, Role } from "../index";
+import { Contact, Model, Document, Person, User, Contract, /* Role, */ Department, AdditionalField, Role, Payroll, SalaryPackage, AdditionalPayment, AdditionalPaymentType } from "../index";
 
 @Scopes(() => ({
+  payroll: {
+    include: [
+      {
+        model: Contract, include: [
+          Payroll,
+          { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
+        ]}
+    ]
+  },
   default: {
-    include: [Person, { model: Contract, includes: [AdditionalField, 
-      Role
-    ] }]
+    include: [Person, {
+      model: Contract, includes: [AdditionalField,
+        Role
+      ]
+    }]
   }
 }))
 @Table({
@@ -137,6 +148,44 @@ export default class Employee extends Model {
         .filter((doc: Document) => doc.type == "PASSPORT")[0] ?? {}
     );
   }
+@Column({
+  type: DataType.VIRTUAL
+})
+  get payroll() {
+
+    let myPayrolls: any[] = [];
+
+    this.contracts?.forEach((contact: Contract) => {
+
+      const startDate = moment(contact.startDate);
+      let current = startDate.add(1, 'm');
+      const newPayroll = new Payroll()
+      newPayroll.contract = contact;
+      while (current.isBetween(contact.startDate, contact.endDate)) {
+
+        console.log(current.format('Y-M-D'), contact.startDate, contact.endDate)
+        let currentPayrolls = (contact?.payrolls?.find((p: Payroll) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+
+        const grossValue = currentPayrolls.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        const discountValue = currentPayrolls.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        myPayrolls.push({
+          date: current.format('Y-M'),
+          fromDate: current.format('Y-M'),
+          toDate: current.format('Y-M'),
+          grossValue,
+          discountValue,
+          netValue: grossValue - discountValue,
+          payrolls: currentPayrolls,
+          state: 0,
+        })
+        current = current.add(1, 'M');
+      }
+
+    })
+    return myPayrolls;
+
+  }
+
   /**
    * @param employee 
    * @param param1 

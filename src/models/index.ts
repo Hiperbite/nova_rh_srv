@@ -146,22 +146,26 @@ const initialData = [{
   ]
 }, {
   model: AdditionalPaymentType, data: [
-    { code: 'BN', name: 'Bônus' },
-    { code: 'HE', name: 'Horas extras' },
-    { code: 'AS', name: 'Adiantamento salarial' },
-    { code: 'TF', name: 'Trabalho em feriados' },
-    { code: 'VC', name: 'Feriados' },
-    { code: 'HE', name: 'Horas extras' },
-    { code: 'VA', name: 'Variável' },
-    { code: 'CM', name: 'Comissões' },
-    { code: 'CP', name: 'Complemento' },
-    { code: 'DS', name: 'Disponibilidade' },
-    { code: 'AC', name: 'Acomodação' },
-    { code: 'TR', name: 'Transporte' },
-    { code: 'ET', name: 'Espaço de trabalho' },
-    { code: 'RF', name: 'Refeição' },
-    { code: 'AP', name: 'Aprendizado' },
-    { code: 'OU', name: 'Outro' }
+
+    { code: '1000', name: 'Vencimento Base', level:1 },
+    { code: '1401', level:0,name: 'Almoço' },
+    { code: '1406', level:0,name: 'Competitividade' },
+    { code: 'BN', level:0,name: 'Bônus' },
+    { code: 'HE', level:0,name: 'Horas extras' },
+    { code: 'AS', level:0,name: 'Adiantamento salarial' },
+    { code: 'TF', level:0,name: 'Trabalho em feriados' },
+    { code: 'VC', level:0,name: 'Feriados' },
+    { code: 'HE', level:0,name: 'Horas extras' },
+    { code: 'VA', level:0,name: 'Variável' },
+    { code: 'CM', level:0,name: 'Comissões' },
+    { code: 'CP', level:0,name: 'Complemento' },
+    { code: 'DS', level:0,name: 'Disponibilidade' },
+    { code: 'AC', level:0,name: 'Acomodação' },
+    { code: 'TR', level:0,name: 'Transporte' },
+    { code: 'ET', level:0,name: 'Espaço de trabalho' },
+    { code: 'RF', level:0,name: 'Refeição' },
+    { code: 'AP', level:0,name: 'Aprendizado' },
+    { code: 'OU', level:0,name: 'Outro' }
   ]
 },
 {
@@ -221,13 +225,18 @@ const initialData = [{
 }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: true, force: false }).then(() =>
-    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
+  sequelize.sync({ alter: true, force: false }).then(() => null
+    /*initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
       model.find({ where: { code: d.code } }).then((f: any) => {
         if (f) { } else
-          model.create(d, { include: { all: true } }).catch(console.log)
+     {
+        //     model.create(d, { include: { all: true } }).catch(console.log)
+     }
       })
-    }))).catch((x: any) => {
+    }))
+    
+    */
+    ).catch((x: any) => {
       const e = x;
       console.log(e)
     })
