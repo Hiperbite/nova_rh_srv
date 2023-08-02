@@ -2,6 +2,7 @@ import { Router } from "express";
 import commonRoutes from "./common/common.routes";
 import userRoutes from "./common/user.routes";
 import authRoutes from "./common/auth.routes";
+import generateDocumentsRoutes from "./common/generate-documents.routes";
 import trackRoutes from "./common/track.routes";
 
 import company from "./company/company.routes";
@@ -22,6 +23,8 @@ routes.use('/tracks', trackRoutes)
 //routes.use('/commons/contacts', contactRoutes)
 routes.use('/commons/dashboards', dashboards)
 routes.use('/commons/helpers', helpers)
+
+routes.use('/commons/generate-documents', generateDocumentsRoutes)
 
 routes.use('/company', company)
 
