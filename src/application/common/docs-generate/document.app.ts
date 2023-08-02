@@ -25,12 +25,17 @@ const docDefinition: TDocumentDefinitions = {
     },
     {
       text: [
-        'This paragraph uses header style and overrides bold value setting it back to false.\n',
-        'Header style in this example sets alignment to justify, so this paragraph should be rendered \n',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit, officiis viveremus aeternum superstitio suspicor alia nostram, quando nostros congressus susceperant concederetur leguntur iam, vigiliae democritea tantopere causae, atilii plerumque ipsas potitur pertineant multis rem quaeri pro, legendum didicisse credere ex maluisset per videtis. Cur discordans praetereat aliae ruinae dirigentur orestem eodem, praetermittenda divinum. Collegisti, deteriora malint loquuntur officii cotidie finitas referri doleamus ambigua acute. Adhaesiones ratione beate arbitraretur detractis perdiscere, constituant hostis polyaeno. Diu concederetur.'
+        'Para os devidos efeitos julgados convenientes na emissão de Passaporte de viagem junto dos Serviços de Migração e Estrangeiros, declara-se que a Sra. Rosa José Francisco Pacheco, de nacionalidade Angolana, portadora do Bilhete de Identidade com o N900051713KS039 é funcionária desta Empresa onde exerce a função de Auxiliar de Limpeza, auferindo o vencimento mensal de 39.730,00 Kz (Trinta e Nove Mil e Setecentos e Trinta Kwanzas).'
       ],
       style: 'body',
       bold: false
+    },
+    {
+      text: [
+        'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo  em uso nesta Empresa A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA SER AOS SERVIÇOS DE MIGRAÇÃO E ESTRANGEIROS. Direcção dos Recursos Humanos do Grupo Santos e Mitoque, em Luanda, aos 10 de Janeiro de 2018.'
+      ],
+      style: 'body',
+      bold: false,
     }
   ],
   styles: {
@@ -39,14 +44,16 @@ const docDefinition: TDocumentDefinitions = {
       bold: true,
       alignment: 'center',
       marginTop: 4,
-      marginBottom: 8,
+      marginBottom: 15,
       decoration: "underline"
     },
     body: {
-      fontSize: 18,
+      fontSize: 14,
       bold: false,
       alignment: 'justify',
       marginTop: 8,
+      lineHeight: 2,
+      leadingIndent: 24
     }
   }
 
@@ -66,15 +73,17 @@ export default async function generateDocument(res: Response, type?: any, data?:
 
   let result;
 
+  res.set('content-type', 'application/pdf');
+  
   await pdfDoc.end();
 
   await pdfDoc.on("end", () => {
-     result = Buffer.concat(chunks)
+    result = Buffer.concat(chunks)
 
-     res.end(result)
+    res.end(result)
   })
 
- 
+
 }
 
 

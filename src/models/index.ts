@@ -222,11 +222,11 @@ const initialData = [{
 const Repo = sequelize.getRepository;
 if (true) {
   sequelize.sync({ alter: true, force: false }).then(() =>
-    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
+    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {/* 
       model.find({ where: { code: d.code } }).then((f: any) => {
         if (f) { } else
           model.create(d, { include: { all: true } }).catch(console.log)
-      })
+      }) */
     }))).catch((x: any) => {
       const e = x;
       console.log(e)
