@@ -11,7 +11,7 @@ const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
 const router = express.Router();
 
 router.get(
-  "/", asyncHandler(getGeneratedDocument)
+  "/:id", asyncHandler(getGeneratedDocument)
 );
 
 export default router;
