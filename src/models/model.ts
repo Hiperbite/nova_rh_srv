@@ -10,6 +10,7 @@ import {
   ForeignKey,
   BelongsTo,
   Scopes,
+  AfterBulkUpdate,
 } from "sequelize-typescript";
 
 import _ from "lodash";
@@ -44,7 +45,7 @@ export default class Model extends Main {
 
   @BeforeCreate
   static prepare = (model: Model) => {
-    model.isActive||= true;
+    model.isActive ||= true;
     model.id = model.id ?? uuids4();
   };
 
@@ -56,8 +57,11 @@ export default class Model extends Main {
 
   @AfterUpdate
   @AfterSave
-  static afterModelUpdate = (model: Model,{ transaction }:any) => {
-    const before = model.previous();
+  static afterModelUpdate = (model: Model, { transaction }: any = { transaction: null }) => {
+
+    if (model?.previous()) { } else return model;
+
+    const before = model?.previous();
 
     const obj = Object.keys(before).map((k) => ({ [k]: model.dataValues[k] }));
 

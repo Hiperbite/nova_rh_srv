@@ -1,23 +1,48 @@
+import { includes } from "lodash";
+import moment from "moment";
+import { Op } from "sequelize";
 import {
     Table,
     Column,
     DataType,
     Scopes,
-    BelongsTo,
-    ForeignKey,
-    BeforeCreate,
-    BeforeSave,
     HasMany,
+    AfterFind,
+    AfterUpdate,
+    AfterSave,
+    AfterBulkUpdate,
+    BeforeSave,
+    BeforeUpdate,
+    DefaultScope,
 } from "sequelize-typescript";
-import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage } from "../index";
+import { Contract, Model, PayrollLine, PayrollStatus, PayStub } from "../index";
+/**
+ * 0 - Aberto
+ * 1 - Analise * 
+ * 2 - Confirmação
+ * 3 - Aprovação
+ * 4 - Execução
+ */
+export enum payrollState {
+    Opened,
+    Validated,
+    Confirmed,
+    Approved,
+    Executed,
+}
 
-import SequenceApp, { CODES } from "../../application/common/sequence.app";
 
 @Scopes(() => ({
     default: {
-        include: [{ model: Contract, include: [SalaryPackage] }]
+        include: [PayStub]
+    },
+    simple: {
+        include: [PayStub]
     }
+}))
+
+@DefaultScope(() => ({
+    include: [PayStub]
 }))
 @Table({
     timestamps: true,
@@ -54,108 +79,129 @@ export default class Payroll extends Model {
     })
     descriptions?: string;
 
-    @BelongsTo(() => Contract)
-    contract!: Contract
-
-    @ForeignKey(() => Contract)
-    contractId!: string;
-
-    @HasMany(() => PayrollLine)
-    lines?: PayrollLine[];
+    @HasMany(() => PayStub)
+    payStubs!: PayStub[]
 
     @Column({
-        type: DataType.VIRTUAL,
-        allowNull: true,
+        type: DataType.VIRTUAL
     })
-    get proposalLines() {
-        const salaryPackage: any = this?.contract?.salaryPackage
-        const additionalPayments: any = salaryPackage?.additionalPayments
+    initialPayStubs!: any[]
 
-        let lines: any[] = []
-        lines.push({
-            isActive: true,
-            code: '1000',
-            date: new Date(),
-            value: Number(salaryPackage?.baseValue),
-            debit: true,
-            quantity: 1,
-            baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: '',
-            typeId: 'Base',
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    get grossValue() {
+        return this.payStubs?.map(({ grossValue }: any) => grossValue)?.reduce((x: number, y: number) => x + y, 0)
+    }
 
-        })
-        additionalPayments?.
-            filter(({ isActive }: any) => isActive).
-            filter(({ startDate }: any) => moment(this.date).isAfter(moment(startDate))).
-            map(({ code, descriptions, startDate, isActive, baseValue, baseValuePeriod, type }: any) => (
-                {
-                    isActive,
-                    code: type?.code,
-                    date: new Date(),
-                    descriptions,
-                    startDate,
-                    value: Number(baseValue),
-                    property: 1,
-                    debit: true,
-                    baseValuePeriod,
-                    typeId: type.name
-                }
-            )
-            )?.forEach((x: any) => lines.push(x));
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    get deductionValue() {
+        return this.payStubs?.map(({ deductionValue }: any) => deductionValue)?.reduce((x: number, y: number) => x + y, 0)
+    }
+
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    get netValue() {
+        return this.payStubs?.map(({ netValue }: any) => netValue)?.reduce((x: number, y: number) => x + y, 0)
+    }
 
 
+    @BeforeUpdate
+    @BeforeSave
+    static afterPayloadSave = async (payroll: Payroll) => {
 
-        const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
 
-        lines.push({
-            isActive: true,
-            code: '350',
-            date: new Date(),
-            value: grossValue * 3 / 100,
-            debit: false,
-            quantity: 1,
-            baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: '',
-            typeId: 'INSS [3%]'
-        })
+        if (payroll.state === payrollState.Confirmed
+        ) {
 
-        const IRTTable = [
-            { a: 0, b: 70000, v: 0 },
-            { a: 70001, b: 150000, v: 10 },
-            { a: 150001, b: 300000, v: 16 },
-            { a: 300001, b: 500000, v: 19 },
-            { a: 500001, b: 1500000, v: 20 },
-            { a: 1500001, b: 3000000, v: 24 },
-        ]
-        const IRTpercent = (r: number): number => IRTTable.find(({ a, b }: any) => r > a && r <= b)?.v ?? 0
 
-        if (grossValue > 70000) {
-            lines.push({
+        } else
+            if (
+                payroll.state === payrollState.Approved ||
+                payroll.state === payrollState.Executed
+            ) {
+                payroll?.payStubs?.
+                    filter(({ state }: any) => state !== payrollState.Executed)?.
+                    forEach((payStub: PayStub) => {
+                        payStub.state = payroll.state
+                        payStub.save();
+                    })
+            }
+
+        if (payroll.state === payrollState.Executed) {
+            const [year, month] = moment(payroll?.date).add(1, 'M').format('YYYY-MM').split('-');
+            const nextPayroll = await Payroll.
+                findOne({ where: { year, month } })
+
+            if (nextPayroll) {
+                nextPayroll.state = payrollState.Validated
+                nextPayroll.save();
+            }
+        }
+        return payroll;
+    }
+    @AfterFind
+    static proposalStubs = async (payroll: Payroll) => {
+        if (payroll?.year === undefined) return;
+        if ((payroll.state ?? 0) > payrollState.Confirmed) return;
+
+        payroll.initialPayStubs = [];
+
+        const proposalStubs = (await Contract.findAll({
+            where: {
                 isActive: true,
-                code: '401',
-                date: new Date(),
-                value: grossValue * IRTpercent(grossValue) / 100,
-                debit: false,
-                quantity: 1,
-                baseValuePeriod: salaryPackage?.baseValuePeriod,
-                descriptions: '',
-                typeId: `IRT [${IRTpercent(grossValue)}%]`
+                startDate: { [Op.or]: { [Op.eq]: null, [Op.lt]: payroll?.year + '-' + payroll?.month + '-31' } },
+                endDate: { [Op.or]: { [Op.eq]: null, [Op.gt]: payroll?.year + '-' + payroll?.month + '-01' } }
+            },
+            order: [['endDate', 'ASC']]
+        }))?.map((contract: any) => ({
+            date: payroll.date,
+            month: payroll.month,
+            year: payroll?.year,
+            state: 0,
+            descriptions: '',
+            contract,
+        }))
+
+        if (
+
+            payroll.state !== payrollState.Approved &&
+            payroll.state !== payrollState.Executed
+        ) {
+            proposalStubs?.forEach(async (stub: any) => {
+                payroll?.initialPayStubs?.push(stub);
+
+                let payStub = new PayStub();
+                if (payroll?.payStubs?.find(({ contractId }: any) => contractId === stub?.contractId) === undefined) {
+
+                    try {
+                        payStub = await PayStub.create({
+                            date: payroll.date,
+                            month: payroll.month,
+                            year: payroll?.year,
+                            state: 0,
+                            descriptions: '',
+                            contractId: stub?.contract?.id,
+                            payrollId: payroll?.id,
+                            lines: stub?.contract.payStubState.lines
+
+                        }, { include: { all: true } })
+                        payStub.contract = stub?.contract;
+
+                        payroll?.payStubs?.push(payStub);
+                    }
+                    catch (e: any) {
+                        let u = e;
+                    }
+                }
             })
+
         }
 
-        return lines;
+        return payroll;
     }
 
-    @BeforeCreate
-    @BeforeSave
-    static initModel = async (payroll: Payroll) => {
-
-        //let code = await SequenceApp.count(CODES.Payroll);
-        // Payroll.code = 'EVT' + String(code).padStart(8, '0');
-
-        /***
-         * GENERATE LINES
-         */
-
-    }
 }
