@@ -13,6 +13,8 @@ import RoleLevel from './employees/role_level';
 import Attachment from "./common/attachment";
 import dotenv from "dotenv";
 
+import Business from "./company/business";
+
 import Sequence from "./common/sequence";
 import Document from "./document/document";
 import Person from "./employees/person";
@@ -79,6 +81,8 @@ const sequelize = new Sequelize({
     Track,
     Attachment,
     Sequence,
+
+    Business,
 
     Contract,
     AdditionalPaymentType,
@@ -164,6 +168,7 @@ const initialData = [{
     { code: 'OU', name: 'Outro' }
   ]
 },
+/*
 {
   model: Role, data: [
     { code: '1', name: 'Project manager' },
@@ -188,6 +193,7 @@ const initialData = [{
     { code: '20', name: 'Commercial Manager' },
   ]
 },
+*/
 {
   model: Department, data: [
     {
@@ -221,16 +227,20 @@ const initialData = [{
 }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: true, force: false }).then(() =>
+   sequelize.sync({ alter: true, force: false }).then(() =>
     initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
-      model.find({ where: { code: d.code } }).then((f: any) => {
-        if (f) { } else
+      /* model.find({ where: { code: d.code } }).then((f: any) => {
+        if (f) { } 
+        else
           model.create(d, { include: { all: true } }).catch(console.log)
-      })
+      }) 
+      */
+    
     }))).catch((x: any) => {
       const e = x;
       console.log(e)
-    })
+    }) 
+   
 }
 
 enum SPs {
@@ -270,6 +280,8 @@ export {
   Payroll,
   PayrollLine,
   PayrollLineType,
+
+  Business,
 
   User,
   Track,
