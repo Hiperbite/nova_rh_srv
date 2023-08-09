@@ -1,8 +1,6 @@
 import { Application, Response, Router } from "express";
 import deserializeUser from "../application/middleware/deserializeUser";
-import requireAuthentication from "../application/middleware/requireAuthentication";
 import validateRequest from "../application/middleware/validateRequest";
-import ejs from "ejs";
 import routes from "./routes";
 import { logger, MY_NODE_ENV } from "../config";
 import sendEmail, { mailServices } from "../application/mailler/index";
@@ -15,14 +13,14 @@ export const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
 
 const router = (app: Application) => {
 
-  app.get("/ip", (req: any, res: any) => res.send(req.ip));
   app.get(
     "/",
     asyncHandler(async (req: any, res: any) => {
 
-      res.status(200).send(`I'm alive on ${MY_NODE_ENV}`)
+      res.status(200).send(`Hey ${req.ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()} env`)
     })
   );
+
   app.get(
     "/testmail",
     asyncHandler(async (req: any, res: any) => {
@@ -40,8 +38,8 @@ const router = (app: Application) => {
   app.use(
     "/api/v1/",
     [
-      deserializeUser, 
-    //  requireAuthentication, 
+      deserializeUser,
+      //  requireAuthentication, 
       validateRequest
     ],
     routes
@@ -75,7 +73,7 @@ const router = (app: Application) => {
   // Error handler
   // All errors from async & non-async route above will be handled here
   app.use((req: any, res: any, next: any) => {
-    res.status(404).json([{ message: "resource not found" }]);
+    res.status(404).json([{ message: "resource not found"}]);
     logger.warn({ message: "resource not found", meta: { req, res } })
   });
 
@@ -85,4 +83,5 @@ const router = (app: Application) => {
     logger.info({ message: err, meta: { req, res } })
   });
 };
+
 export default router;

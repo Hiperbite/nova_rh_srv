@@ -10,7 +10,7 @@ import {
     HasMany,
 } from "sequelize-typescript";
 import moment from "moment";
-import { AdditionalPaymentType, Model, Payroll } from "../index";
+import { AdditionalPaymentType, Model, Payroll, PayStub } from "../index";
 
 import SequenceApp, { CODES } from "../../application/common/sequence.app";
 
@@ -73,10 +73,10 @@ export default class PayrollLine extends Model {
     @ForeignKey(() => AdditionalPaymentType)
     typeId?: string;
 
-    @BelongsTo(() => Payroll)
-    payroll!: Payroll
+    @BelongsTo(() => PayStub)
+    payStub!: PayStub
 
-    @ForeignKey(() => Payroll)
-    payrollId!: string;
+    @ForeignKey(() => PayStub)
+    payStubId!: string;
 
 }

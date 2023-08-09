@@ -1,20 +1,18 @@
 
+import { IApi } from "api/IApi";
 import { Request, Response } from "express";
-import IRepository from "../repository/iRepository";
-import Repository, { Paginate } from "../repository/repository";
-import {
-  ModelCtor,
-  Model as M,
-} from "sequelize-typescript";
-import { Transaction } from "sequelize";
-import EmployeeRepository from "../repository/employees/employee.repository";
-//import {IApi } from "./IApi";
+import { Paginate } from "../../repository/common/default.repository";
+import PayrollRepository from "../../repository/payroll/payroll.repository";
+import { Payroll } from "../../models/index";
 
+import Api from "../Api";
+import moment from "moment";
+import { start } from "repl";
 
-class Api<T extends M> implements IApi {
-  //protected repo: any
-  constructor(private Model: ModelCtor<M>, protected repo?: any) {
-    this.repo ||= new Repository<M>(this.Model)
+class PayrollApi {
+  repo: PayrollRepository;
+  constructor() {
+    this.repo = new PayrollRepository()
   };
 
   /**
@@ -26,10 +24,19 @@ class Api<T extends M> implements IApi {
 
 
     const { body } = req;
+    let startActivityDate = moment().add(-5, 'M')
 
-    const model: M | void = await this.repo.createOne(body, { include: { all: true } });
-
-    return res.json(model);
+    while (startActivityDate.isBefore(moment())) {
+      const np = {
+        date: startActivityDate.format('YYYY-MM-') + '01',
+        year: startActivityDate.format('YYYY'),
+        month: startActivityDate.format('MM'),
+        state: 0
+      }
+      const model: Payroll | void = await this.repo.createOne(np, { include: { all: true } });
+      startActivityDate.add(1, 'M');
+    }
+    return res.json({});
 
   };
 
@@ -59,7 +66,7 @@ class Api<T extends M> implements IApi {
     const { id } = req.params;
     const { query: opts } = req;
 
-    const model: M | null = await this.repo.findOne(
+    const model: Payroll | null = await this.repo.findOne(
       id,
       { ...opts, include: { all: true } }
     );
@@ -77,7 +84,7 @@ class Api<T extends M> implements IApi {
 
     const { id } = req.params;
 
-    const model: M | undefined = await this.repo.deleteBy(id);
+    const model: Payroll | any = await this.repo.deleteBy(id);
 
     return res.json(model);
   };
@@ -89,7 +96,7 @@ class Api<T extends M> implements IApi {
    */
   findBy = async (req: Request, res: Response): Promise<Response> => {
 
-    const models: Paginate<M> | undefined =
+    const models: Paginate<Payroll> | undefined =
       await this.repo
         .paginate({
           ...req.query,
@@ -100,14 +107,6 @@ class Api<T extends M> implements IApi {
   };
 }
 
-//export default new Api(new Repository(M));
-export default Api;
+export default new PayrollApi();
 
-interface IApi {
-  create(req: Request, res: Response): Promise<Response>;
-  update(req: Request, res: Response): Promise<Response>;
-  find(req: Request, res: Response): Promise<Response>;
-  findBy(req: Request, res: Response): Promise<Response>;
-  delete(req: Request, res: Response): Promise<Response>;
-  findBy(req: Request, res: Response): Promise<Response>;
-}
+export { PayrollApi };

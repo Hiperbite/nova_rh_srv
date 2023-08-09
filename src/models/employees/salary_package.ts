@@ -57,10 +57,10 @@ export default class SalaryPackage extends Model {
   @HasMany(() => AdditionalPayment)
   additionalPayments?: AdditionalPayment[]
 
-  @BelongsTo(() => Contract)
-  contract?: Contract
+  @BelongsTo(() => Contract, 'contractId')
+  contract?: Contract;
 
   @ForeignKey(() => Contract)
-  contractId?: string
+  contractId?: string;
 }
 

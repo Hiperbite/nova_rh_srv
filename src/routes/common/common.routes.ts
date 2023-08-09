@@ -24,6 +24,7 @@ import {
   AdditionalPayment,
   AdditionalField,
   Role,
+  Payroll,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -46,6 +47,7 @@ const models: modelsType[] = [
   { key: "additional-payments", model: AdditionalPayment },
   { key: "additional-fields", model: AdditionalField },
   { key: "additional-payment-types", model: AdditionalPaymentType },
+  { key: "payroll", model: Payroll },
 
   { key: "persons", model: Person },
   { key: "documents", model: Document },
