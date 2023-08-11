@@ -18,13 +18,17 @@ import SequenceApp from "../../application/common/sequence.app";
 import { Contact, Model, Document, Person, User, Contract, /* Role, */ Department, AdditionalField, Role, Payroll, SalaryPackage, AdditionalPayment, AdditionalPaymentType } from "../index";
 
 @Scopes(() => ({
+  all: {
+    include: { all: true }
+  },
   payroll: {
     include: [
       {
         model: Contract, include: [
           Payroll,
           { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
-        ]}
+        ]
+      }
     ]
   },
   default: {
@@ -148,9 +152,9 @@ export default class Employee extends Model {
         .filter((doc: Document) => doc.type == "PASSPORT")[0] ?? {}
     );
   }
-@Column({
-  type: DataType.VIRTUAL
-})
+  @Column({
+    type: DataType.VIRTUAL
+  })
   get payroll() {
 
     let myPayrolls: any[] = [];
