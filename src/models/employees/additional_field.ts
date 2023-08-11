@@ -26,7 +26,7 @@ import { Model, Contract } from "../index";
 })
 export default class AdditionalField extends Model {
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
     allowNull: true,
   })
   descriptions?: string;

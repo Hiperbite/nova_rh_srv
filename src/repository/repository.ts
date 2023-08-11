@@ -51,8 +51,10 @@ export default class Repository<T extends M>  {
   public updateOne = async (data: any, options?: any): Promise<T | any> => {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
-    const model = await this.repo.update(d, { where: { id }, returning: true });
-    return model ? this.findOne(id) : model;
+    let model = await this.Model.update(d, { where: { id }, returning: true });
+    let nmodel = model ? await this.findOne(id) : model;
+    nmodel?.save();
+    return nmodel
   };
 
   public deleteBy = async (id: any | string): Promise<boolean> => {
