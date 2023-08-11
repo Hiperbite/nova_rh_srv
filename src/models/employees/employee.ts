@@ -27,6 +27,11 @@ import {
 } from "../index";
 
 @Scopes(() => ({
+  all: {
+    include: {
+      all: true
+    }
+  },
   payStub: {
     include: [
       {
@@ -176,7 +181,7 @@ export default class Employee extends Model {
       newPayroll.contract = contact;
       while (current.isBetween(contact.startDate, contact.endDate)) {
 
-        
+
         let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
 
         const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
