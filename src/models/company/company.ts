@@ -6,7 +6,7 @@ import {
     Column
 } from "sequelize-typescript";
 
-import {Contact, Address, Model} from "../index";
+import { Contact, Address, Model } from "../index";
 
 @Scopes(() => ({
     default: {
@@ -18,6 +18,13 @@ import {Contact, Address, Model} from "../index";
     tableName: "Company"
 })
 export default class Company extends Model {
+    
+    @Column({
+        type: DataType.STRING,
+        allowNull: true
+    })
+    code?: string;
+
     @Column({
         type: DataType.STRING,
         allowNull: true
@@ -43,7 +50,7 @@ export default class Company extends Model {
     nif?: string
 
     @Column({
-        type: DataType.DECIMAL(32,2),
+        type: DataType.DECIMAL(32, 2),
         allowNull: true
     })
     socialCapital?: number;
@@ -71,5 +78,5 @@ export default class Company extends Model {
 
     @HasMany(() => Address)
     address?: Address[];
-    
+
 }

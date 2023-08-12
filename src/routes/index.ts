@@ -4,7 +4,7 @@ import validateRequest from "../application/middleware/validateRequest";
 import routes from "./routes";
 import { logger, MY_NODE_ENV } from "../config";
 import sendEmail, { mailServices } from "../application/mailler/index";
-import { User } from "../models/index";
+import { Company, User } from "../models/index";
 
 export const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch((err: any) => {
@@ -73,7 +73,7 @@ const router = (app: Application) => {
   // Error handler
   // All errors from async & non-async route above will be handled here
   app.use((req: any, res: any, next: any) => {
-    res.status(404).json([{ message: "resource not found"}]);
+    res.status(404).json([{ message: "resource not found" }]);
     logger.warn({ message: "resource not found", meta: { req, res } })
   });
 
