@@ -3,14 +3,16 @@ import {
     Table,
     DataType,
     HasMany,
-    Column
+    Column,
+    BelongsTo,
+    ForeignKey
 } from "sequelize-typescript";
 
-import { Contact, Address, Model } from "../index";
+import { Contact, Address, Model, Business } from "../index";
 
 @Scopes(() => ({
     default: {
-        include: []
+        include: [Business]
     }
 }))
 @Table({
@@ -32,16 +34,10 @@ export default class Company extends Model {
     name?: string;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.TEXT,
         allowNull: true
     })
     description?: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: true
-    })
-    business?: string;
 
     @Column({
         type: DataType.STRING,
@@ -56,22 +52,28 @@ export default class Company extends Model {
     socialCapital?: number;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.TEXT,
         allowNull: true
     })
     integrationToken?: string;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.TEXT,
         allowNull: true
     })
     slogan?: string;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.TEXT,
         allowNull: true
     })
     logos?: string;
+
+    @BelongsTo(() => Business)
+    business!: Business
+
+    @ForeignKey(() => Business)
+    businessId!: string;
 
     @HasMany(() => Contact)
     contacts?: Contact[];

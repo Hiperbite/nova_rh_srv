@@ -13,6 +13,8 @@ import RoleLevel from './employees/role_level';
 import Attachment from "./common/attachment";
 import dotenv from "dotenv";
 
+import Business from "./company/business";
+
 import Sequence from "./common/sequence";
 import Document from "./document/document";
 import Person from "./employees/person";
@@ -85,6 +87,8 @@ const sequelize = new Sequelize({
     Track,
     Attachment,
     Sequence,
+
+    Business,
 
     Contract,
     AdditionalPaymentType,
@@ -318,6 +322,8 @@ export {
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
+
+  Business,
 
   User,
   Track,

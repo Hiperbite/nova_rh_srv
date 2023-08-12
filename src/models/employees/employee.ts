@@ -27,6 +27,11 @@ import {
 } from "../index";
 
 @Scopes(() => ({
+  all: {
+    include: {
+      all: true
+    }
+  },
   payStub: {
     include: [
       {
