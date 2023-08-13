@@ -25,6 +25,7 @@ import {
   AdditionalField,
   Role,
   Payroll,
+  Country,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -60,12 +61,8 @@ const models: modelsType[] = [
   { key: "events", model: Event },
   { key: "event-schedules", model: EventSchedule },
   { key: "event-types", model: EventType },
-/*
-  { key: "settings/local-setting", model: LocalSetting },
-  { key: "settings/system-setting", model: SystemSetting },
-  { key: "settings/document-setting", model: DocumentSetting },
-  { key: "settings/license-setting", model: LicenseSetting },
-  { key: "settings/setting", model: Setting },*/
+  { key: "countries", model: Country },
+
 ];
 
 models.forEach(({ model, key }: modelsType) => {

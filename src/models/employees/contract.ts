@@ -26,6 +26,11 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
   default: {
     include: []
   },
+  coworkers: {
+    attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
+    include: [Role,
+      { model: Employee, include: [Person, { model: User, as: 'user' }] }]
+  },
   employee: {
     include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
     orderBy: [['startDate', 'DESC']]
