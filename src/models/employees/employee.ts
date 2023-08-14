@@ -23,7 +23,8 @@ import {
   PayStub,
   SalaryPackage,
   AdditionalPayment,
-  AdditionalPaymentType
+  AdditionalPaymentType,
+  AccountPaymentData
 } from "../index";
 
 @Scopes(() => ({
@@ -85,6 +86,9 @@ export default class Employee extends Model {
 
   @HasMany(() => Contact)
   contacts!: Contact[];
+
+  @HasMany(() => AccountPaymentData)
+  account_payment_datas!: AccountPaymentData[];
 
   @Column({
     type: DataType.VIRTUAL
