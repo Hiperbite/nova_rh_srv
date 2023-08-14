@@ -14,9 +14,19 @@ import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { Request, Response } from 'express';
 import { Employee } from '../../../models/index';
 
+const documents: any = {
+  IDCARD: "Bilhete",
+  PASSPORT: "Passaporte"
+}
+
+const employeeType: any = {
+  M: "funcionário",
+  F: "funcionária"
+}
+
 async function getDocDefinitions(data: any) {
 
-  const employee = await Employee.scope('default').findByPk(data.id)
+  const employee = await Employee.scope('all').findByPk(data.id)
 
   const document: any = employee?.idCard || employee?.passport
 
@@ -40,9 +50,10 @@ async function getDocDefinitions(data: any) {
       },
       {
         text: [
-          '\nPara os devidos efeitos julgados convenientes na', { text: 'tipo de solicitacao', bold: true }, 'junto da', { text: 'entidade que solicita, ', bold: true }, 'declara-se que', { text: employee?.person?.fullName + ",", bold: true }, 'de nacionalidade', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: document?.type, bold: true }, ' com o ', { text:  document?.number, bold: true }, ' é {funcionária(logica a aplicar)} desta Empresa onde exerce a função de ', { text: 'Funcao do funcionario', bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salrio por extenso e numeral', bold: true }, '.\n\n',
+          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da', { text: data.entity + ", ", bold: true }, 'declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o ', { text: document?.number + "", bold: true }, 'é', { text: employeeType[employee?.person?.gender + ''] }, 'desta Empresa onde exerce a função de ', { text: 'Funcao do funcionario', bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
           'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
-          { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A {ENTIDADE}.', bold: true },
+          { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
+          { text: data.entity.toUpperCase(), bold: true },
           '\n\nDirecção dos Recursos Humanos {nome da empresa}, em {Luanda, aos 10 de Janeiro de 2018}.\n\n'
         ],
         style: 'body',
@@ -79,7 +90,7 @@ async function getDocDefinitions(data: any) {
         bold: true,
         alignment: 'center',
       }
-    }
+    },
 
   }
 
@@ -90,7 +101,7 @@ export default async function generateDocument(req: Request, res: Response, type
 
   const printer = new PdfPrinter(fonts);
 
-  const pdfDoc = printer.createPdfKitDocument(await getDocDefinitions({ data: req.body.data, id: req.params.id }));
+  const pdfDoc = printer.createPdfKitDocument(await getDocDefinitions({ ...req.params, ...req.query }));
 
   const chunks: any[] | Uint8Array[] = []
 
@@ -98,15 +109,15 @@ export default async function generateDocument(req: Request, res: Response, type
   await pdfDoc.on("data", (chunk) => {
     chunks.push(chunk)
   })
+  await pdfDoc.end();
 
   let result;
-
-  await pdfDoc.end();
 
   await pdfDoc.on("end", () => {
     result = Buffer.concat(chunks)
 
-    res.end(result)
+    res.send(`data:application/pdf;base64,${result.toString("base64")}`)
+
   })
 
 

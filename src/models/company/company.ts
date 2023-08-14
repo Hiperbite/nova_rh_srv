@@ -20,6 +20,13 @@ import { Contact, Address, Model, Business } from "../index";
     tableName: "Company"
 })
 export default class Company extends Model {
+    
+    @Column({
+        type: DataType.STRING,
+        allowNull: true
+    })
+    code?: string;
+
     @Column({
         type: DataType.STRING,
         allowNull: true

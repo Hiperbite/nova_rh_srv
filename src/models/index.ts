@@ -61,7 +61,11 @@ const sequelize = new Sequelize({
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-
+  dialectOptions: {
+    options: {
+      requestTimeout: 300000
+    }
+  },
   pool: {
     max: 15,
     min: 5,
@@ -131,11 +135,11 @@ const UniqIndex = createIndexDecorator({
 const initialData = [
   {
     model: PayrollStatus, data: [
-      { code: '0', name: 'Aberto' },
-      { code: '1', name: 'Analise  ' },
-      { code: '2', name: 'Confirmação' },
-      { code: '3', name: 'Aprovação' },
-      { code: '4', name: 'Execução' },
+      { code: 0, name: 'Aberto' },
+      { code: 1, name: 'Analise  ' },
+      { code: 2, name: 'Confirmação' },
+      { code: 3, name: 'Aprovação' },
+      { code: 4, name: 'Execução' },
     ]
   },
   {
@@ -224,6 +228,20 @@ const initialData = [
       }]
   },
   {
+    model: Company, data: [
+      {
+        code: 'A',
+        name: '',
+        description: '',
+        business: '',
+        nif: '',
+        socialCapital: 0,
+        integrationToken: '',
+        slogan: '',
+        logos: ''
+      }]
+  },
+  {
     model: Setting, data: [
       /*{
         code: 'NOVA',
@@ -245,22 +263,24 @@ const initialData = [
   }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: false, force: false }).then(() => null
-  /*
+  sequelize.sync({ alter: true, force: false }).then(() =>
     initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
-      model.find({ where: { code: d.code } }).then((f: any) => {
-        if (f) { } else
-     {
-        //     model.create(d, { include: { all: true } }).catch(console.log)
-     }
-      })
+      try {
+
+        model.find({ where: { code: d.code } }).then((f: any) => {
+          if (f) { } else {
+            model.create(d, { include: { all: true } }).catch(console.log)
+          }
+        }).catch(console.log)
+
+      } catch (e: any) {
+        let u = e;
+      }
     }))
-    */
-    
-    ).catch((x: any) => {
-      const e = x;
-      console.log(e)
-    })
+  ).catch((x: any) => {
+    const e = x;
+    console.log(e)
+  })
 }
 
 enum SPs {
