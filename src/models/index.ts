@@ -7,6 +7,7 @@ import Token from "./common/token";
 import Session from "./common/session";
 import Address from "./common/address";
 import Contact from "./employees/contact";
+import AccountPaymentData from "./employees/account_payment_data";
 import Company from "./company/company";
 import Role from './employees/role';
 import RoleLevel from './employees/role_level';
@@ -77,6 +78,7 @@ const sequelize = new Sequelize({
     Company,
     Person,
     Document,
+    AccountPaymentData,
     Employee,
     Token,
     Session,
@@ -244,7 +246,8 @@ const initialData = [
 const Repo = sequelize.getRepository;
 if (true) {
   sequelize.sync({ alter: false, force: false }).then(() => null
-    /*initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
+  /*
+    initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
       model.find({ where: { code: d.code } }).then((f: any) => {
         if (f) { } else
      {
@@ -252,12 +255,12 @@ if (true) {
      }
       })
     }))
-    
     */
-  ).catch((x: any) => {
-    const e = x;
-    console.log(e)
-  })
+    
+    ).catch((x: any) => {
+      const e = x;
+      console.log(e)
+    })
 }
 
 enum SPs {
@@ -281,6 +284,7 @@ export {
   Repo,
   Model,
   Contact,
+  AccountPaymentData,
   Employee,
   Address,
   Company,
