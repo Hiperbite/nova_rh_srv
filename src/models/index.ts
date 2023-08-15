@@ -7,6 +7,7 @@ import Token from "./common/token";
 import Session from "./common/session";
 import Address from "./common/address";
 import Contact from "./employees/contact";
+import AccountPaymentData from "./employees/account_payment_data";
 import Company from "./company/company";
 import Role from './employees/role';
 import RoleLevel from './employees/role_level';
@@ -81,6 +82,7 @@ const sequelize = new Sequelize({
     Company,
     Person,
     Document,
+    AccountPaymentData,
     Employee,
     Token,
     Session,
@@ -275,8 +277,6 @@ if (true) {
         let u = e;
       }
     }))
-
-
   ).catch((x: any) => {
     const e = x;
     console.log(e)
@@ -304,6 +304,7 @@ export {
   Repo,
   Model,
   Contact,
+  AccountPaymentData,
   Employee,
   Address,
   Company,

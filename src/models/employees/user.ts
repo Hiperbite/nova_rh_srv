@@ -1,6 +1,7 @@
 import {
   Table,
   AllowNull,
+  Default,
   Column,
   DataType,
   BeforeCreate,
@@ -135,6 +136,13 @@ export default class User extends Model {
     allowNull: false,
   })
   role!: ROLES;
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  new?: boolean;
 
   @Column({
     type: DataType.TEXT,
