@@ -261,7 +261,7 @@ const initialData = [
   }]
 const Repo = sequelize.getRepository;
 if (true) {
-  sequelize.sync({ alter: true, force: false }).then(() =>
+  sequelize.sync({ alter: true, force: false}).then(() =>
     initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
       try {
 

@@ -28,6 +28,7 @@ async function getDocDefinitions(data: any) {
 
   const employee = await Employee.scope('all').findByPk(data.id)
 
+  
   const document: any = employee?.idCard || employee?.passport
 
   let definiton: TDocumentDefinitions = {
@@ -50,7 +51,7 @@ async function getDocDefinitions(data: any) {
       },
       {
         text: [
-          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da', { text: data.entity + ", ", bold: true }, 'declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o ', { text: document?.number + "", bold: true }, 'é', { text: employeeType[employee?.person?.gender + ''] }, 'desta Empresa onde exerce a função de ', { text: 'Funcao do funcionario', bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
+          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da', { text: data.entity + ", ", bold: true }, 'declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o ', { text: document?.number, bold: true }, ' é ', { text: employeeType[employee?.person?.gender + ''] }, ' desta Empresa onde exerce a função de ', { text: 'Funcao do funcionario', bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
           'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
           { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
           { text: data.entity.toUpperCase(), bold: true },
