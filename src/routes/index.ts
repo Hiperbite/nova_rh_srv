@@ -5,6 +5,7 @@ import routes from "./routes";
 import { logger, MY_NODE_ENV } from "../config";
 import sendEmail, { mailServices } from "../application/mailler/index";
 import { Company, User } from "../models/index";
+import { initializer } from "../models/initializer";
 
 export const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch((err: any) => {
@@ -21,6 +22,13 @@ const router = (app: Application) => {
     })
   );
 
+  app.get(
+    "/initializer",
+    asyncHandler(async (req: any, res: any) => {
+      initializer()
+      res.status(200).send(`Hey ${req.ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()} env`)
+    })
+  );
   app.get(
     "/testmail",
     asyncHandler(async (req: any, res: any) => {
