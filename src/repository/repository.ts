@@ -44,8 +44,18 @@ export default class Repository<T extends M>  {
 
   public createOne = async (data: any, options: any = null): Promise<T | void> => {
 
-    return await this.Model.create(data, options);
+    let final;
 
+    try {
+      this.start();
+      final = await this.Model.create(data, { ...options, transaction: this.transaction });
+      this.commit();
+    } catch (err: any) {
+     // this.rollback();
+      throw err;
+    }
+
+    return final;
   };
 
   public updateOne = async (data: any, options?: any): Promise<T | any> => {

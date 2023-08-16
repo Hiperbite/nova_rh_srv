@@ -75,6 +75,8 @@ const sequelize = new Sequelize({
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+    Country,
+    Business,
     Contact,
     AdditionalField,
     User,
@@ -89,8 +91,6 @@ const sequelize = new Sequelize({
     Attachment,
     Sequence,
 
-    Business,
-    Country,
     Contract,
     AdditionalPaymentType,
     AdditionalPayment,
