@@ -1,6 +1,7 @@
 import {
   Table,
   AllowNull,
+  Default,
   Column,
   DataType,
   BeforeCreate,
@@ -132,6 +133,13 @@ export default class User extends Model {
   })
   role!: ROLES;
 
+  @Default(true)
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isNew?: boolean;
+
   @Column({
     type: DataType.TEXT,
     allowNull: true,
@@ -216,5 +224,6 @@ export default class User extends Model {
     "personId",
     "person",
     "permissions",
+    "isNew",
   ];
 }
