@@ -137,12 +137,12 @@ export default class User extends Model {
   })
   role!: ROLES;
 
-  @Default(false)
+  @Default(true)
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  new?: boolean;
+  isNew?: boolean;
 
   @Column({
     type: DataType.TEXT,
@@ -249,5 +249,6 @@ export default class User extends Model {
     "personId",
     "person",
     "permissions",
+    "isNew",
   ];
 }
