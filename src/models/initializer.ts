@@ -1680,17 +1680,17 @@ const initialData = [
     model: Setting, data: [
       /*{
         code: 'NOVA',
-  
+   
         id: '028a5c78-710f-482c-a68d-b48cca54f35c',
-  
+   
         system: SystemSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         documents: DocumentSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         local: LocalSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         classe: ClasseSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         license: LicenseSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log)
       },*/
 
