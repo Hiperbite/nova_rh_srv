@@ -6,6 +6,7 @@ import Role from "./employees/role";
 import PayrollStatus from "./payroll/payroll_status";
 import Country from "./common/country";
 import Ausence from "./employees/ausence";
+import Business from "./company/business";
 
 
 const initialData = [
@@ -66,6 +67,26 @@ const initialData = [
             { code: '20', name: 'Commercial Manager' },
         ]
     },
+    {
+      model: Business, data: [
+          { code: '1', name: 'Lavandaria' },
+          { code: '2', name: 'Cinema' },
+          { code: '3', name: 'Hospital' },
+          { code: '4', name: 'Clínica' },
+          { code: '5', name: 'Cabeleireiro' },
+          { code: '6', name: 'Estética' },
+          { code: '7', name: 'Mecânica' },
+          { code: '8', name: 'Restaurante' },
+          { code: '9', name: 'Supermercado' },
+          { code: '10', name: 'Hotelaria' },
+          { code: '11', name: 'Fábrica' },
+          { code: '12', name: 'Armarinho' },
+          { code: '13', name: 'Loja' },
+          { code: '14', name: 'Saúde' },
+          { code: '15', name: 'Educação e Ensino' },
+          { code: '16', name: 'Outro' },
+      ]
+  },
     {
         model: Department, data: [
             {
