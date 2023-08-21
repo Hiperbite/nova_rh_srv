@@ -135,13 +135,13 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-if (false) {
-  
-  sequelize.sync({ alter: false, force: false }).then(initializer).catch((x: any) => {
-    const e = x;
-    console.log(e)
-  })
-}
+
+sequelize.sync({ alter: false, force: false }).then(initializer).catch((x: any) => {
+  const e = x;
+  console.log(e)
+})
+
+
 
 enum SPs {
   GetStudentsCountOlder = 'GetStudentsCountOlder',

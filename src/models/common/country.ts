@@ -23,13 +23,13 @@ export default class Country extends Model {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
     code!: string;
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
     name!: string;
 
@@ -41,7 +41,7 @@ export default class Country extends Model {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
     nationality!: string;
 
