@@ -68,13 +68,13 @@ const initialData = [
   {
     model: Department, data: [
       {
-        name: 'Executive Council', code: 'CEX',
-        childs: [
-          { name: 'Direcção de Recursos Humanos', code: 'DRH' },
-          { name: 'Direcção Comercial', code: 'DCO' },
-          { name: 'Direcção Financeira e de Contabilidades', code: 'DFC' },
-          { name: 'Direcção de Tecnologia', code: 'DTI' }]
-      }]
+        name: 'Executive Council', code: 'CEX'
+      },
+      { name: 'Direcção de Recursos Humanos', code: 'DRH' },
+      { name: 'Direcção Comercial', code: 'DCO' },
+      { name: 'Direcção Financeira e de Contabilidades', code: 'DFC' },
+      { name: 'Direcção de Tecnologia', code: 'DTI' }
+    ]
   },
   {
     model: Company, data: [
@@ -1634,17 +1634,17 @@ const initialData = [
     model: Setting, data: [
       /*{
         code: 'NOVA',
-  
+   
         id: '028a5c78-710f-482c-a68d-b48cca54f35c',
-  
+   
         system: SystemSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         documents: DocumentSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         local: LocalSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         classe: ClasseSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-  
+   
         license: LicenseSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log)
       },*/
 
@@ -1655,7 +1655,10 @@ const initializer = (_?: any) => {
   initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) => {
     try {
 
-      await model.findOrCreate({ where: { code: d.code }, defaults: { d } })
+      let modelData = await model.findOne({ where: { code: d.code } })
+
+      if (!modelData)
+        await model.create(d)
 
     } catch (e: any) {
       let u = e;
