@@ -37,10 +37,11 @@ const router = express.Router();
 interface modelsType {
   key: string;
   model: any;
+  midllewares?: any[];
 }
 
 const models: modelsType[] = [
-  { key: "contacts", model: Contact },
+  { key: "contacts", model: Contact, midllewares: [] },
   { key: "departments", model: Department },
   { key: "address", model: Address },
   { key: "roles", model: Role },
@@ -65,10 +66,10 @@ const models: modelsType[] = [
 
 ];
 
-models.forEach(({ model, key }: modelsType) => {
+models.forEach(({ model, key, midllewares = [] }: modelsType) => {
 
   const api = new Api(model);
-  //let api:any ={}// new ModelApi<typeof model>(new Repository(model.scope('default')));
+  
   router
     .post(
       `/commons/${key}/`,
@@ -88,9 +89,13 @@ models.forEach(({ model, key }: modelsType) => {
       asyncHandler(api.delete)
     )
 
-    .get(`/commons/${key}/:id`, asyncHandler(api.find))
+    .get(`/commons/${key}/:id`,
+      midllewares,
+      asyncHandler(api.find))
 
-    .get(`/commons/${key}/`, asyncHandler(api.findBy));
+    .get(`/commons/${key}/`,
+      midllewares,
+      asyncHandler(api.findBy));
 });
 
 export default router;
