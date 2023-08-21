@@ -1,4 +1,4 @@
-import express from "express";
+/* import express from "express";
 import Api from "../../api/Api";
 
 import { Ausence } from "../../models/index";
@@ -14,4 +14,4 @@ router.get("/:id", asyncHandler(api.find))
 router.put("/:id", asyncHandler(api.update))
 router.delete("/:id", asyncHandler(api.delete))
 
-export default router;
+export default router; */

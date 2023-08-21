@@ -91,7 +91,7 @@ const initialData = [
                 logos: ''
             }]
     },
-    {
+    /* {
       model: Ausence, data: [
           { code: 'AR01', name: 'FERIAS' },
           { code: 'AR02', name: 'ATRASO  ' },
@@ -115,7 +115,7 @@ const initialData = [
           {name:'DOENCA - sem comprovativo',code: 'AN55'},
           {name:'ACTIVIDADE DESPORTIVA',code: 'AN59'}
       ]
-  },
+  }, */
   {
     model: Country, data: [{
       nationality: "afegãne",

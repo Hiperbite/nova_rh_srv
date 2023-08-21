@@ -36,8 +36,8 @@ import { v4 as uuid } from "uuid";
 import { logger } from "../config";
 import LicenseSetting from "./Settings/license.settings";
 import Employee from "./employees/employee";
-import Ausence from "./employees/ausence";
-import Contract from './employees/contract';
+/* import Ausence from "./employees/ausence";
+ */import Contract from './employees/contract';
 import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
 import SalaryPackage from "./employees/salary_package";
@@ -80,7 +80,6 @@ const sequelize = new Sequelize({
   models: [
     Country,
     Business,
-    Ausence,
     Contact,
     AdditionalField,
     User,
@@ -169,7 +168,6 @@ export {
   AccountPaymentData,
   Employee,
   Address,
-  Ausence,
   Country,
   Company,
   Attachment,
