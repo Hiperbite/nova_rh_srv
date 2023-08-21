@@ -96,6 +96,12 @@ export default class Employee extends Model {
     allowNull: true,
   })
   avatar?: string | null;
+  
+  @Column({
+    type: DataType.STRING,
+    allowNull: true
+  })
+  social_security_number?: string
 
   @HasOne(() => User)
   user?: User
