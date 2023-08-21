@@ -7,7 +7,7 @@ import {
     ForeignKey,
   } from "sequelize-typescript";
   
-  import { Model, RoleLevel as Level } from "../index";
+  import { Model, /* RoleLevel as Level */ } from "../index";
   
   
   
@@ -25,12 +25,18 @@ import {
       type: DataType.STRING,
       allowNull: true,
     })
-    descriptions?: string;
+    code?: string;
     
     @Column({
       type: DataType.STRING,
       allowNull: true,
-      unique:true
+    })
+    descriptions?: string;
+    
+    @Column({
+      type: DataType.STRING(64),
+      allowNull: true,
+      //unique:true
     })
     name!: string;
   

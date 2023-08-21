@@ -13,9 +13,9 @@ import EmployeeRepository from "../repository/employees/employee.repository";
 
 class Api<T extends M> implements IApi {
   //protected repo: any
-  constructor(private Model: ModelCtor<M>, protected repo?:any) { 
-      this.repo ||= new Repository<M>(this.Model)
-    };
+  constructor(private Model: ModelCtor<M>, protected repo?: any) {
+    this.repo ||= new Repository<M>(this.Model)
+  };
 
   /**
    * @param req 
@@ -23,12 +23,12 @@ class Api<T extends M> implements IApi {
    * @returns Promise<Response>;
    */
   create = async (req: Request, res: Response): Promise<Response> => {
-       
+
 
     const { body } = req;
-    
-    const model: M | void = await this.repo.createOne(body,{include: { all: true } });
-        
+
+    const model: M | void = await this.repo.createOne(body, { include: { all: true } });
+
     return res.json(model);
 
   };
@@ -42,7 +42,9 @@ class Api<T extends M> implements IApi {
 
     const { body: models, } = req;
 
-    const updatedM = await this.repo.update(models)
+    const { id } = req.params;
+
+    const updatedM = await this.repo.updateOne({ id, ...models })
 
     return res.json(updatedM);
 
@@ -75,7 +77,7 @@ class Api<T extends M> implements IApi {
 
     const { id } = req.params;
 
-    const model: M | undefined = await this.repo.delete(id);
+    const model: M | undefined = await this.repo.deleteBy(id);
 
     return res.json(model);
   };
@@ -90,8 +92,9 @@ class Api<T extends M> implements IApi {
     const models: Paginate<M> | undefined =
       await this.repo
         .paginate({
+
+          include: { all: true },
           ...req.query,
-          include: { all: true }
         });
 
     return res.json(models);

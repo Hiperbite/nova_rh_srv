@@ -1,4 +1,3 @@
-import { SocketId } from './../../node_modules/socket.io-adapter/dist/index.d';
 import { Server } from "socket.io";
 
 class socketService {

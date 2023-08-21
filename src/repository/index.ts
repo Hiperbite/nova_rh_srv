@@ -4,4 +4,4 @@ import Repository from "./repository";
 import DefaultRepository from "./common/default.repository";
 
 
-export {  UserRepository, Repository, DefaultRepository} 
+export { UserRepository, Repository, DefaultRepository } 

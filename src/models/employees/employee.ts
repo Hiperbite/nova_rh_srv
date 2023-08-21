@@ -1,24 +1,71 @@
+import avatar from "../../application/helper/default_avatar";
 import moment from "moment";
 import {
   Table,
   Column,
   DataType,
-  BelongsTo,
-  ForeignKey,
   Scopes,
   HasOne,
   HasMany,
   AfterCreate,
   BeforeCreate,
-  BeforeSave,
+  DefaultScope,
+  AfterFind,
 } from "sequelize-typescript";
 import SequenceApp from "../../application/common/sequence.app";
 
-import { Contact, Model, Document, Person, User, Contract } from "../index";
+import {
+  Contact,
+  Model,
+  Document,
+  Person,
+  User,
+  Contract,
+  AdditionalField,
+  Role,
+  PayStub,
+  SalaryPackage,
+  AdditionalPayment,
+  AdditionalPaymentType,
+  AccountPaymentData
+} from "../index";
 
+@DefaultScope(() => ({
+  include: [{ model: User, as: 'user' }]
+}))
 @Scopes(() => ({
+  all: {
+    include: {
+      all: true
+    }
+  },
+  payStub: {
+    include: [
+      {
+        model: Contract, include: [
+          PayStub,
+          {
+            model: SalaryPackage,
+            include: [
+
+              {
+                model: AdditionalPayment,
+                include: [AdditionalPaymentType]
+              }
+            ]
+          },
+        ]
+      }
+    ]
+  },
   default: {
-    include: [Person]
+    include: [
+      { model: User, as: 'user' },
+      Person, {
+        model: Contract, includes: [AdditionalField,
+          Role
+        ]
+      }]
   }
 }))
 @Table({
@@ -44,6 +91,18 @@ export default class Employee extends Model {
   })
   type?: string;
 
+  @Column({
+    type: DataType.TEXT('long'),
+    allowNull: true,
+  })
+  avatar?: string | null;
+  
+  @Column({
+    type: DataType.STRING,
+    allowNull: true
+  })
+  social_security_number?: string
+
   @HasOne(() => User)
   user?: User
 
@@ -53,13 +112,45 @@ export default class Employee extends Model {
   @HasMany(() => Contact)
   contacts!: Contact[];
 
+  @HasMany(() => AccountPaymentData)
+  account_payment_datas!: AccountPaymentData[];
+
   @Column({
     type: DataType.VIRTUAL
   })
   get currentContract() {
-    return this.contracts?.
+    return this.contracts?.filter(({ isActive }: any) => isActive).
+      filter(({ endDate }: any) => moment().isBefore(endDate))[0];
+  }
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get role() {
+
+    let c: any = this.contracts
+    c = c?.filter(({ isActive }: any) => isActive)
+    c = c?.
+      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate) || moment().isBefore(startDate))
+    c = c?.
       sort((n: Contract, p: Contract) =>
         moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+
+    return c?.role
+  }
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get department() {
+    let c: any = this.contracts
+    c = c?.filter(({ isActive }: any) => isActive).
+      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate) || moment().isBefore(startDate))
+    c = c?.
+      sort((n: Contract, p: Contract) =>
+        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+
+    return c?.department
   }
 
   @HasMany(() => Document)
@@ -68,10 +159,6 @@ export default class Employee extends Model {
   @HasMany(() => Contract)
   contracts?: Contract[];
 
-  @Column({
-    type: DataType.VIRTUAL,
-  })
-  avatar?: string
   @Column({
     type: DataType.VIRTUAL,
   })
@@ -97,6 +184,44 @@ export default class Employee extends Model {
         .filter((doc: Document) => doc.type == "PASSPORT")[0] ?? {}
     );
   }
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get payStub() {
+
+    let myPayrolls: any[] = [];
+
+    this.contracts?.forEach((contact: Contract) => {
+
+      const startDate = moment(contact.startDate);
+      let current = startDate.add(1, 'm');
+      const newPayroll = new PayStub()
+      newPayroll.contract = contact;
+      while (current.isBetween(contact.startDate, contact.endDate)) {
+
+
+        let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+
+        const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        myPayrolls.push({
+          date: current.format('Y-M'),
+          fromDate: current.format('Y-M'),
+          toDate: current.format('Y-M'),
+          grossValue,
+          deductionValue,
+          netValue: grossValue - deductionValue,
+          payStubs: currentPayrolls,
+          state: 0,
+        })
+        current = current.add(1, 'M');
+      }
+
+    })
+    return myPayrolls;
+
+  }
+
   /**
    * @param employee 
    * @param param1 
@@ -123,5 +248,31 @@ export default class Employee extends Model {
     employee.code = String(code).padStart(8, '0');
 
   };
+
+  @AfterFind
+  static fixUserRelationship = async (employee: Employee | Employee[] | any, { transaction }: any) => {
+    try {
+      employee?.forEach((e: Employee) => e.avatar ||= avatar)
+    } catch (e: any) { }
+
+    try {
+      if (employee?.id) {
+
+        employee.avatar ||= avatar
+
+        if (!employee?.user) {
+          const email = employee?.contacts?.find((c: Contact) => c.type === "EMAIL")?.descriptions
+
+          await User.create({
+            email,
+            username: email?.split('@')[0],
+            role: "ROLE_USER",
+            employeeId: employee?.id,
+          }, { transaction });
+        }
+      }
+    } catch (e: any) { }
+
+  }
 }
 

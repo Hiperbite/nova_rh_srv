@@ -8,7 +8,7 @@ class SequenceApp {
     if (sequence === null) {
       sequence = await Sequence.create({ code }, options)
     } {
-      sequence.update({ sequence: (sequence?.sequence ?? 0) + 1 }, options);
+      sequence.update({ sequence: (sequence?.sequence ?? 0) + 1 }, options).catch(console.log);
     }
 
     return sequence.sequence;

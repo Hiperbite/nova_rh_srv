@@ -1,5 +1,6 @@
 
-import { createIndexDecorator, Sequelize, Table } from "sequelize-typescript";
+import { createIndexDecorator, Sequelize } from "sequelize-typescript";
+import { Dialect } from "sequelize";
 
 import Model from "./model";
 import User from "./employees/user";
@@ -7,10 +8,14 @@ import Token from "./common/token";
 import Session from "./common/session";
 import Address from "./common/address";
 import Contact from "./employees/contact";
+import AccountPaymentData from "./employees/account_payment_data";
+import Company from "./company/company";
 import Role from './employees/role';
 import RoleLevel from './employees/role_level';
 import Attachment from "./common/attachment";
 import dotenv from "dotenv";
+
+import Business from "./company/business";
 
 import Sequence from "./common/sequence";
 import Document from "./document/document";
@@ -36,20 +41,34 @@ import Contract from './employees/contract';
 import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
 import SalaryPackage from "./employees/salary_package";
+import Payroll from "./payroll/payroll";
+import PayrollLine from "./payroll/payroll_line";
+import PayrollLineType from "./payroll/payroll_line_type";
+import Department from "./employees/department";
+import AdditionalField         from "./employees/additional_field";
+import WorkingHour from "./employees/working_hour";
+import PayStub from "./payroll/pay_stub";
+import PayrollStatus from "./payroll/payroll_status";
+import Country from "./common/country";
+import { initializer } from "./initializer";
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD,DB_DIALECT, DB_NAME } = process.env;
+
+const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
 const sequelize = new Sequelize({
-  //dialect: "mariadb",
-  //dialect: "mariadb",
-  dialect: "sqlite",
-  storage: "./database.sqlite",
+  dialect,
+  storage: "./data/database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-
+  dialectOptions: {
+    options: {
+      requestTimeout: 300000
+    }
+  },
   pool: {
     max: 15,
     min: 5,
@@ -59,11 +78,16 @@ const sequelize = new Sequelize({
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+    Country,
+    Business,
     Contact,
+    AdditionalField,
     User,
     Address,
+    Company,
     Person,
     Document,
+    AccountPaymentData,
     Employee,
     Token,
     Session,
@@ -71,13 +95,17 @@ const sequelize = new Sequelize({
     Attachment,
     Sequence,
 
-    RoleLevel,
-    Role,
     Contract,
     AdditionalPaymentType,
     AdditionalPayment,
     SalaryPackage,
+    PayStub,
+    Payroll,
+    PayrollLine,
+    PayrollLineType,
+    PayrollStatus,
 
+    WorkingHour,
     Notification,
 
     Ticket,
@@ -87,11 +115,17 @@ const sequelize = new Sequelize({
     EventType,
     EventSchedule,
 
-    LocalSetting,
+    /*LocalSetting,
     SystemSetting,
     DocumentSetting,
     LicenseSetting,
     Setting,
+*/
+    Department,
+
+    RoleLevel,
+    //  Role,
+    Role
   ],
 });
 
@@ -101,105 +135,15 @@ const UniqIndex = createIndexDecorator({
   unique: true,
 });
 
-const initialData = [{
-  model: EventType, data: [
-    { code: 'Matricula', name: 'Matricula' },
-    { code: 'ConfirmacaoMatricula', name: 'Confirmação de Matricula' },
-    { code: 'Inscricao', name: 'Inscrição' },
-  ]
-}, {
-  model: Event, data: [
-    { code: 'EVT00000013', isActive: false, name: 'Inscrição de Novos Estudantes' },
-    { code: 'EVT00000012', isActive: false, name: 'Matricula de Novos Inscritos' },
-    { code: 'EVT00000011', isActive: false, name: 'Inscrição de novos alunos' },
-  ]
-}, {
-  model: TicketType, data: [
-    { code: '9', descriptions: 'Cartão de Estudantes' },
-    { code: '8', descriptions: 'Declaração com Notas' },
-    { code: '7', descriptions: 'Declaração sem Notas' },
-    { code: '6', descriptions: 'Histórico de Estudantes' },
-  ]
-}, {
-  model: TicketState, data: [
-    { code: 'Opened', descriptions: 'Aberto' },
-    { code: 'Aproved', descriptions: 'Aprovado' },
-    { code: 'Done', descriptions: 'Resolvido' },
-    { code: 'Rejected', descriptions: 'Rejeitado' },
-  ]
-}, {
-  model: AdditionalPaymentType, data: [
-    { name: 'Bônus' },
-    { name: 'Horas extras' },
-    { name: 'Adiantamento salarial' },
-    { name: 'Trabalho em feriados' },
-    { name: 'Feriados' },
-    { name: 'Horas extras' },
-    { name: 'Variável' },
-    { name: 'Comissões' },
-    { name: 'Complemento' },
-    { name: 'Disponibilidade' },
-    { name: 'Acomodação' },
-    { name: 'Transporte' },
-    { name: 'Espaço de trabalho' },
-    { name: 'Refeição' },
-    { name: 'Aprendizado' },
-    { name: 'Outro' }
-  ]
-}, {
-  model: Role, data: [
-    { name: 'Project manager' },
-    { name: 'Software Architect' },
-    { name: 'Data science' },
-    { name: 'Front-end web development' },
-    { name: 'Software Testing' },
-    { name: 'Product Manager' },
-    { name: 'System Administrator' },
-    { name: 'Marketing' },
-    { name: 'Data analysis' },
-    { name: 'Technical Project Manager' },
-    { name: 'Machine learning' },
-    { name: 'Sales engineering' },
-    { name: 'Developer Analyst - Trainee' },
-    { name: 'Developer Analyst - Junior' },
-    { name: 'Developer Analyst - Full' },
-    { name: 'Developer Analyst - Senior' },
-    { name: 'Assistente Comercial I' },
-    { name: 'Assistente Comercial II' },
-    { name: 'Assistente Comercial III' },
-    { name: 'Commercial Manager' },
-  ]
-}, {
-  model: Setting, data: [
-    /*{
-      code: 'NOVA',
-
-      id: '028a5c78-710f-482c-a68d-b48cca54f35c',
-
-      system: SystemSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-
-      documents: DocumentSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-
-      local: LocalSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-
-      classe: ClasseSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log),
-
-      license: LicenseSetting.create({ id: '028a5c78-710f-482c-a68d-b48cca54f35c' }).catch(console.log)
-    },*/
-
-  ]
-}]
 const Repo = sequelize.getRepository;
-/*sequelize.sync({ alter: true, force: false }).then(() =>
-  initialData.forEach(({ model, data }: any) => data.forEach(async (d: any) =>
-    model.create(d, { include: { all: true } }).catch(console.log))
-  )
-).catch((x: any) => {
 
-  const e = x;
-  console.log(e)
-})
-*/
+sequelize
+  .sync({ alter: true, force: true })
+  .then(initializer)
+  .catch(console.error)
+
+
+
 enum SPs {
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
@@ -221,17 +165,28 @@ export {
   Repo,
   Model,
   Contact,
+  AccountPaymentData,
   Employee,
   Address,
+  Country,
+  Company,
   Attachment,
   Document,
   Person,
   RoleLevel,
   Role,
   Contract,
+  AdditionalField,
   AdditionalPaymentType,
   AdditionalPayment,
   SalaryPackage,
+  PayStub,
+  Payroll,
+  PayrollLine,
+  PayrollLineType,
+  PayrollStatus,
+
+  Business,
 
   User,
   Track,
@@ -256,4 +211,6 @@ export {
   DocumentSetting,
   LicenseSetting,
   Setting,
+  Department,
+  WorkingHour
 };

@@ -2,6 +2,7 @@ import express from "express";
 import Api from "../../api/Api";
 
 import {
+  Contact,
   Employee,
 } from "../../models/index";
 

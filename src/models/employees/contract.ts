@@ -1,4 +1,4 @@
-import { includes } from "lodash";
+import moment from "moment";
 import {
   Table,
   Column,
@@ -8,16 +8,33 @@ import {
   Scopes,
   HasOne,
   DefaultScope,
+  HasMany,
+  BeforeUpdate,
 } from "sequelize-typescript";
 
-import { Model, Employee, Role, SalaryPackage } from "../index";
+import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
 
 @DefaultScope(() => ({
-  include: [Role]
+  include: [
+    Role,
+    AdditionalField,
+    { model: Employee, include: [Person, { model: User, as: 'user' }] },
+    { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
+    { model: Department, include: [{ as: 'department', model: Department }] }],
+  orderBy: [['startDate', 'DESC']]
 }))
 @Scopes(() => ({
   default: {
     include: []
+  },
+  coworkers: {
+    attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
+    include: [Role,
+      { model: Employee, include: [Person, { model: User, as: 'user' }] }]
+  },
+  employee: {
+    include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
+    orderBy: [['startDate', 'DESC']]
   }
 }))
 @Table({
@@ -41,12 +58,13 @@ export default class Contract extends Model {
     type: DataType.DATEONLY,
     allowNull: true,
   })
-  endDate?: string;
+  endDate?: Date | null;
+
   @Column({
     type: DataType.DATEONLY,
     allowNull: true,
   })
-  startDate?: string;
+  startDate!: Date;
 
   @BelongsTo(() => Employee)
   employee?: Employee;
@@ -60,8 +78,156 @@ export default class Contract extends Model {
   @ForeignKey(() => Role)
   roleId?: string;
 
-  @HasOne(() => SalaryPackage)
+  @BelongsTo(() => Department)
+  department!: Department;
+
+  @ForeignKey(() => Department)
+  departmentId!: string;
+
+  @HasMany(() => AdditionalField)
+  additionalFields?: AdditionalField[]
+
+  @HasMany(() => PayStub)
+  payStubs?: PayStub[]
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get actualPayrollState() {
+
+    let myPayrolls: any[] = [];
+    const startDate = moment(this.startDate);
+    let current = startDate.add(1, 'm');
+    const newPayroll = new PayStub()
+    newPayroll.contract = this;
+    while (current.isBetween(this.startDate, this.endDate) && current.isBefore(moment())) {
+      newPayroll.date = current.toDate();
+      newPayroll.isActive = false;
+
+      let currentPayrolls = (this?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+
+      const grossValue = currentPayrolls.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+      const deductionValue = currentPayrolls.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+      myPayrolls.push({
+        date: current.format('Y-M'),
+        fromDate: current.format('Y-M'),
+        toDate: current.format('Y-M'),
+        grossValue,
+        deductionValue,
+        netValue: grossValue - deductionValue,
+        payrolls: currentPayrolls,
+        state: 0,
+      })
+      current = current.add(1, 'M');
+    }
+    return myPayrolls;
+
+  }
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get payStubState() {
+
+    const salaryPackage: any = this?.salaryPackage
+    const additionalPayments: any = salaryPackage?.additionalPayments
+
+    let lines: any[] = []
+    lines.push({
+      isActive: true,
+      code: '1000',
+      date: new Date(),
+      value: Number(salaryPackage?.baseValue),
+      debit: true,
+      quantity: 1,
+      baseValuePeriod: salaryPackage?.baseValuePeriod,
+      descriptions: 'Base',
+
+    })
+    additionalPayments?.
+      filter(({ isActive }: any) => isActive).
+      filter(({ startDate }: any) => moment().isAfter(moment(startDate))).
+      map(({ code, descriptions, startDate, isActive, baseValue, baseValuePeriod, type }: any) => (
+        {
+          isActive,
+          code: type?.code,
+          date: new Date(),
+          startDate,
+          value: Number(baseValue),
+          property: 1,
+          debit: true,
+          baseValuePeriod,
+          descriptions: type?.name
+        }
+      )
+      )?.forEach((x: any) => lines.push(x));
+
+    const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
+
+    lines.push({
+      isActive: true,
+      code: '350',
+      date: new Date(),
+      value: grossValue * 3 / 100,
+      debit: false,
+      quantity: 1,
+      baseValuePeriod: salaryPackage?.baseValuePeriod,
+      descriptions: 'INSS [3%]'
+    })
+
+    const IRTTable = [
+      { a: 0, b: 70000, v: 0 },
+      { a: 70001, b: 150000, v: 10 },
+      { a: 150001, b: 300000, v: 16 },
+      { a: 300001, b: 500000, v: 19 },
+      { a: 500001, b: 1500000, v: 20 },
+      { a: 1500001, b: 3000000, v: 24 },
+    ]
+    const IRTpercent = (r: number): number => IRTTable.find(({ a, b }: any) => r > a && r <= b)?.v ?? 0
+
+    if (grossValue > 70000) {
+      lines.push({
+        isActive: true,
+        code: '401',
+        date: new Date(),
+        value: grossValue * IRTpercent(grossValue) / 100,
+        debit: false,
+        quantity: 1,
+        baseValuePeriod: salaryPackage?.baseValuePeriod,
+        descriptions: `IRT [${IRTpercent(grossValue)}%]`
+      })
+    }
+
+    const deductionValue = lines.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((x: any, y: any) => Number(x) + Number(y));
+    const netValue = grossValue - deductionValue;
+
+    const state = {
+      base: this.salaryPackage?.baseValue,
+      lines,
+      grossValue,
+      deductionValue,
+      netValue
+    }
+
+    return state;
+
+  }
+
+  @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
   salaryPackage?: SalaryPackage;
+
+  @HasOne(() => WorkingHour)
+  workingHour?: WorkingHour;
+
+  @BeforeUpdate
+  static beforeDataUpdate = async (contract: Contract) => {
+    const employee = await Employee.findByPk(contract?.employeeId, { include: [Contract] });
+
+    if (employee?.contracts?.length === 1) {
+      contract.isActive = moment().
+        isBetween(contract?.startDate, contract?.endDate || moment().add(1, 'days'))
+
+    }
+  }
 }
 
 

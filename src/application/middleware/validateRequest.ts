@@ -6,19 +6,26 @@ const validateRequest = (
   next: NextFunction
 ) => {
 
-  const { where, order }: any = req.query
+  const { where, order: o, include: i }: any = req.query
   if (where) {
     Object.keys(where).forEach((key: string) => {
       if (where[key] && where[key].indexOf(',') > -1)
         where[key] = where[key].split(',');
       if (where[key] === 'true' || where[key] === 'false')
         where[key] = where[key] === 'true' ? true : false;
+      if (where[key] === 'null')
+        where[key] = null;
     })
     req.query.where = where
   }
-  if (order) {
-    const newOrder: any = Object.keys(order).map((key) => [key, order[key]])
-    req.query.order = newOrder
+  if (i) {
+    const include = JSON.parse(i);
+    req.query.include = include
+  }
+  if (o) {
+    const order = o.split(',').map((p: any) => p.split('.'));
+    //const newOrder: any = Object.keys(order).map((key) => [key, order[key]])
+    req.query.order = order
   }
   if (req.params.id && !uuidPattern.test(req.params.id)) {
     throw { code: 400, message: `required a valid uuid param, ${req.params.id} given` }

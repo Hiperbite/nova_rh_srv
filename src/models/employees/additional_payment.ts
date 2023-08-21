@@ -8,7 +8,7 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 
-import { AdditionalPaymentType, Model, RoleLevel as Level, SalaryPackage } from "../index";
+import { AdditionalPaymentType, Model, /* RoleLevel as Level */ SalaryPackage } from "../index";
 
 
 @DefaultScope(() => ({
@@ -24,6 +24,12 @@ import { AdditionalPaymentType, Model, RoleLevel as Level, SalaryPackage } from 
     tableName: "AdditionalPayments",
 })
 export default class AdditionalPayment extends Model {
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+    code?: string;
+    
     @Column({
         type: DataType.STRING,
         allowNull: true,
