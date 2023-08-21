@@ -64,10 +64,19 @@ const sequelize = new Sequelize({
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
+
   dialectOptions: {
     options: {
-      requestTimeout: 300000
+      requestTimeout: 300000,
+      transactionType: 'IMMEDIATE'
     }
+  },
+  retry: {
+    match: [
+      /SQLITE_BUSY/,
+    ],
+    name: 'query',
+    max: 5
   },
   pool: {
     max: 15,
