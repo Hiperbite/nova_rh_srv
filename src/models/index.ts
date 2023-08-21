@@ -36,6 +36,7 @@ import { v4 as uuid } from "uuid";
 import { logger } from "../config";
 import LicenseSetting from "./Settings/license.settings";
 import Employee from "./employees/employee";
+import Ausence from "./employees/ausence";
 import Contract from './employees/contract';
 import AdditionalPaymentType from "./employees/additional_payment_type";
 import AdditionalPayment from "./employees/additional_payment";
@@ -79,6 +80,7 @@ const sequelize = new Sequelize({
   models: [
     Country,
     Business,
+    Ausence,
     Contact,
     AdditionalField,
     User,
@@ -135,7 +137,7 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-if (false) {
+if (true) {
   
   sequelize.sync({ alter: false, force: false }).then(initializer).catch((x: any) => {
     const e = x;
@@ -167,6 +169,7 @@ export {
   AccountPaymentData,
   Employee,
   Address,
+  Ausence,
   Country,
   Company,
   Attachment,

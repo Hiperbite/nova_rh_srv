@@ -4,6 +4,8 @@ import AdditionalPaymentType from "./employees/additional_payment_type";
 import Department from "./employees/department";
 import Role from "./employees/role";
 import PayrollStatus from "./payroll/payroll_status";
+import Country from "./common/country";
+import Ausence from "./employees/ausence";
 
 
 const initialData = [
@@ -89,7 +91,31 @@ const initialData = [
                 logos: ''
             }]
     },
-
+    {
+      model: Ausence, data: [
+          { code: 'AR01', name: 'FERIAS' },
+          { code: 'AR02', name: 'ATRASO  ' },
+          {name:'DOENCA - com comprovativo',code:'AR04'},
+          {name:'CONSULTA MEDICA',code:'AR05'},
+          {name:'NASCIMENTO FILHO PAI',code:'AR07'},
+          {name:'CASAMENTO',code:'AR13'},
+          {name:'ACTIVIDADE SINDICAL',code:'AR19'},
+          {name:'PLANO DE CONTIGÊNCIA',code:'AR22'},
+          {name:'TELETRABALHO',code:'AR24'},
+          {name:'COVID',code: 'AR25'},
+          {name:'FALTA JUSTIFICADA. NÃO REMUNERADA',code:'AN52'},
+          {name:'SUSPENSÃO PROCESSO DISCIPLINAR',code: 'AN54'},
+          {name:'PROVA ESCOLAR NR',code:'AN60'},
+          {name:'ASSISTÊNCIA FAMILIAR (R)',code: 'AR06'},
+          {name:'OBRIGAÇÕES LEGAIS C/COMP.',code: 'AR14'},
+          {name:'ACIDIDENTE DE TRABALHO',code: 'AR15'},
+          {name:'PROVA ESCOLAR ',code: 'AR21'},
+          {name:'QUARENTENA',code: 'AR23'},
+          {name:'FALTA INJUSTIFICADA',code: 'AN53'},
+          {name:'DOENCA - sem comprovativo',code: 'AN55'},
+          {name:'ACTIVIDADE DESPORTIVA',code: 'AN59'}
+      ]
+  },
   {
     model: Country, data: [{
       nationality: "afegãne",
