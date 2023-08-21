@@ -57,9 +57,9 @@ export default class Department extends Model {
   childs?: Dep[];
 
   @BelongsTo(() => Dep)
-  department?: Dep;
+  depart?: Dep;
 
   @ForeignKey(() => Dep)
-  departmentId?: string;
+  departId?: string;
 }
 
