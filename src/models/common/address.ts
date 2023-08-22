@@ -49,9 +49,9 @@ export default class Address extends Model {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
-    countryCode!: string;
+    countryCode?: string;
 
     @BelongsTo(() => Company)
     company?: Company
