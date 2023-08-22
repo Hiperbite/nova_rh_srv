@@ -17,4 +17,10 @@ export default class Business extends Model{
         allowNull: false
     })
     name!: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: true
+    })
+    code?: string;
 }

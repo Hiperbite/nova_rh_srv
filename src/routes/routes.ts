@@ -12,7 +12,8 @@ import dashboards from "./common/dashBoard.routes";
 import helpers from "./common/helper.routes";
 import employees from "./employees/employee.routes";
 import contracts from "./employees/contract.routes";
-import personal from "./employees/person.routes";
+/* import ausence from "./employees/ausence.routes";
+ */import personal from "./employees/person.routes";
 import accountpaymentdata from "./employees/account_payment_data.routes"
 
 import payroll from "./payrolls/payroll.routes";
@@ -33,7 +34,8 @@ routes.use('/company/business', business)
 routes.use('/employees/employees', employees)
 routes.use('/employees/account-payment-data', accountpaymentdata)
 routes.use('/employees/contracts', contracts)
-routes.use('/employees/personal', personal)
+/* routes.use('/employees/ausence', ausence)
+ */routes.use('/employees/personal', personal)
 
 routes.use('/payrolls/payroll', payroll)
 
