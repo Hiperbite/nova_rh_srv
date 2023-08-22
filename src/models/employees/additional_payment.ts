@@ -28,6 +28,12 @@ export default class AdditionalPayment extends Model {
         type: DataType.STRING,
         allowNull: true,
     })
+    code?: string;
+    
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
     descriptions?: string;
 
     @Column({
