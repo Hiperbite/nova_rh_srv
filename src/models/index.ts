@@ -57,8 +57,8 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const sequelize = new Sequelize({
   dialect: "mysql",
-  /* dialect: "sqlite",
-  storage: "./database.sqlite", */
+  /* dialect: "sqlite",*/
+  storage: "./database.sqlite", 
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -135,7 +135,7 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-if (false) {
+if (true) {
   
   sequelize.sync({ alter: false, force: false }).then(initializer).catch((x: any) => {
     const e = x;

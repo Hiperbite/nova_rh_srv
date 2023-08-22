@@ -13,7 +13,7 @@ export default class Repository<T extends M>  {
   }
 
   protected start = async () => this.transaction = await sequelize.transaction();
-  protected commit = async () => this.transaction?.commit();
+  protected commit = async () => await this.transaction?.commit();
   protected rollback = async () => this.transaction?.rollback().catch(console.warn);
 
   private refactorOptions = async ({
@@ -47,11 +47,11 @@ export default class Repository<T extends M>  {
     let final;
 
     try {
-      this.start();
+      await this.start();
       final = await this.Model.create(data, { ...options, transaction: this.transaction });
-      this.commit();
+      await this.commit();
     } catch (err: any) {
-     // this.rollback();
+      // this.rollback();
       throw err;
     }
 
@@ -61,10 +61,19 @@ export default class Repository<T extends M>  {
   public updateOne = async (data: any, options?: any): Promise<T | any> => {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
-    let model = await this.Model.update(d, { where: { id }, returning: true });
-    let nmodel = model ? await this.findOne(id) : model;
-    nmodel?.save();
-    return nmodel
+
+    try {
+      await this.start();
+      let [model, done] = await this.Model.update(d, { where: { id }, returning: true, transaction: this.transaction });
+
+      await this.commit();
+      let final = done ? await this.findOne(id) : model;
+
+      return final
+    } catch (err: any) {
+      throw err;
+    }
+
   };
 
   public deleteBy = async (id: any | string): Promise<boolean> => {
