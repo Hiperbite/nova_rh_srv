@@ -11,18 +11,15 @@ import {
   AfterSave,
   AfterUpdate,
   createIndexDecorator,
-  AfterFind,
   Scopes,
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import {  Model, Address, Contact, Employee } from "../index";
+import { Model, Address, Employee } from "../index";
 
 import bcrypt from "bcrypt";
 import { UserApp } from "../../application/common/user.app";
 import sendEmail, { mailServices } from "../../application/mailler/index";
-
-import { v4 as uuid } from "uuid";
 
 const UniqIndex = createIndexDecorator({
   name: 'Email-index',
@@ -70,22 +67,20 @@ export type PermissionsType =
   | "ACADEMIC_3"
   | "ACADEMIC_4"
 
-
-
 @Scopes(() => ({
   main: {
     include: [{
     }]
   },
   auth: {
-    include: [{ }]
+    include: [{}]
   },
   full: {
     include: [{
       include: [
         { model: Address, as: 'livingAddress' },
         { model: Address, as: 'birthPlaceAddress' },
-        ]
+      ]
     }]
   }
 }))
@@ -94,13 +89,14 @@ export type PermissionsType =
   tableName: "Users",
 })
 export default class User extends Model {
+  
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   username!: string;
 
- // @UniqIndex
+  // @UniqIndex
   @Column({
     type: DataType.STRING,
     allowNull: true
@@ -137,12 +133,12 @@ export default class User extends Model {
   })
   role!: ROLES;
 
-  @Default(false)
+  @Default(true)
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  new?: boolean;
+  isNew?: boolean;
 
   @Column({
     type: DataType.TEXT,
@@ -167,12 +163,6 @@ export default class User extends Model {
     allowNull: true,
   })
   verificationCode?: string | null;
-
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  avatar?: string | null;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -208,29 +198,14 @@ export default class User extends Model {
   @AfterCreate
   @AfterSave
   static async refreshPersons(user: User) {
-   // const person = await Person.findByPk(user.personId);
-/*
-    if (person && person.userId === null) {
-      person.userId = user.id;
-      person?.save();
-    } else {
-      if (person) user.person = person;
-    }*/
-  }
-
-  @AfterFind
-  static updateRoles = async (user: User) => {
-    if (!user) return;
-/*
-    const { personId } = user
-
-    if (!personId) return;*/
-
-   
-
-    //user.save()
-
-
+    // const person = await Person.findByPk(user.personId);
+    /*
+        if (person && person.userId === null) {
+          person.userId = user.id;
+          person?.save();
+        } else {
+          if (person) user.person = person;
+        }*/
   }
 
   //TODO: fix password compare
@@ -249,5 +224,6 @@ export default class User extends Model {
     "personId",
     "person",
     "permissions",
+    "isNew",
   ];
 }

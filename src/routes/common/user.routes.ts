@@ -65,7 +65,7 @@ router.post(
 );
 router.put(
   "/:id",
-  requireUser, asyncHandler(updateUser)
+ /* requireUser, */asyncHandler(updateUser)
 );
 router.get(
   "/:id",

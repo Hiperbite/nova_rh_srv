@@ -7,7 +7,7 @@ import {
     ForeignKey,
 } from "sequelize-typescript";
 
-import { Company, Model } from "../index";
+import { Company, Country, Model } from "../index";
 
 @Scopes(() => ({
     default: {
@@ -49,9 +49,9 @@ export default class Address extends Model {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
-    countryCode!: string;
+    countryCode?: string;
 
     @BelongsTo(() => Company)
     company?: Company
@@ -59,4 +59,9 @@ export default class Address extends Model {
     @ForeignKey(() => Company)
     companyId?: string
 
+    @BelongsTo(() => Country)
+    country?: Country
+    
+    @ForeignKey(() => Country)
+    countryId?: string
 }

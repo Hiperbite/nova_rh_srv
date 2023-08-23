@@ -181,7 +181,7 @@ export async function updateAvatar(
 ) {
   const user = await User.scope('auth').findByPk(req?.body?.userId ?? res?.locals?.user?.id);
   if (user) {
-    user.avatar = req.body.avatar
+  //  user.avatar = req.body.avatar
     user.save()
   }
   return res.send(user);

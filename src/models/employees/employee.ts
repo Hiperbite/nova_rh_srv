@@ -1,3 +1,4 @@
+import avatar from "../../application/helper/default_avatar";
 import moment from "moment";
 import {
   Table,
@@ -8,6 +9,8 @@ import {
   HasMany,
   AfterCreate,
   BeforeCreate,
+  DefaultScope,
+  AfterFind,
 } from "sequelize-typescript";
 import SequenceApp from "../../application/common/sequence.app";
 
@@ -27,6 +30,9 @@ import {
   AccountPaymentData
 } from "../index";
 
+@DefaultScope(() => ({
+  include: [{ model: User, as: 'user' }]
+}))
 @Scopes(() => ({
   all: {
     include: {
@@ -84,6 +90,18 @@ export default class Employee extends Model {
     allowNull: true,
   })
   type?: string;
+
+  @Column({
+    type: DataType.TEXT('long'),
+    allowNull: true,
+  })
+  avatar?: string | null;
+  
+  @Column({
+    type: DataType.STRING,
+    allowNull: true
+  })
+  social_security_number?: string
 
   @HasOne(() => User)
   user?: User
@@ -144,12 +162,6 @@ export default class Employee extends Model {
   @Column({
     type: DataType.VIRTUAL,
   })
-  avatar?: string
-
-  @Column({
-    type: DataType.VIRTUAL,
-  })
-
   get idCard() {
     return (
       this?.documents
@@ -236,5 +248,31 @@ export default class Employee extends Model {
     employee.code = String(code).padStart(8, '0');
 
   };
+
+  @AfterFind
+  static fixUserRelationship = async (employee: Employee | Employee[] | any, { transaction }: any) => {
+    try {
+      employee?.forEach((e: Employee) => e.avatar ||= avatar)
+    } catch (e: any) { }
+
+    try {
+      if (employee?.id) {
+
+        employee.avatar ||= avatar
+
+        if (!employee?.user) {
+          const email = employee?.contacts?.find((c: Contact) => c.type === "EMAIL")?.descriptions
+
+          await User.create({
+            email,
+            username: email?.split('@')[0],
+            role: "ROLE_USER",
+            employeeId: employee?.id,
+          }, { transaction });
+        }
+      }
+    } catch (e: any) { }
+
+  }
 }
 

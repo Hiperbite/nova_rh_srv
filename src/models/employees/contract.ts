@@ -9,6 +9,7 @@ import {
   HasOne,
   DefaultScope,
   HasMany,
+  BeforeUpdate,
 } from "sequelize-typescript";
 
 import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
@@ -25,6 +26,11 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
 @Scopes(() => ({
   default: {
     include: []
+  },
+  coworkers: {
+    attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
+    include: [Role,
+      { model: Employee, include: [Person, { model: User, as: 'user' }] }]
   },
   employee: {
     include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
@@ -211,6 +217,17 @@ export default class Contract extends Model {
 
   @HasOne(() => WorkingHour)
   workingHour?: WorkingHour;
+
+  @BeforeUpdate
+  static beforeDataUpdate = async (contract: Contract) => {
+    const employee = await Employee.findByPk(contract?.employeeId, { include: [Contract] });
+
+    if (employee?.contracts?.length === 1) {
+      contract.isActive = moment().
+        isBetween(contract?.startDate, contract?.endDate || moment().add(1, 'days'))
+
+    }
+  }
 }
 
 

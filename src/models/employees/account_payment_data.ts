@@ -1,6 +1,6 @@
 import {Column, Table, Scopes, DataType, ForeignKey, BelongsTo} from "sequelize-typescript";
 
-import { Model, Employee } from "../index";
+import { Model, Employee, Country } from "../index";
 
 @Scopes(() => ({
     default: {
@@ -42,11 +42,18 @@ export default class AccountPaymentData extends Model{
         type: DataType.STRING,
         allowNull: true
     })
-    bank_agency?: string;
+
+    swift?: string
 
     @BelongsTo(() => Employee)
     employee?: Employee;
 
     @ForeignKey(() => Employee)
     employeeId?: Employee;
+
+    @BelongsTo(() => Country)
+    country?: Country;
+
+    @ForeignKey(() => Country)
+    countryId?: Country;
 }

@@ -6,7 +6,7 @@ const validateRequest = (
   next: NextFunction
 ) => {
 
-  const { where, order: o }: any = req.query
+  const { where, order: o, include: i }: any = req.query
   if (where) {
     Object.keys(where).forEach((key: string) => {
       if (where[key] && where[key].indexOf(',') > -1)
@@ -17,6 +17,10 @@ const validateRequest = (
         where[key] = null;
     })
     req.query.where = where
+  }
+  if (i) {
+    const include = JSON.parse(i);
+    req.query.include = include
   }
   if (o) {
     const order = o.split(',').map((p: any) => p.split('.'));

@@ -1,5 +1,6 @@
 
-import { createIndexDecorator, Sequelize, Table } from "sequelize-typescript";
+import { createIndexDecorator, Sequelize } from "sequelize-typescript";
+import { Dialect } from "sequelize";
 
 import Model from "./model";
 import User from "./employees/user";
@@ -44,28 +45,38 @@ import Payroll from "./payroll/payroll";
 import PayrollLine from "./payroll/payroll_line";
 import PayrollLineType from "./payroll/payroll_line_type";
 import Department from "./employees/department";
-import ContractAdditionalField from "./employees/additional_field";
-import AdditionalField from "./employees/additional_field";
+import AdditionalField         from "./employees/additional_field";
 import WorkingHour from "./employees/working_hour";
 import PayStub from "./payroll/pay_stub";
 import PayrollStatus from "./payroll/payroll_status";
+import Country from "./common/country";
 import { initializer } from "./initializer";
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD,DB_DIALECT, DB_NAME } = process.env;
+
+const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
 const sequelize = new Sequelize({
-  dialect: "mysql",
-  /* dialect: "sqlite",
-  storage: "./database.sqlite", */
+  dialect,
+  storage: "./data/database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
+
   dialectOptions: {
     options: {
-      requestTimeout: 300000
+      requestTimeout: 300000,
+      transactionType: 'IMMEDIATE'
     }
+  },
+  retry: {
+    match: [
+      /SQLITE_BUSY/,
+    ],
+    name: 'query',
+    max: 5
   },
   pool: {
     max: 15,
@@ -76,6 +87,8 @@ const sequelize = new Sequelize({
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+    Country,
+    Business,
     Contact,
     AdditionalField,
     User,
@@ -90,8 +103,6 @@ const sequelize = new Sequelize({
     Track,
     Attachment,
     Sequence,
-
-    Business,
 
     Contract,
     AdditionalPaymentType,
@@ -134,13 +145,13 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-if (false) {
-  
-  sequelize.sync({ alter: false, force: false }).then(initializer).catch((x: any) => {
-    const e = x;
-    console.log(e)
-  })
-}
+
+sequelize
+  .sync({ alter: true, force: false })
+  .then(initializer)
+  .catch(console.error)
+
+
 
 enum SPs {
   GetStudentsCountOlder = 'GetStudentsCountOlder',
@@ -166,6 +177,7 @@ export {
   AccountPaymentData,
   Employee,
   Address,
+  Country,
   Company,
   Attachment,
   Document,
