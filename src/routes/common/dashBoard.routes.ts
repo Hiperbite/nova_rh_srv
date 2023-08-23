@@ -29,6 +29,10 @@ const router = express.Router()
     // validateResource(createStudentSchema),
     asyncHandler(api.getStudentCount)
   )
+  .post(
+    "/callendar-date",
+    asyncHandler(api.callendarDate)
+  )
   ;
 
 export default router;

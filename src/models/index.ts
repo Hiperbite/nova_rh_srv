@@ -147,13 +147,14 @@ const UniqIndex = createIndexDecorator({
 const Repo = sequelize.getRepository;
 
 sequelize
-  .sync({ alter: true, force: false })
+  .sync({ alter: false, force: false })
   .then(initializer)
   .catch(console.error)
 
 
 
 enum SPs {
+  GetCallendarDate = "GetCallendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
   GetStudentsCountNationality = 'GetStudentsCountNationality',
@@ -163,9 +164,11 @@ enum SPs {
   GetStudentHonorRoll = 'GetStudentHonorRoll',
   GetStudentCount = 'GetStudentCount'
 }
-const Procedure = async (procedure: SPs, opts: any = {}) =>
+const Procedure = async (procedure: SPs, opts: any = []) =>
   await sequelize
-    .query('CALL ' + procedure, {})
+    .query('CALL ' + procedure, {
+      replacements: opts
+    })
 
 export default sequelize;
 
