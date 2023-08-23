@@ -89,7 +89,7 @@ export default class Person extends Model {
   maritalStatus?: MaritalstatusType;
 
   @Column({
-    type: DataType.TEXT,
+    type: DataType.DATEONLY,
     allowNull: true,
   })
   birthDate?: Date;
