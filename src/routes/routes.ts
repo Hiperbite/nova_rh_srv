@@ -3,6 +3,7 @@ import commonRoutes from "./common/common.routes";
 import userRoutes from "./common/user.routes";
 import authRoutes from "./common/auth.routes";
 import generateDocumentsRoutes from "./common/generate-documents.routes";
+import attachEmployeeFileRoutes from "./common/attachEmployeeFile.routes";
 import trackRoutes from "./common/track.routes";
 
 import company from "./company/company.routes";
@@ -27,6 +28,7 @@ routes.use('/tracks', trackRoutes)
 routes.use('/commons/dashboards', dashboards)
 routes.use('/commons/helpers', helpers)
 routes.use('/commons/generate-documents', generateDocumentsRoutes)
+routes.use('/commons/attach-employee-file', attachEmployeeFileRoutes)
 
 routes.use('/company/company', company)
 routes.use('/company/business', business)
