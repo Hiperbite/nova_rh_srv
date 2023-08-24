@@ -37,6 +37,13 @@ class DashBoardApi {
     
     return res.json({ studentsCount });
   };
+  callendarDate = async (req: Request, res: Response): Promise<Response> => {
+    const {start, end} = req.body;
+
+    const calendarDates = await Procedure(SPs.GetCallendarDate, [start,end]);
+    
+    return res.json(calendarDates);
+  }
 }
 
 export default new DashBoardApi(new Repository(Track));
