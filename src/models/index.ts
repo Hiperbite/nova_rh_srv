@@ -145,12 +145,12 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-
+(true && 
 sequelize
-  .sync({ alter: true, force: false })
+  .sync({ alter: false, force: false })
   .then(initializer)
   .catch(console.error)
-
+)
 
 
 enum SPs {
