@@ -85,7 +85,6 @@ const initialData = [
       { code: '13', name: 'Loja' },
       { code: '14', name: 'Saúde' },
       { code: '15', name: 'Educação e Ensino' },
-      { code: '16', name: 'Outro' },
     ]
   },
   {
@@ -105,12 +104,12 @@ const initialData = [
         code: 'A',
         name: '',
         description: '',
-        business: '',
         nif: '',
         socialCapital: 0,
         integrationToken: '',
         slogan: '',
-        logos: ''
+        logos: '',
+        business:{ code: '16', name: 'Outro' }
       }]
   },
   /* {

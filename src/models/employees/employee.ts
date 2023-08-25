@@ -98,10 +98,10 @@ export default class Employee extends Model {
   avatar?: string | null;
   
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: true
   })
-  social_security_number?: string
+  social_security_number?: number
 
   @HasOne(() => User)
   user?: User
