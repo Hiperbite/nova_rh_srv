@@ -243,6 +243,8 @@ export default class Employee extends Model {
 
   @BeforeCreate
   static initModel = async (employee: Employee, { transaction }: any) => {
+    if (employee?.code && employee?.code?.indexOf('A') > -1)
+      return;
 
     let code = await SequenceApp.count(Employee.name, { transaction });
     employee.code = String(code).padStart(8, '0');
