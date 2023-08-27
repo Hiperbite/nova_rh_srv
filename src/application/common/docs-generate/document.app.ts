@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { novaIcon } from '../../../public/assets/imgs/index';
 import PdfPrinter from 'pdfmake';
 
@@ -11,7 +12,6 @@ const fonts = {
 };
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { Request, Response } from 'express';
 import { Employee } from '../../../models/index';
 
 const documents: any = {
@@ -23,19 +23,15 @@ const employeeType: any = {
   M: "funcionário",
   F: "funcionária"
 }
+async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDefinitions> {
 
-async function getDocDefinitions(data: any) {
+  const employee = await Employee.scope('all').findByPk(employeeId)
 
-  const employee = await Employee.scope('all').findByPk(data.id)
-
-  
   const document: any = employee?.idCard || employee?.passport
 
-  let definiton: TDocumentDefinitions = {
+  return {
 
-    defaultStyle: {
-      font: "Helvetica"
-    },
+
     content: [
       {
         image: novaIcon,
@@ -51,11 +47,12 @@ async function getDocDefinitions(data: any) {
       },
       {
         text: [
-          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da', { text: data.entity + ", ", bold: true }, 'declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o ', { text: document?.number, bold: true }, ' é ', { text: employeeType[employee?.person?.gender + ''] }, ' desta Empresa onde exerce a função de ', { text: 'Funcao do funcionario', bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
+          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ' é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
           'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
           { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
           { text: data.entity.toUpperCase(), bold: true },
-          '\n\nDirecção dos Recursos Humanos {nome da empresa}, em {Luanda, aos 10 de Janeiro de 2018}.\n\n'
+          '\n\nDirecção dos Recursos Humanos {nome da empresa}, em ',
+          { text: moment().format('DD [de] MMMM [de] YYYY') }, '\n\n'
         ],
         style: 'body',
         bold: false
@@ -63,12 +60,35 @@ async function getDocDefinitions(data: any) {
       {
         text: [
           'O Diretor dos Recursos Humanos\n\n',
-          '-------------------------------------------------------\n\n',
-          '{Nome do diretor}'
+          '___________________________\n\n',
+
         ],
         style: 'footer',
       }
     ],
+    footer: [
+
+
+      {
+        text: 'Declaração de trabalho',
+
+        alignment: 'center',
+        style: 'lowFooter',
+
+      },
+      {
+        text: moment().format('YYYYMMDD'),
+
+        alignment: 'center',
+        style: 'lowFooter',
+
+      },
+    ]
+
+    ,
+    defaultStyle: {
+      font: "Helvetica"
+    },
     styles: {
       header: {
         fontSize: 15,
@@ -90,38 +110,33 @@ async function getDocDefinitions(data: any) {
         fontSize: 12,
         bold: true,
         alignment: 'center',
+      },
+      lowFooter: {
+        fontSize: 9,
       }
     },
 
   }
 
-  return definiton
 }
 
-export default async function generateDocument(req: Request, res: Response, type?: any, data?: any) {
+export default async function generateDocument({ employeeId, callBack, ...data }: any) {
 
   const printer = new PdfPrinter(fonts);
 
-  const pdfDoc = printer.createPdfKitDocument(await getDocDefinitions({ ...req.params, ...req.query }));
+  const pdfDoc = printer.createPdfKitDocument(await getDocDefinitions({ employeeId, data }));
 
   const chunks: any[] | Uint8Array[] = []
-
 
   await pdfDoc.on("data", (chunk) => {
     chunks.push(chunk)
   })
   await pdfDoc.end();
 
-  let result;
-
   await pdfDoc.on("end", () => {
-    result = Buffer.concat(chunks)
-
-    res.send(`data:application/pdf;base64,${result.toString("base64")}`)
-
+    const result = Buffer.concat(chunks)
+    callBack(`data:application/pdf;base64,${result.toString("base64")}`);
   })
-
-
 }
 
 
