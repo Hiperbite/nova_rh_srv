@@ -1,8 +1,10 @@
-import { Track, User } from "../../models/index";
+import { includes } from 'lodash';
+import { Contract, Employee, Person, Track, User } from "../../models/index";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import sendEmail, { mailServices } from "../mailler/index";
 import { Op } from "sequelize";
+import moment from 'moment';
 
 export type HistoryEventType =
   "created" |
@@ -67,16 +69,75 @@ export class EmployeeApp {
 
   static filter = (filter: any) => {
     const { code, name, roleId, departmentId, date, antiqueness } = filter
-    const fil = {
-      code,
-      name,
-      roleId,
-      departmentId,
-      date,
-      antiqueness,
-    }
 
-    return fil
+    let where: any = {}
+    const include: any = Employee?.options;
+    const myInclude = include.scopes.default.include
+
+    if (code)
+      where.code = code;
+
+    if (date)
+      where[Op.and] = [{
+        createdAt: {
+          [Op.gte]: date + ' 00:00:00'
+        }
+      }, {
+        createdAt: {
+          [Op.lte]: date + ' 23:59:59'
+        }
+      }];
+
+    myInclude?.forEach((m: any) => {
+
+      delete m.where
+      if (m.as === 'person') {
+        if (name)
+          m.where = {
+            [Op.or]: [
+              { lastName: { [Op.like]: `%${name}%` } },
+              { otherNames: { [Op.like]: `%${name}%` } },
+              { firstName: { [Op.like]: `%${name}%` } },
+            ]
+          }
+
+      }
+
+      if (m.as === 'contracts') {
+        delete m?.where?.isActive
+        delete m?.where?.roleId
+        if (roleId) {
+          m.where = {
+            roleId: roleId,
+            isActive: true
+          }
+        }
+
+        delete m?.where?.departmentId
+        if (departmentId) {
+          m.where = {
+            isActive: true,
+            departmentId: departmentId
+          }
+        }
+
+        delete m?.where?.date
+        if (antiqueness) {
+
+          const antiquenessDate = moment().add(Number(antiqueness) * (-1), 'years').format('Y-MM-DD');
+          m.where = {
+            isActive: true,
+            startDate: { [Op.lte]: antiquenessDate }
+          }
+        }
+      }
+    })
+
+    return {
+      where,
+      scope: 'default',
+      include: myInclude
+    }
   }
 
   static history = async (user: User): Promise<HistoryType[]> => {

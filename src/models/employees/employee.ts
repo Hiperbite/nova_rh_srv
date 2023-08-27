@@ -1,3 +1,4 @@
+import { EmployeeApp } from './../../application/employees/employee.app';
 import avatar from "../../application/helper/default_avatar";
 import moment from "moment";
 import {
@@ -60,10 +61,16 @@ import {
   },
   default: {
     include: [
+      Person,
       { model: User, as: 'user' },
-      Person, {
-        model: Contract, includes: [AdditionalField,
-          Role
+      { model: Contract, include: [AdditionalField, Role] },
+      {
+        model: Contract, include: [
+          PayStub,
+          {
+            model: SalaryPackage,
+            include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }]
+          },
         ]
       }]
   }
@@ -96,7 +103,7 @@ export default class Employee extends Model {
     allowNull: true,
   })
   avatar?: string | null;
-  
+
   @Column({
     type: DataType.INTEGER,
     allowNull: true
@@ -118,9 +125,15 @@ export default class Employee extends Model {
   @Column({
     type: DataType.VIRTUAL
   })
-  get currentContract() {
-    return this.contracts?.filter(({ isActive }: any) => isActive).
-      filter(({ endDate }: any) => moment().isBefore(endDate))[0];
+  get contract() {
+    let c: any = this.contracts
+    c = c?.filter(({ isActive }: any) => isActive)
+    c = c?.filter(({ endDate , startDate }: any) => moment().isBetween(startDate, endDate ?? moment().add(1, 'years').format('YYYY-MM-DD')) || moment().isBefore(startDate))
+    c = c?.
+      sort((n: Contract, p: Contract) =>
+        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+
+    return c;
   }
 
   @Column({
@@ -128,14 +141,7 @@ export default class Employee extends Model {
   })
   get role() {
 
-    let c: any = this.contracts
-    c = c?.filter(({ isActive }: any) => isActive)
-    c = c?.
-      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate) || moment().isBefore(startDate))
-    c = c?.
-      sort((n: Contract, p: Contract) =>
-        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
-
+    let c: any = this.contract
     return c?.role
   }
 
@@ -143,13 +149,7 @@ export default class Employee extends Model {
     type: DataType.VIRTUAL
   })
   get department() {
-    let c: any = this.contracts
-    c = c?.filter(({ isActive }: any) => isActive).
-      filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate) || moment().isBefore(startDate))
-    c = c?.
-      sort((n: Contract, p: Contract) =>
-        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
-
+    let c: any = this.contract
     return c?.department
   }
 
@@ -276,5 +276,6 @@ export default class Employee extends Model {
     } catch (e: any) { }
 
   }
+  static filter = EmployeeApp.filter
 }
 

@@ -13,7 +13,7 @@ import EmployeeRepository from "../repository/employees/employee.repository";
 
 class Api<T extends M> implements IApi {
   //protected repo: any
-  constructor(private Model: ModelCtor<M>, protected repo?: any) {
+  constructor(private Model: ModelCtor<M>|any, protected repo?: any) {
     this.repo ||= new Repository<M>(this.Model)
   };
 

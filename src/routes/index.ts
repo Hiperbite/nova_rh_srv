@@ -7,10 +7,12 @@ import sendEmail, { mailServices } from "../application/mailler/index";
 import { Company, User } from "../models/index";
 import { initializer } from "../models/initializer";
 
-export const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
+export const asyncHandler = (fn: any,model?:any) => (req: any, res: any, next: any) =>{
+ req.model=model
   Promise.resolve(fn(req, res, next)).catch((err: any) => {
     next(err);
   });
+}
 
 const router = (app: Application) => {
 
