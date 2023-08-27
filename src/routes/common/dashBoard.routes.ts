@@ -29,7 +29,7 @@ const router = express.Router()
     // validateResource(createStudentSchema),
     asyncHandler(api.getStudentCount)
   )
-  .post(
+  .get(
     "/callendar-date",
     asyncHandler(api.callendarDate)
   )
