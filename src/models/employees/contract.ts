@@ -25,7 +25,7 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
 }))
 @Scopes(() => ({
   default: {
-    include: []
+    
   },
   coworkers: {
     attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },

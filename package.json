@@ -13,6 +13,7 @@
     "author": "Sebastião Lutonda",
     "license": "ISC",
     "devDependencies": {
+        "@faker-js/faker": "^8.0.2",
         "@tsconfig/node16": "^16.1.0",
         "@types/bcrypt": "^5.0.0",
         "@types/config": "^3.3.0",
