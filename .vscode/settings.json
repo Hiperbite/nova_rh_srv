@@ -1,5 +1,13 @@
 {
     "cSpell.words": [
         "classe"
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "data/database.sqlite",
+            "name": "Sqllite"
+        }
     ]
 }
