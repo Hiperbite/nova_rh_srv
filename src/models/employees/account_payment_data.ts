@@ -42,7 +42,6 @@ export default class AccountPaymentData extends Model{
         type: DataType.STRING,
         allowNull: true
     })
-
     swift?: string
 
     @BelongsTo(() => Employee)

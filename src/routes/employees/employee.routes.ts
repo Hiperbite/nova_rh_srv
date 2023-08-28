@@ -1,3 +1,4 @@
+import { EmployeeApi } from "../../api/employees/employee.api";
 import express from "express";
 import Api from "../../api/Api";
 
@@ -14,7 +15,7 @@ import {
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
-const api = new Api(Employee);
+const api = new EmployeeApi();
 // asyncHandler(
 const router = express.Router();
 

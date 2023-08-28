@@ -77,6 +77,7 @@ export default class Model extends Main {
 
   };
 
+  //static filter = null;
   privateFields: string[] = [];
   dto = () => _.pick(this, this?.privateFields);
 }

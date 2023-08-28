@@ -38,7 +38,7 @@ class DashBoardApi {
     return res.json({ studentsCount });
   };
   callendarDate = async (req: Request, res: Response): Promise<Response> => {
-    const {start, end} = req.body;
+    const {start, end} = req.query;
 
     const calendarDates = await Procedure(SPs.GetCallendarDate, [start,end]);
     

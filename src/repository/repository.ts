@@ -37,7 +37,7 @@ export default class Repository<T extends M>  {
 
   public findOne = async (id: string, opts: any = {}): Promise<T | null> => {
     const options = await this.refactorOptions(opts);
-    const data = await this.repo.findByPk(id, options);
+    const data = await (opts?.scope ? this.repo.scope(opts?.scope) : this.repo).findByPk(id, options);
 
     return data;
   };
@@ -119,7 +119,7 @@ export default class Repository<T extends M>  {
   public paginate = async (
     options: any
   ): Promise<Paginate<T> | undefined> => {
-    const {
+    let {
       where,
       attributes,
       include,
@@ -129,7 +129,7 @@ export default class Repository<T extends M>  {
       page = 1,
       order = [["createdAt", "DESC"]],
     } = options;
-
+    //where = this.repo?.?.filter(where);
     const limit = Number(pageSize);
 
     const offset =
@@ -143,18 +143,21 @@ export default class Repository<T extends M>  {
     const fromScope = scope ?
       this.repo.scope(scope) : this.repo;
     return new Paginate(
-      await fromScope.findAll({
-        where,
-        attributes: attributes
-          ? attributes
-            ?.split(",")
-            .filter((x: string) => exclude.indexOf(x) === -1)
-          : { exclude },
-        include,
-        offset,
-        limit,
-        order,
-      }),
+      await fromScope.findAll(
+        {
+          subQuery: false,
+          where,
+          attributes: attributes
+            ? attributes
+              ?.split(",")
+              .filter((x: string) => exclude.indexOf(x) === -1)
+            : { exclude },
+          include,
+          offset,
+          limit,
+          order,
+        }),
+
       Number(page),
       limit,
       await this.size({ include, where })
@@ -185,7 +188,7 @@ export default class Repository<T extends M>  {
 
   public size = async (options: any): Promise<number> => {
     const { where, include } = options;
-    return await this.repo.count({ where, });
+    return await this.repo.count({ where, include });
   };
 
   public classOf = (className: string) => eval(className);
