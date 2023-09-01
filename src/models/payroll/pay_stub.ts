@@ -144,7 +144,7 @@ export default class PayStub extends Model {
                     property: 1,
                     debit: true,
                     baseValuePeriod,
-                    typeId: type.name
+                    typeId: type?.name
                 }
             )
             )?.forEach((x: any) => lines.push(x));

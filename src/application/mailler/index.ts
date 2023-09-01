@@ -7,7 +7,7 @@ import { WEB_CLIENT_URL } from "../../config";
 const mailServices = {
   createUser: {
     template: "user/createUser",
-    subject: "Be welcome",
+    subject: /* "Be welcome", */ "Bem-vindo ao Nova RH!"
   },
   forgotPassword: {
     template: "user/forgotPassword",
