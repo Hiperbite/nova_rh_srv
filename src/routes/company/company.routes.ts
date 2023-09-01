@@ -9,7 +9,8 @@ import { Company } from "./../../models/index";
  * @returns 
  */
 
-const asyncHandler = (fn: any) => (req: any, res: any, next: any) => Promise.resolve(fn(req,res,next)).catch();
+const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
+    Promise.resolve(fn(req, res, next)).catch(next);
 
 const api = new Api(Company);
 const router = express.Router();

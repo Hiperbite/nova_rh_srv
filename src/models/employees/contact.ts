@@ -8,7 +8,7 @@ import {
     HasOne,
   } from "sequelize-typescript";
   
-  import {  Employee, Model, Company } from "../index";
+  import {  Employee, Model, Company, ContactType } from "../index";
   
 
 @Scopes(() => ({
@@ -27,11 +27,11 @@ import {
     })
     descriptions?: string;
   
-    @Column({
-      type: DataType.TEXT,
-      allowNull: true,
-    })
-    type?: string;
+    @BelongsTo(()=>ContactType)
+    type?: ContactType;
+
+    @ForeignKey(() => ContactType)
+    typeId?: string;
     
     @BelongsTo(()=>Employee)
     employee?: Employee;

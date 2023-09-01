@@ -26,6 +26,7 @@ import {
   Role,
   Payroll,
   Country,
+  ContactType,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -44,6 +45,7 @@ const models: modelsType[] = [
   { key: "contacts", model: Contact, midllewares: [] },
   { key: "departments", model: Department },
   { key: "address", model: Address },
+  { key: "contact-types", model: ContactType },
   { key: "roles", model: Role },
   { key: "salary-packages", model: SalaryPackage },
   { key: "additional-payments", model: AdditionalPayment },
@@ -69,7 +71,7 @@ const models: modelsType[] = [
 models.forEach(({ model, key, midllewares = [] }: modelsType) => {
 
   const api = new Api(model);
-  
+
   router
     .post(
       `/commons/${key}/`,

@@ -5,13 +5,15 @@ import {
     Scopes,
     BelongsTo,
     ForeignKey,
+    DefaultScope,
 } from "sequelize-typescript";
 
 import { Company, Country, Model } from "../index";
 
+
 @Scopes(() => ({
     default: {
-        include: []
+        include: [Country]
     }
 }))
 @Table({
@@ -55,13 +57,13 @@ export default class Address extends Model {
 
     @BelongsTo(() => Company)
     company?: Company
-    
+
     @ForeignKey(() => Company)
     companyId?: string
 
     @BelongsTo(() => Country)
     country?: Country
-    
+
     @ForeignKey(() => Country)
     countryId?: string
 }

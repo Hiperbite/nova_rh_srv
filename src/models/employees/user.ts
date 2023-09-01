@@ -15,7 +15,7 @@ import {
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import { Model, Address, Employee } from "../index";
+import { Model, Address, Employee, Person } from "../index";
 
 import bcrypt from "bcrypt";
 import { UserApp } from "../../application/common/user.app";
@@ -69,18 +69,20 @@ export type PermissionsType =
 
 @Scopes(() => ({
   main: {
-    include: [{
-    }]
+    include: []
   },
   auth: {
-    include: [{}]
+    include: []
   },
   full: {
     include: [{
-      include: [
-        { model: Address, as: 'livingAddress' },
-        { model: Address, as: 'birthPlaceAddress' },
-      ]
+      model: Employee,
+      include: [{
+        model: Person, include: [
+          { model: Address, as: 'livingAddress' },
+          { model: Address, as: 'birthPlaceAddress' },
+        ]
+      }]
     }]
   }
 }))
@@ -89,7 +91,7 @@ export type PermissionsType =
   tableName: "Users",
 })
 export default class User extends Model {
-  
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -189,10 +191,13 @@ export default class User extends Model {
 
   @AfterCreate
   static notifyUser = (user: User) =>
-    sendEmail({
-      service: mailServices["createUser"],
-      data: user,
-    });
+    User.scope('full').findByPk(user?.id).then((data: User | null) =>
+      sendEmail({
+        service: mailServices["createUser"],
+        data
+      })
+    )
+
 
   @AfterUpdate
   @AfterCreate

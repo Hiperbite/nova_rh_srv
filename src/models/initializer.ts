@@ -1,5 +1,3 @@
-import { boolean } from 'zod';
-
 import sequelize, {
   Country,
   Role,
@@ -10,13 +8,26 @@ import sequelize, {
   Setting,
   Business,
   Employee,
-  Sequence
+  Sequence,
+  
+  ContactType
 } from "./index";
 
 import { faker } from '@faker-js/faker';
 
 
-const initialData: any = [
+type InitializerType = { model: any, data: any[], include?: any[] }
+const initialData: InitializerType[] = [
+
+  {
+    model: ContactType, data: [
+      { code: 'EMAIL', name: 'E-mail' },
+      { code: 'LINKEDIN', name: 'LinkedIn' },
+      { code: 'TELEPHONE', name: 'Telefone' },
+      { code: 'WEBSITE', name: 'Website' },
+      { code: 'WHATSAPP', name: 'WhatsApp' },
+    ]
+  },
   {
     model: Department, include: [{
       model: Department, as: 'childs',
@@ -336,6 +347,7 @@ const initialData: any = [
         integrationToken: '',
         slogan: '',
         logos: '',
+        address: [{ descriptions: '' }],
         business: { code: '16', name: 'Outro' }
       }]
   },
@@ -3457,10 +3469,10 @@ function createRandomEmployees(): any {
 
 
   const generateEmployee = (key: number) => {
-    const departments: any[] = flatten(initialData?.find(({ model }: any) => model.name === 'Department')?.data[0]) ?? []
-    const roles: any[] = initialData?.find(({ model }: any) => model.name === 'Role')?.data ?? []
-    const types: any[] = initialData?.find(({ model }: any) => model.name === 'AdditionalPaymentType')?.data ?? []
-    const countries: any[] = initialData?.find(({ model }: any) => model.name === 'Country')?.data ?? []
+    const departments: any[] = flatten(initialData?.find(({ model }: any) => model?.name === 'Department')?.data[0]) ?? []
+    const roles: any[] = initialData?.find(({ model }: any) => model?.name === 'Role')?.data ?? []
+    const types: any[] = initialData?.find(({ model }: any) => model?.name === 'AdditionalPaymentType')?.data ?? []
+    const countries: any[] = initialData?.find(({ model }: any) => model?.name === 'Country')?.data ?? []
     return {
       code: 'A' + String(key).padStart(7, '0'),
       isActive: faker.datatype.boolean(0.8),
@@ -3535,7 +3547,7 @@ function createRandomEmployees(): any {
   }
 
 
-  let i = 100;
+  let i = 200;
   while (--i > 0 && employees.push(generateEmployee(i))) { }
   initialData.push({ model: Employee, data: employees });
 }
@@ -3543,8 +3555,10 @@ function createRandomEmployees(): any {
 createRandomEmployees();
 
 const initializer = (_?: any) =>
-  initialData.forEach(({ model, data, include = { all: true } }: any) => data.forEach(async (d: any) => {
-    model.findOne({ where: { code: d.code } }).then((f: any) => {
+  initialData.forEach(({ model=ContactType, data, include = { all: true } }: any) => {
+    
+    data.forEach(async (d: any) => {
+    model?.findOne({ where: { code: d.code } }).then((f: any) => {
       if (f === null) {
         if (include) {
           let v = 0;
@@ -3562,7 +3576,7 @@ const initializer = (_?: any) =>
       console.log(e)
 
     })
-  }))
+  })})
 
 
 

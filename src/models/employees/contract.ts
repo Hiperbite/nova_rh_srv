@@ -25,7 +25,7 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
 }))
 @Scopes(() => ({
   default: {
-    
+
   },
   coworkers: {
     attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
@@ -223,8 +223,9 @@ export default class Contract extends Model {
     const employee = await Employee.findByPk(contract?.employeeId, { include: [Contract] });
 
     if (employee?.contracts?.length === 1) {
-      contract.isActive = moment().
+      const isActive = moment().
         isBetween(contract?.startDate, contract?.endDate || moment().add(1, 'days'))
+      contract.isActive = isActive;
 
     }
   }
