@@ -198,14 +198,7 @@ export default class User extends Model {
   @AfterCreate
   @AfterSave
   static async refreshPersons(user: User) {
-    // const person = await Person.findByPk(user.personId);
-    /*
-        if (person && person.userId === null) {
-          person.userId = user.id;
-          person?.save();
-        } else {
-          if (person) user.person = person;
-        }*/
+    
   }
 
   //TODO: fix password compare
