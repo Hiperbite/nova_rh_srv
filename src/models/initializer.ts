@@ -275,11 +275,11 @@ const initialData: any = [
   },
   {
     model: PayrollStatus, data: [
-      { code: 0, name: 'Aberto' },
-      { code: 1, name: 'Analise  ' },
-      { code: 2, name: 'Confirmação' },
-      { code: 3, name: 'Aprovação' },
-      { code: 4, name: 'Execução' },
+      { code: 0, descriptions: 'Aberto' },
+      { code: 1, descriptions: 'Analise  ' },
+      { code: 2, descriptions: 'Confirmação' },
+      { code: 3, descriptions: 'Aprovação' },
+      { code: 4, descriptions: 'Execução' },
     ]
   },
   {
