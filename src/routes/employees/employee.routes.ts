@@ -1,3 +1,4 @@
+
 import { EmployeeApi } from "../../api/employees/employee.api";
 import express from "express";
 import Api from "../../api/Api";
@@ -26,9 +27,15 @@ router
     asyncHandler(api.create)
   )
 
+
   .put(
-    "/:id",
+    "/close-contract/:id",
     // validateResource(updateStudentSchema),
+    asyncHandler(api.closeContract)
+  )
+
+  .put(
+    ":id",
     asyncHandler(api.update)
   )
 
