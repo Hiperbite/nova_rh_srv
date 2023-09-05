@@ -51,8 +51,7 @@ export default class Repository<T extends M>  {
       final = await this.Model.create(data, { ...options, transaction: this.transaction });
       await this.commit();
     } catch (err: any) {
-      // this.rollback();
-      throw err;
+            throw err;
     }
 
     return final;
