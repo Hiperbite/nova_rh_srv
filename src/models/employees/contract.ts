@@ -9,7 +9,7 @@ import {
   HasOne,
   DefaultScope,
   HasMany,
-  BeforeUpdate,
+  BeforeCreate,
 } from "sequelize-typescript";
 
 import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
@@ -219,9 +219,48 @@ export default class Contract extends Model {
   @HasOne(() => WorkingHour)
   workingHour?: WorkingHour;
 
-  @BeforeUpdate
+  @BeforeCreate
   static beforeDataUpdate = async (contract: Contract) => {
     const employee = await Employee.findByPk(contract?.employeeId, { include: [Contract] });
+
+    let kill: Contract[] | undefined = [];
+
+    const otherContract: Contract[] | undefined = employee?.contracts?.filter(({ id }: any) => id !== contract?.id)
+    if (otherContract?.length ?? 0 > 0) {
+      kill = otherContract?.filter((c: Contract) =>
+        moment(c.endDate).isAfter(contract?.startDate)
+      )
+
+      kill = kill?.filter(
+        (c: Contract) =>
+          moment(c.startDate).isSameOrBefore(contract?.startDate)
+      )
+
+      kill?.forEach((c: Contract) => {
+        if (!moment().isBetween(c.startDate, c.endDate))
+          c.isActive = false;
+
+        c.endDate = moment(contract?.startDate).add(-1, 'days').toDate();
+        c.save()
+      })
+
+      kill = otherContract?.filter((c: Contract) =>
+        moment(contract.endDate).isAfter(c?.startDate)
+      )
+
+      kill = kill?.filter((c: Contract) =>
+        moment(contract.startDate).isAfter(c?.startDate)
+      )
+
+      kill?.forEach((c: Contract) => {
+        if (!moment().isBetween(c.startDate, c.endDate))
+          c.isActive = false;
+
+        c.endDate = moment(contract?.startDate).add(-1, 'days').toDate();
+        c.save()
+      })
+
+    }
 
     if (employee?.contracts?.length === 1) {
       const isActive = moment().

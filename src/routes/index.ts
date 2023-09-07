@@ -35,7 +35,7 @@ const router = (app: Application) => {
     "/testmail",
     asyncHandler(async (req: any, res: any) => {
 
-      const user = await User.findOne({ where: { email: 'lutonda@gmail.com' }, include: [] })
+      const user = await User.findOne({ where: { email: 'lutonda@gmail.com' }, include: {all:true} })
 
       sendEmail({
         service: mailServices.forgotPassword,
