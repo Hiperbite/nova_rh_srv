@@ -44,6 +44,12 @@ class DashBoardApi {
     
     return res.json(calendarDates);
   }
+  rolesEmployeesCount = async (req: Request, res: Response): Promise<Response> => {
+    
+    const rolesEmployeesCount = await Procedure(SPs.GetRolesEmployeesCount);
+    
+    return res.json(rolesEmployeesCount);
+  }
 }
 
 export default new DashBoardApi(new Repository(Track));

@@ -27,6 +27,8 @@ import {
   Payroll,
   Country,
   ContactType,
+  WorkingHour,
+  Track,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -51,6 +53,7 @@ const models: modelsType[] = [
   { key: "additional-payments", model: AdditionalPayment },
   { key: "additional-fields", model: AdditionalField },
   { key: "additional-payment-types", model: AdditionalPaymentType },
+  { key: "working-hours", model: WorkingHour },
   { key: "payroll", model: Payroll },
 
   { key: "persons", model: Person },
@@ -61,6 +64,7 @@ const models: modelsType[] = [
   { key: "ticket-states", model: TicketState },
   { key: "ticket-types", model: TicketType },
 
+  { key: "tracks", model: Track },
   { key: "events", model: Event },
   { key: "event-schedules", model: EventSchedule },
   { key: "event-types", model: EventType },

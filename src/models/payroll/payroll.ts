@@ -14,8 +14,9 @@ import {
     BeforeSave,
     BeforeUpdate,
     DefaultScope,
+    BeforeCreate,
 } from "sequelize-typescript";
-import { Contract, Model, PayrollLine, PayrollStatus, PayStub } from "../index";
+import { Contract, Model, PayrollLine, PayrollStatus, PayStub, SalaryPackage } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -29,12 +30,23 @@ export enum payrollState {
     Confirmed,
     Approved,
     Executed,
+    //Stuck=90,
 }
 
 
+
+const stateButton = [
+    { id: 0, icon: '', text: "Aberto", actions: ['Iniciar'], color: "secondary" },
+    { id: 1, icon: '', text: "Analise", actions: ['Confirmar'], color: "info" },
+    { id: 2, icon: '', text: "Confirmação", actions: ['Confirmar'], color: "primary" },
+    { id: 3, icon: '', text: "Aprovado", actions: ['Executar'], color: "warning" },
+    { id: 4, icon: 'check', text: "Exacutado", color: "success" },
+    { id: 90, icon: '', text: "Pendente", actions: [], color: "secondary" },
+]
+
 @Scopes(() => ({
     default: {
-        include: [PayStub]
+        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage]}]}]
     },
     simple: {
         include: [PayStub]
@@ -87,6 +99,14 @@ export default class Payroll extends Model {
     })
     initialPayStubs!: any[]
 
+
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    get status() {
+        return stateButton[this.state ?? 0]
+    }
+
     @Column({
         type: DataType.VIRTUAL
     })
@@ -108,6 +128,11 @@ export default class Payroll extends Model {
         return this.payStubs?.map(({ netValue }: any) => netValue)?.reduce((x: number, y: number) => x + y, 0)
     }
 
+
+    @BeforeCreate
+    static initializePayroll = (payroll: Payroll) => {
+        payroll.state = payrollState.Opened
+    }
 
     @BeforeUpdate
     @BeforeSave
@@ -143,10 +168,20 @@ export default class Payroll extends Model {
         }
         return payroll;
     }
+
     @AfterFind
     static proposalStubs = async (payroll: Payroll) => {
         if (payroll?.year === undefined) return;
-        if ((payroll.state ?? 0) > payrollState.Confirmed) return;
+        if ((payroll.state ?? 0) > payrollState.Confirmed) {
+            /*
+                        const { month, year } = payroll;
+                        const existPayStub = await PayStub.findAll({ where: { month, year } });
+                        if (existPayStub)
+                            for (let p of existPayStub)
+                                payroll.payStubs.push(p);
+              */
+            return payroll;
+        }
 
         payroll.initialPayStubs = [];
 
@@ -171,33 +206,43 @@ export default class Payroll extends Model {
             payroll.state !== payrollState.Approved &&
             payroll.state !== payrollState.Executed
         ) {
-            proposalStubs?.forEach(async (stub: any) => {
+            for (let stub of proposalStubs) {
                 payroll?.initialPayStubs?.push(stub);
 
                 let payStub = new PayStub();
-                if (payroll?.payStubs?.find(({ contractId }: any) => contractId === stub?.contractId) === undefined) {
+                if (payroll?.payStubs?.find(({ contractId }: any) => contractId === stub?.contract?.id) === undefined) {
 
                     try {
-                        payStub = await PayStub.create({
-                            date: payroll.date,
-                            month: payroll.month,
-                            year: payroll?.year,
-                            state: 0,
-                            descriptions: '',
-                            contractId: stub?.contract?.id,
-                            payrollId: payroll?.id,
-                            lines: stub?.contract.payStubState.lines
+                        const { month, year } = payroll;
+                        const existPayStub = await PayStub.findOne({ where: { month, year, contractId: stub?.contract?.id } });
+                        if (existPayStub) {
+                            existPayStub.payrollId = String(payroll?.id)
+                            existPayStub.save()
+                            payroll?.payStubs?.push(existPayStub);
+                        }
+                        else {
+                            payStub = await PayStub.create({
+                                date: payroll.date,
+                                month: payroll.month,
+                                year: payroll?.year,
+                                state: 0,
+                                descriptions: '',
+                                contractId: stub?.contract?.id,
+                                payrollId: payroll?.id,
+                                lines: stub?.contract.payStubState.lines
 
-                        }, { include: { all: true } })
-                        payStub.contract = stub?.contract;
+                            }, { include: { all: true } })
+                            payStub.contract = stub?.contract;
 
-                        payroll?.payStubs?.push(payStub);
+                            payroll?.payStubs?.push(payStub);
+                        }
                     }
                     catch (e: any) {
-                        let u = e;
+                        if (e?.existPayStub)
+                            payroll?.payStubs?.push(e?.existPayStub);
                     }
                 }
-            })
+            }
 
         }
 

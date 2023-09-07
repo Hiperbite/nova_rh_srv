@@ -33,6 +33,10 @@ const router = express.Router()
     "/callendar-date",
     asyncHandler(api.callendarDate)
   )
+  .get(
+    "/roles-employees-count",
+    asyncHandler(api.rolesEmployeesCount)
+  )
   ;
 
 export default router;

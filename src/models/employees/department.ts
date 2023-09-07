@@ -1,3 +1,4 @@
+import { DepartmentApp } from "../../application/company/department.app";
 import {
   Table,
   Column,
@@ -9,19 +10,19 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, Department as Dep } from "../index";
+import { Model, Department as Dep, Contract, Employee } from "../index";
 
 /*
 @DefaultScope(() => ({
-  include: [{ as: 'department', model: Dep }]
+  include: [{ as: 'childs', model: Dep }]
 }))
 */
 @Scopes(() => ({
   default: {
-    include: [{ model: Dep , as: 'department'}, {  model: Dep , as: 'childs',}]
+    include: [{ model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },
   full: {
-    include: [{  model: Dep , as: 'department'}, { model: Dep,as: 'childs',  include: [{ model: Dep , as: 'department' }, { model: Dep, as: 'childs' }] }]
+    include: [Contract, { model: Dep, as: 'department' }, { model: Dep, as: 'childs', include: [{ model: Dep, as: 'childs', include: [{ model: Dep, as: 'childs' }] }] }]
   }
 }))
 @Table({
@@ -53,7 +54,7 @@ export default class Department extends Model {
   })
   no?: number;
 
-  @HasMany(() => Dep,'departmentId')
+  @HasMany(() => Dep, 'departmentId')
   childs?: Dep[];
 
   @BelongsTo(() => Dep, 'departmentId')
@@ -61,5 +62,31 @@ export default class Department extends Model {
 
   @ForeignKey(() => Dep)
   departmentId?: string;
-}
 
+
+  @HasMany(() => Contract)
+  contracts?: Contract[];
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get leaders() {
+    return this.contracts
+      ?.filter((c: Contract) => c?.isActive)
+      ?.filter((c: Contract) => c?.role?.no !== undefined)
+      ?.sort((p: Contract, n: Contract) => Number(p.role?.no) > Number(n.role?.no) ? -1 : 1)
+      ?.map((c: Contract) => c?.employee)
+      ?.find(() => true)
+
+  }
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get employees() {
+    return this.contracts
+      ?.filter((c: Contract) => c?.isActive)
+      ?.map((c: Contract) => c?.employee)
+
+  }
+  static filter = DepartmentApp.filter
+}

@@ -147,7 +147,7 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
     .sync({ alter: true, force: false })
     .then(initializer)
@@ -160,6 +160,7 @@ const Repo = sequelize.getRepository;
 
 
 enum SPs {
+  GetRolesEmployeesCount = "GetRolesEMployeesCount",
   GetCallendarDate = "GetCallendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',

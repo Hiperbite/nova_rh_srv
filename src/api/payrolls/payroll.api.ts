@@ -33,10 +33,10 @@ class PayrollApi {
         month: startActivityDate.format('MM'),
         state: 0
       }
-      const model: Payroll | void = await this.repo.createOne(np, { include: { all: true } });
       startActivityDate.add(1, 'M');
     }
-    return res.json({});
+    const model: Payroll | void = await this.repo.createOne(body, { include: { all: true } });
+    return res.json(model);
 
   };
 
@@ -68,7 +68,7 @@ class PayrollApi {
 
     const model: Payroll | null = await this.repo.findOne(
       id,
-      { ...opts, include: { all: true } }
+      { ...opts, scope:'default' }
     );
 
     return res.json(model);

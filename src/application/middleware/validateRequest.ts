@@ -31,7 +31,7 @@ const validateRequest = (
     filter = filter(where ?? {})
     req.query.where = filter?.where
     req.query.include = filter?.include
-    req.query.scope = filter.scope
+    req.query.scope ??= filter.scope
     req.query.subQuery = undefined;
   }
 
