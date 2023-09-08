@@ -1,3 +1,4 @@
+import { includes } from "lodash";
 import {
     Table,
     Column,
@@ -6,15 +7,12 @@ import {
     BelongsTo,
     ForeignKey,
     HasMany,
+    DefaultScope,
 } from "sequelize-typescript";
 
-import { Address, Model } from "../index";
+import { Address, Business, Model } from "../index";
 
-@Scopes(() => ({
-    default: {
-        include: []
-    }
-}))
+
 @Table({
     timestamps: true,
     tableName: "Countries",

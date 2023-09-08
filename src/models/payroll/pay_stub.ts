@@ -14,11 +14,11 @@ import moment from "moment";
 import { Model, Contract, PayrollLine, SalaryPackage, Payroll } from "../index";
 
 @DefaultScope(() => ({
-    include: [PayrollLine, { model: Contract, include: [SalaryPackage] }]
+    //  include: [PayrollLine, { model: Contract, include: [SalaryPackage] }]
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Contract, include: [SalaryPackage] }]
+        include: [PayrollLine, { model: Contract, include: [SalaryPackage] }]
     }
 }))
 @Table({
@@ -201,12 +201,12 @@ export default class PayStub extends Model {
     static initModel = async (payStub: PayStub) => {
         if (!payStub.isNewRecord) return true;
         const { month, year, contractId } = payStub
-        const _payStub = await PayStub.findOne({ where: { month, year, contractId } });
+        const existPayStub = await PayStub.findOne({ where: { month, year, contractId } });
         /**
          * TODO: FIX THIS PEACE OF CODE
          */
-        if (_payStub)
-            throw '405'
+        if (existPayStub)
+            throw { existPayStub }
 
     }
 }

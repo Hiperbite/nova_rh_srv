@@ -229,7 +229,7 @@ export default class Employee extends Model {
   @AfterCreate
   static createUser = async ({ id: employeeId, contacts, avatar }: Employee, { transaction }: any) => {
 
-    const email = contacts?.find((c: Contact) => c.type === "EMAIL")?.descriptions
+    const email = contacts?.find((c: Contact) => c.type?.code === "EMAIL")?.descriptions
 
     await User.create({
       email,
@@ -263,7 +263,7 @@ export default class Employee extends Model {
         employee.avatar ||= avatar
 
         if (!employee?.user) {
-          const email = employee?.contacts?.find((c: Contact) => c.type === "EMAIL")?.descriptions
+          const email = employee?.contacts?.find((c: Contact) => c.type?.code === "EMAIL")?.descriptions
 
           await User.create({
             email,

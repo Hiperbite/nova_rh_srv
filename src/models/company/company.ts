@@ -5,14 +5,18 @@ import {
     HasMany,
     Column,
     BelongsTo,
-    ForeignKey
+    ForeignKey,
+    DefaultScope
 } from "sequelize-typescript";
 
-import { Contact, Address, Model, Business } from "../index";
+import { Contact, Address, Model, Business, Country } from "../index";
 
+@DefaultScope(() => ({
+    include: [{ model: Address, include: [Country] }, Business]
+}))
 @Scopes(() => ({
     default: {
-        include: [Business]
+        include: [{ model: Address, include: [Country] }, Business]
     }
 }))
 @Table({

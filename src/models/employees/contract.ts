@@ -18,6 +18,7 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
   include: [
     Role,
     AdditionalField,
+    WorkingHour,
     { model: Employee, include: [Person, { model: User, as: 'user' }] },
     { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
     { model: Department, include: [{ as: 'department', model: Department }] }],
@@ -262,8 +263,9 @@ export default class Contract extends Model {
     }
 
     if (employee?.contracts?.length === 1) {
-      contract.isActive = moment().
+      const isActive = moment().
         isBetween(contract?.startDate, contract?.endDate || moment().add(1, 'days'))
+      contract.isActive = isActive;
 
     }
   }

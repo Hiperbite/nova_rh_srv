@@ -89,7 +89,7 @@ const config = () => {
     windowMs: 10 * 1000, // 15 minutes
     max: 100, // 1000 requests
     standardHeaders: true,
-    message: "You can only make {0} requests every minutes.",
+    message: "You can only make {0} requests every minutes.{1}.",
     keyGenerator: (req: any, res: any) => req.ip,
     //store: new MemoryStore(),
     handler: (req: any, res: any, next: any, opt: any) =>
@@ -115,7 +115,7 @@ const config = () => {
       if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error("DUde,u r not allowed by CORS"));
       }
     },
     optionsSuccessStatus: 200,

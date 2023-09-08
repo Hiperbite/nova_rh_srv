@@ -45,15 +45,16 @@ import Payroll from "./payroll/payroll";
 import PayrollLine from "./payroll/payroll_line";
 import PayrollLineType from "./payroll/payroll_line_type";
 import Department from "./employees/department";
-import AdditionalField         from "./employees/additional_field";
+import AdditionalField from "./employees/additional_field";
 import WorkingHour from "./employees/working_hour";
 import PayStub from "./payroll/pay_stub";
 import PayrollStatus from "./payroll/payroll_status";
 import Country from "./common/country";
 import { initializer } from "./initializer";
+import ContactType from "./employees/contact-type";
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD,DB_DIALECT, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
@@ -90,6 +91,7 @@ const sequelize = new Sequelize({
     Country,
     Business,
     Contact,
+    ContactType,
     AdditionalField,
     User,
     Address,
@@ -145,15 +147,20 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-(true && 
-sequelize
-  .sync({ alter: true, force: true })
-  .then(initializer)
-  .catch(console.error)
+(false &&
+  sequelize
+    .sync({ alter: true, force: false })
+    .then(initializer)
+    .catch((e: any) => {
+      let u = e;
+      console.error(e)
+    }
+    )
 )
 
 
 enum SPs {
+  GetRolesEmployeesCount = "GetRolesEMployeesCount",
   GetCallendarDate = "GetCallendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
@@ -176,6 +183,7 @@ export {
   sequelize,
   Repo,
   Model,
+  ContactType,
   Contact,
   AccountPaymentData,
   Employee,
