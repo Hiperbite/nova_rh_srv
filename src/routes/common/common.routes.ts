@@ -26,6 +26,7 @@ import {
   Role,
   Payroll,
   Country,
+  AccountPaymentData,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -50,6 +51,7 @@ const models: modelsType[] = [
   { key: "additional-fields", model: AdditionalField },
   { key: "additional-payment-types", model: AdditionalPaymentType },
   { key: "payroll", model: Payroll },
+  { key: "account-payment-datas", model: AccountPaymentData },
 
   { key: "persons", model: Person },
   { key: "documents", model: Document },

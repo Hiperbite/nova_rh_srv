@@ -10,7 +10,7 @@ import { Model, Employee, Country } from "../index";
 
 @Table({
     timestamps: true,
-    tableName: "AccountPaymentData",
+    tableName: "AccountPaymentDatas",
 })
 
 export default class AccountPaymentData extends Model{

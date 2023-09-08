@@ -3466,7 +3466,16 @@ function createRandomEmployees(): any {
       isActive: faker.datatype.boolean(0.8),
       descriptions: faker.lorem.paragraph(),
       type: "INT",
+      social_security_number:faker.finance.accountNumber(),
       avatar: faker.image.avatar(),
+      account_payment_datas:[{
+        iban: faker.finance.iban(),
+        account_number: faker.finance.accountNumber(),
+        bank_name: faker.finance.accountName(),
+        currency_counts:  faker.finance.currencyCode(),
+        swift:  faker.finance.bic(),
+        countryId: faker.helpers.arrayElement(countries?.map(({ id }: any) => id))
+      }],
       person: {
         nationality: faker.location.county(),
         firstName: faker.person.firstName(),
