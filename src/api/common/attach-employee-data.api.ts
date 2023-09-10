@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import generateDocument from "../../application/common/docs-generate/document.app";
+import { generateDocument } from "../../application/common/docs-generate/document.app";
 import { Employee } from "../../models/index";
 import { z, AnyZodObject } from "zod";
 
@@ -73,8 +73,8 @@ export async function attachEmployeeData(req: Request, res: Response) {
 
     for (employee of data)
       await Employee.create(employee, { include: { all: true } })
-    
-      res.json({
+
+    res.json({
       errors: errors,
       created: data.length,
     });

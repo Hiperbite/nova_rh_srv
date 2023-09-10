@@ -12,7 +12,7 @@ const fonts = {
 };
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { Employee } from '../../../models/index';
+import { Employee, PayStub } from '../../../models/index';
 
 const documents: any = {
   IDCARD: "Bilhete",
@@ -295,11 +295,115 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 
 }
 
-export default async function generateDocument({ employeeId, callBack, type, ...data }: any) {
+async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumentDefinitions> {
+
+  
+  const payStub = await PayStub.findOne({ where: { id: payStubId }, include: { all: true } })
+
+  return {
+
+
+    content: [
+      {
+        text: 'CONTRATO DE TRABALHO',
+        style: 'header',
+        alignment: 'center',
+
+      },
+      {
+        layout: 'lightHorizontalLines', // optional
+        table: {
+          // headers are automatically repeated if the table spans over multiple pages
+          // you can declare how many rows should be treated as headers
+          headerRows: 1,
+          widths: ['*', 'auto', 100, '*'],
+
+          body: [
+            ['#', 'ABONO', 'QUANTIDADE', 'VALOR'],
+            ['1', 'Salário Base', '22', '200.000,00'],
+            ['2', 'SUbsidio de Ferias', '22', '32.500,00'],
+            ['3', 'Subsidio de Trasnporte', '12','50.000,00'],
+            
+          ]
+        }
+      },
+      {
+        layout: 'lightHorizontalLines', // optional
+        table: {
+          // headers are automatically repeated if the table spans over multiple pages
+          // you can declare how many rows should be treated as headers
+          headerRows: 1,
+          widths: ['*', 'auto', 100, '*'],
+
+          body: [
+            ['#', 'ABONO', 'QUANTIDADE', 'VALOR'],
+            ['1', 'Salário Base', '22', '200.000,00'],
+            ['2', 'SUbsidio de Ferias', '22', '32.500,00'],
+            ['3', 'Subsidio de Trasnporte', '12','50.000,00'],
+            
+          ]
+        }
+      }
+    ],
+    footer: [
+      {
+        text: moment().format('YYYYMMDD'),
+
+        alignment: 'center',
+        style: 'lowFooter',
+
+      },
+    ]
+
+    ,
+    defaultStyle: {
+      font: "Helvetica",
+      lineHeight: 1.5,
+      fontSize: 11,
+      alignment: 'justify',
+    },
+    styles: {
+      header: {
+        fontSize: 16,
+        bold: true,
+        alignment: 'center',
+        marginTop: 35,
+        marginBottom: 15,
+        decoration: "underline"
+      },
+      h1: {
+        fontSize: 14,
+        bold: true,
+        marginTop: 25,
+        marginBottom: 5,
+      },
+      body: {
+        fontSize: 12,
+        bold: false,
+        alignment: 'justify',
+        marginLeft: 50,
+        marginRight: 50,
+        lineHeight: 2,
+      },
+      footer: {
+        fontSize: 12,
+        bold: true,
+        alignment: 'center',
+      },
+      lowFooter: {
+        fontSize: 9,
+      }
+    },
+
+  }
+
+}
+
+export async function generateDocument({ employeeId, callBack, type, ...data }: any) {
 
   const printer = new PdfPrinter(fonts);
 
-  const fn = [getDocDefinitions,getContractDefinitions][type - 1 ?? 1]
+  const fn = [getDocDefinitions, getContractDefinitions][type - 1 ?? 1]
   const pdfDoc = printer.createPdfKitDocument(await fn({ employeeId, data }));
 
   const chunks: any[] | Uint8Array[] = []
@@ -315,6 +419,24 @@ export default async function generateDocument({ employeeId, callBack, type, ...
   })
 }
 
+export async function generatePayStub({ payStubId, callBack, type, ...data }: any) {
+
+  const printer = new PdfPrinter(fonts);
+
+  const pdfDoc = printer.createPdfKitDocument(await getPayStubDefinitions({ payStubId, data }));
+
+  const chunks: any[] | Uint8Array[] = []
+
+  await pdfDoc.on("data", (chunk: any) => {
+    chunks.push(chunk)
+  })
+  await pdfDoc.end();
+
+  await pdfDoc.on("end", () => {
+    const result = Buffer.concat(chunks)
+    callBack(`data:application/pdf;base64,${result.toString("base64")}`);
+  })
+}
 
 
 
