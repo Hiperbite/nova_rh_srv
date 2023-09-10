@@ -91,6 +91,12 @@ export default class Contract extends Model {
   @HasMany(() => PayStub)
   payStubs?: PayStub[]
 
+  @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
+  salaryPackage?: SalaryPackage;
+
+  @HasOne(() => WorkingHour)
+  workingHour?: WorkingHour;
+
   @Column({
     type: DataType.VIRTUAL
   })
@@ -106,9 +112,14 @@ export default class Contract extends Model {
       newPayroll.isActive = false;
 
       let currentPayrolls = (this?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+      const grossValue = 0, deductionValue = 0;
+      try {
+        const grossValue = currentPayrolls.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        const deductionValue = currentPayrolls.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
 
-      const grossValue = currentPayrolls.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-      const deductionValue = currentPayrolls.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+      } catch (error) {
+
+      }
       myPayrolls.push({
         date: current.format('Y-M'),
         fromDate: current.format('Y-M'),
@@ -140,6 +151,7 @@ export default class Contract extends Model {
       value: Number(salaryPackage?.baseValue),
       debit: true,
       quantity: 1,
+      startDate:salaryPackage?.startDate,
       baseValuePeriod: salaryPackage?.baseValuePeriod,
       descriptions: 'Base',
 
@@ -212,12 +224,6 @@ export default class Contract extends Model {
     return state;
 
   }
-
-  @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
-  salaryPackage?: SalaryPackage;
-
-  @HasOne(() => WorkingHour)
-  workingHour?: WorkingHour;
 
   @BeforeCreate
   static beforeDataUpdate = async (contract: Contract) => {

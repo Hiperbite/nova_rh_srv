@@ -30,6 +30,8 @@ import {
   ContactType,
   WorkingHour,
   Track,
+  PayStub,
+  Bank,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -56,7 +58,9 @@ const models: modelsType[] = [
   { key: "additional-payment-types", model: AdditionalPaymentType },
   { key: "working-hours", model: WorkingHour },
   { key: "payroll", model: Payroll },
+  { key: "pay-stubs", model: PayStub },
   { key: "account-payment-datas", model: AccountPaymentData },
+  { key: "banks", model: Bank },
 
   { key: "persons", model: Person },
   { key: "documents", model: Document },

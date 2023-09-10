@@ -51,6 +51,7 @@ import PayStub from "./payroll/pay_stub";
 import PayrollStatus from "./payroll/payroll_status";
 import Country from "./common/country";
 import { initializer } from "./initializer";
+import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
 
 dotenv.config();
@@ -91,7 +92,6 @@ const sequelize = new Sequelize({
     Country,
     Business,
     Contact,
-    ContactType,
     AdditionalField,
     User,
     Address,
@@ -115,7 +115,7 @@ const sequelize = new Sequelize({
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
-
+    
     WorkingHour,
     Notification,
 
@@ -126,17 +126,11 @@ const sequelize = new Sequelize({
     EventType,
     EventSchedule,
 
-    /*LocalSetting,
-    SystemSetting,
-    DocumentSetting,
-    LicenseSetting,
-    Setting,
-*/
     Department,
-
+    ContactType,
     RoleLevel,
-    //  Role,
-    Role
+    Bank,
+    Role,
   ],
 });
 
@@ -149,15 +143,10 @@ const UniqIndex = createIndexDecorator({
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: true, force: false })
-    .then(initializer)
-    .catch((e: any) => {
-      let u = e;
-      console.error(e)
-    }
-    )
+    .sync({ alter: true, force: false})
+    //.then(initializer)
+    .catch(console.error)
 )
-
 
 enum SPs {
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
@@ -205,9 +194,9 @@ export {
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
+  Bank,
 
   Business,
-
   User,
   Track,
   Token,

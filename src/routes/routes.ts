@@ -37,9 +37,10 @@ routes.use('/employees/employees', employees)
 routes.use('/employees/account-payment-data', accountpaymentdata)
 routes.use('/employees/contracts', contracts)
 /* routes.use('/employees/ausence', ausence)
- */routes.use('/employees/personal', personal)
+ */
+routes.use('/employees/personal', personal)
 
-routes.use('/payrolls/payroll', payroll)
+ routes.use('/payrolls/payroll', payroll)
 
 routes.use(commonRoutes)
 

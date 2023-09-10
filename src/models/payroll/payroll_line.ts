@@ -24,7 +24,7 @@ import SequenceApp, { CODES } from "../../application/common/sequence.app";
     tableName: "PayrollLines",
 })
 export default class PayrollLine extends Model {
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
@@ -36,13 +36,13 @@ export default class PayrollLine extends Model {
         allowNull: true,
     })
     date?: Date;
-    
+
     @Column({
         type: DataType.INTEGER,
         allowNull: true,
     })
     value!: number;
-    
+
     @Column({
         type: DataType.BOOLEAN,
         allowNull: true,
@@ -73,10 +73,15 @@ export default class PayrollLine extends Model {
     @ForeignKey(() => AdditionalPaymentType)
     typeId?: string;
 
-    @BelongsTo(() => PayStub)
+    @BelongsTo(() => PayStub, {
+        foreignKey: {
+            allowNull: false
+        },
+    })
     payStub!: PayStub
 
     @ForeignKey(() => PayStub)
     payStubId!: string;
+
 
 }

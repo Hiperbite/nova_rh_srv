@@ -12,13 +12,14 @@ import {
 } from "sequelize-typescript";
 import moment from "moment";
 import { Model, Contract, PayrollLine, SalaryPackage, Payroll } from "../index";
+import { payrollState } from "./payroll";
 
 @DefaultScope(() => ({
-    //  include: [PayrollLine, { model: Contract, include: [SalaryPackage] }]
+    include: [{ model: Payroll, include: [] }]
 }))
 @Scopes(() => ({
     default: {
-        include: [PayrollLine, { model: Contract, include: [SalaryPackage] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage] }]
     }
 }))
 @Table({
@@ -102,7 +103,7 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get proposal() {
-        this.lines = this.contract?.payStubState?.lines?.map((line: any) => new PayrollLine(line));
+        this.lines = this.contract?.payStubState.lines?.map((line: any) => new PayrollLine(line));
 
         return this.contract?.payStubState
     }
@@ -112,6 +113,10 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get proposalLines() {
+        //return [];
+
+        if (this.payroll?.state ?? 0 > payrollState.Approved)
+            return [];
         //return this.contract?.payStubState;
 
         const salaryPackage: any = this?.contract?.salaryPackage

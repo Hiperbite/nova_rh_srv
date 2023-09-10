@@ -108,7 +108,7 @@ export default class Employee extends Model {
     type: DataType.INTEGER,
     allowNull: true
   })
-  social_security_number?: number
+  socialSecurityNumber?: number
 
   @HasOne(() => User)
   user?: User
@@ -120,7 +120,7 @@ export default class Employee extends Model {
   contacts!: Contact[];
 
   @HasMany(() => AccountPaymentData)
-  account_payment_datas!: AccountPaymentData[];
+  accounts!: AccountPaymentData[];
 
   @Column({
     type: DataType.VIRTUAL
@@ -128,7 +128,7 @@ export default class Employee extends Model {
   get contract() {
     let c: any = this.contracts
     c = c?.filter(({ isActive }: any) => isActive)
-    c = c?.filter(({ endDate , startDate }: any) => moment().isBetween(startDate, endDate ?? moment().add(1, 'years').format('YYYY-MM-DD')) || moment().isBefore(startDate))
+    c = c?.filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate ?? moment().add(1, 'years').format('YYYY-MM-DD')) || moment().isBefore(startDate))
     c = c?.
       sort((n: Contract, p: Contract) =>
         moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
@@ -202,8 +202,15 @@ export default class Employee extends Model {
 
         let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
 
-        const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-        const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        const grossValue = 0, deductionValue = 0;
+
+        try {
+          const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+          const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+
+        } catch (err: any) {
+          let u = err;
+        }
         myPayrolls.push({
           date: current.format('Y-M'),
           fromDate: current.format('Y-M'),

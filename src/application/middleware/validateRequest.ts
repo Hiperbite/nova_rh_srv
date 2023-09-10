@@ -11,6 +11,10 @@ const validateRequest = (
   const { where, order: o, include: i }: any = req.query
   if (where) {
     Object.keys(where).forEach((key: string) => {
+      try {
+        if (Array.isArray(JSON.parse(where[key])))
+          where[key] = JSON.parse(where[key]);
+      } catch (error) { }
       if (where[key] && where[key].indexOf(',') > -1)
         where[key] = where[key].split(',');
       if (where[key] === 'true' || where[key] === 'false')
@@ -26,7 +30,7 @@ const validateRequest = (
   let { filter }: any =
     Object
       .values(sequelize.models)
-      .find(({ tableName }: any) => tableName.toLowerCase() === req.path.split('/').pop()?.toLowerCase())??{}
+      .find(({ tableName }: any) => tableName.toLowerCase() === req.path.split('/').pop()?.toLowerCase()) ?? {}
   if (filter) {
     filter = filter(where ?? {})
     req.query.where = filter?.where

@@ -1,6 +1,6 @@
 import {Column, Table, Scopes, DataType, ForeignKey, BelongsTo} from "sequelize-typescript";
 
-import { Model, Employee, Country } from "../index";
+import { Model, Employee, Country, Bank } from "../index";
 
 @Scopes(() => ({
     default: {
@@ -24,19 +24,13 @@ export default class AccountPaymentData extends Model{
         type: DataType.STRING,
         allowNull: false
     })
-    account_number!: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false
-    })
-    bank_name!: string;
+    number!: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: true
     })
-    currency_counts?: string;
+    currency?: string;
 
     @Column({
         type: DataType.STRING,
@@ -49,6 +43,12 @@ export default class AccountPaymentData extends Model{
 
     @ForeignKey(() => Employee)
     employeeId?: Employee;
+
+    @BelongsTo(() => Bank)
+    bank?: Bank;
+
+    @ForeignKey(() => Bank)
+    bankId?: Bank;
 
     @BelongsTo(() => Country)
     country?: Country;

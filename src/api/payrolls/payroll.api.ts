@@ -5,9 +5,9 @@ import { Paginate } from "../../repository/common/default.repository";
 import PayrollRepository from "../../repository/payroll/payroll.repository";
 import { Payroll } from "../../models/index";
 
-import Api from "../Api";
 import moment from "moment";
 import { start } from "repl";
+import { payrollState } from "../../models/payroll/payroll";
 
 class PayrollApi {
   repo: PayrollRepository;
@@ -22,21 +22,13 @@ class PayrollApi {
    */
   create = async (req: Request, res: Response): Promise<Response> => {
 
-
     const { body } = req;
-    let startActivityDate = moment().add(-5, 'M')
 
-    while (startActivityDate.isBefore(moment())) {
-      const np = {
-        date: startActivityDate.format('YYYY-MM-') + '01',
-        year: startActivityDate.format('YYYY'),
-        month: startActivityDate.format('MM'),
-        state: 0
-      }
-      startActivityDate.add(1, 'M');
-    }
-    const model: Payroll | void = await this.repo.createOne(body, { include: { all: true } });
-    return res.json(model);
+    const payroll: Payroll | void =
+      await this.repo
+        .createOne(body, { include: { all: true } });
+
+    return res.json(payroll);
 
   };
 
@@ -68,7 +60,7 @@ class PayrollApi {
 
     const model: Payroll | null = await this.repo.findOne(
       id,
-      { ...opts, scope:'default' }
+      { ...opts, scope: 'default' }
     );
 
     return res.json(model);
@@ -100,7 +92,7 @@ class PayrollApi {
       await this.repo
         .paginate({
           ...req.query,
-          include: { all: true }
+          //      include: { all: true }
         });
 
     return res.json(models);
