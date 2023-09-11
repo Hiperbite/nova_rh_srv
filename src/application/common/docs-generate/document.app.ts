@@ -18,11 +18,28 @@ const documents: any = {
   IDCARD: "Bilhete",
   PASSPORT: "Passaporte"
 }
-
-const employeeType: any = {
-  M: "funcionário",
-  F: "funcionária"
-}
+const tableLayouts = {
+  exampleLayout: {
+    hLineWidth: function (i: number, node: any) {
+      if (i === 0 || i === node.table.body.length) {
+        return 0;
+      }
+      return (i === node.table.headerRows) ? 2 : 1;
+    },
+    vLineWidth: function (i: number) {
+      return 0;
+    },
+    hLineColor: function (i: number) {
+      return i === 1 ? 'black' : '#aaa';
+    },
+    paddingLeft: function (i: number) {
+      return i === 0 ? 0 : 8;
+    },
+    paddingRight: function (i: number, node: any) {
+      return (i === node.table.widths.length - 1) ? 0 : 8;
+    }
+  }
+};
 async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDefinitions> {
 
   const employee = await Employee.scope('all').findByPk(employeeId)
@@ -297,7 +314,7 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 
 async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumentDefinitions> {
 
-  
+
   const payStub = await PayStub.findOne({ where: { id: payStubId }, include: { all: true } })
 
   return {
@@ -311,19 +328,55 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
 
       },
       {
-        layout: 'lightHorizontalLines', // optional
+
+        layout: {
+          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
+            return (rowIndex % 2 === 0) ? '#eee' : null;
+          }
+        },
+        //layout: 'headerLineOnly', // optional
         table: {
           // headers are automatically repeated if the table spans over multiple pages
           // you can declare how many rows should be treated as headers
           headerRows: 1,
-          widths: ['*', 'auto', 100, '*'],
+          widths: [10, '*', 100, 100],
 
           body: [
-            ['#', 'ABONO', 'QUANTIDADE', 'VALOR'],
-            ['1', 'Salário Base', '22', '200.000,00'],
-            ['2', 'SUbsidio de Ferias', '22', '32.500,00'],
-            ['3', 'Subsidio de Trasnporte', '12','50.000,00'],
-            
+            [
+
+              {
+                text: '#',
+                style: 'th',
+              },
+              {
+                text: 'ABONO',
+                style: 'th',
+              },
+              {
+                text: 'QUANTIDADE',
+                style: 'th',
+              },
+              {
+                text: 'VALOR',
+                style: 'th',
+              }
+            ],
+            ['1', 'Salário Base', '22',
+              {
+                text: '600.000,00',
+                style: 'textRight',
+              }],
+            ['2', 'SUbsidio de Ferias', '22',
+              {
+                text: '90.000,00',
+                style: 'textRight',
+              }],
+            ['3', 'Subsidio de Trasnporte', '12',
+              {
+                text: '102.000,00',
+                style: 'textRight',
+              }],
+
           ]
         }
       },
@@ -339,8 +392,8 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
             ['#', 'ABONO', 'QUANTIDADE', 'VALOR'],
             ['1', 'Salário Base', '22', '200.000,00'],
             ['2', 'SUbsidio de Ferias', '22', '32.500,00'],
-            ['3', 'Subsidio de Trasnporte', '12','50.000,00'],
-            
+            ['3', 'Subsidio de Trasnporte', '12', '50.000,00'],
+
           ]
         }
       }
@@ -369,7 +422,35 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
         alignment: 'center',
         marginTop: 35,
         marginBottom: 15,
-        decoration: "underline"
+        decoration: "underline",
+      },
+      headers: {
+        fontSize: 18,
+        bold: true,
+        margin: [0, 0, 0, 10]
+      },
+      subheader: {
+        fontSize: 16,
+        bold: true,
+        margin: [0, 10, 0, 5]
+      },
+      tableExample: {
+        margin: [0, 5, 0, 15]
+      },
+      tableHeader: {
+      },
+      th: {
+        bold: true,
+        fontSize: 13,
+        color: 'black',
+        alignment: 'left',
+      },
+      tf: {
+        bold: true,
+        fontSize: 13,
+        color: 'black',
+        alignment: 'left',
+        fillColor: '#eee'
       },
       h1: {
         fontSize: 14,
@@ -392,6 +473,10 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
       },
       lowFooter: {
         fontSize: 9,
+      },
+      textRight: {
+
+        alignment: 'right',
       }
     },
 
@@ -423,7 +508,7 @@ export async function generatePayStub({ payStubId, callBack, type, ...data }: an
 
   const printer = new PdfPrinter(fonts);
 
-  const pdfDoc = printer.createPdfKitDocument(await getPayStubDefinitions({ payStubId, data }));
+  const pdfDoc = printer.createPdfKitDocument(await getPayStubDefinitions({ payStubId, data }), { tableLayouts: tableLayouts });
 
   const chunks: any[] | Uint8Array[] = []
 
