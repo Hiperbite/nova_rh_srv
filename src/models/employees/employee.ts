@@ -236,7 +236,7 @@ export default class Employee extends Model {
   @AfterCreate
   static createUser = async ({ id: employeeId, contacts, avatar }: Employee, { transaction }: any) => {
 
-    const email = contacts?.find((c: Contact) => c.type?.code === "EMAIL")?.descriptions
+    const email = contacts?.find((c: Contact) => c.descriptions?.includes('@'))?.descriptions
 
     await User.create({
       email,

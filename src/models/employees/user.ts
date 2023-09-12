@@ -20,6 +20,7 @@ import { Model, Address, Employee, Person } from "../index";
 import bcrypt from "bcrypt";
 import { UserApp } from "../../application/common/user.app";
 import sendEmail, { mailServices } from "../../application/mailler/index";
+import { randomUUID } from "crypto";
 
 const UniqIndex = createIndexDecorator({
   name: 'Email-index',
@@ -94,9 +95,9 @@ export default class User extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  username!: string;
+  username?: string;
 
   // @UniqIndex
   @Column({
@@ -174,10 +175,14 @@ export default class User extends Model {
 
   @BeforeSave
   @BeforeCreate
+  static setUserName = (user:User) => user.username = randomUUID()
+
+  @BeforeCreate
   static initVer = UserApp.initVer;
 
   @BeforeCreate
   static sendMail = UserApp.sendMail;
+
 
   @BeforeSave
   static hashPassword = UserApp.hashPassword;
