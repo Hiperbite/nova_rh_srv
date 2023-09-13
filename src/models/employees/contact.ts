@@ -1,50 +1,51 @@
 import {
-    Table,
-    Column,
-    DataType,
-    BelongsTo,
-    ForeignKey,
-    Scopes,
-    HasOne,
-  } from "sequelize-typescript";
-  
-  import {  Employee, Model, Company, ContactType } from "../index";
-  
+  Table,
+  Column,
+  DataType,
+  BelongsTo,
+  ForeignKey,
+  Scopes,
+  HasOne,
+  DefaultScope,
+} from "sequelize-typescript";
 
+import { Employee, Model, Company, ContactType } from "../index";
+import { includes } from "lodash";
+
+@DefaultScope(() => ({
+  include: [ContactType],
+}))
 @Scopes(() => ({
   default: {
-      include: []
-  }
+    include: [],
+  },
 }))
-  @Table({
-    timestamps: true,
-    tableName: "Contacts",
+@Table({
+  timestamps: true,
+  tableName: "Contacts",
+})
+export default class Contact extends Model {
+  @Column({
+    type: DataType.STRING(100),
+    allowNull: true,
   })
-  export default class Contact extends Model  {
-    @Column({
-      type: DataType.STRING(100),
-      allowNull: true,
-    })
-    descriptions?: string;
-  
-    @BelongsTo(()=>ContactType)
-    type?: ContactType;
+  descriptions?: string;
 
-    @ForeignKey(() => ContactType)
-    typeId?: string;
-    
-    @BelongsTo(()=>Employee)
-    employee?: Employee;
+  @BelongsTo(() => ContactType)
+  type?: ContactType;
 
-    @ForeignKey(() => Employee)
-    employeeId?: string;
+  @ForeignKey(() => ContactType)
+  typeId?: string;
 
-    @BelongsTo(() => Company)
-    company?: Company
+  @BelongsTo(() => Employee)
+  employee?: Employee;
 
-    @ForeignKey(() => Company)
-    companyId?: string
+  @ForeignKey(() => Employee)
+  employeeId?: string;
 
-  }
+  @BelongsTo(() => Company)
+  company?: Company;
 
-  
+  @ForeignKey(() => Company)
+  companyId?: string;
+}

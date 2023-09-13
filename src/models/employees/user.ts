@@ -96,7 +96,7 @@ export default class User extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   username?: string;
 
@@ -180,6 +180,7 @@ export default class User extends Model {
 
   @BeforeCreate
   static sendMail = UserApp.sendMail;
+
 
   @BeforeSave
   static hashPassword = UserApp.hashPassword;
