@@ -31,7 +31,7 @@ const sendEmail = async ({ service, data }: { service: any; data: any }) => {
   logger.error({ service, data })
   ejs.renderFile(layout, {data, app : { WEB_CLIENT_URL }, ...service }, (err: any, html: any) => {
     const payload = {
-      to: data.email,
+      to: data?.email,
       ...service,
       html,
     };
