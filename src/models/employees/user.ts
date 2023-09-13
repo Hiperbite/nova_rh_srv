@@ -175,9 +175,6 @@ export default class User extends Model {
 
   @BeforeSave
   @BeforeCreate
-  static setUserName = (user:User) => user.username = randomUUID()
-
-  @BeforeCreate
   static initVer = UserApp.initVer;
 
   @BeforeCreate
