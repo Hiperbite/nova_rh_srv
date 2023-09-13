@@ -20,6 +20,7 @@ import { Model, Address, Employee, Person } from "../index";
 import bcrypt from "bcrypt";
 import { UserApp } from "../../application/common/user.app";
 import sendEmail, { mailServices } from "../../application/mailler/index";
+import { uniqueId } from "lodash";
 import { randomUUID } from "crypto";
 
 const UniqIndex = createIndexDecorator({
@@ -199,7 +200,8 @@ export default class User extends Model {
         data
       })
     )
-
+@BeforeCreate
+static setUserName=(user:User)=>user.username||=randomUUID()
 
   @AfterUpdate
   @AfterCreate
