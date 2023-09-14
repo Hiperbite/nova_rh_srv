@@ -149,6 +149,7 @@ const Repo = sequelize.getRepository;
 )
 
 enum SPs {
+  GetDashboardData = "GetDashboardData",
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
   GetCallendarDate = "GetCallendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',

@@ -32,6 +32,11 @@ class DashBoardApi {
 
     return res.json({ studentHonorRoll });
   };
+  getDashboardData = async (req: Request, res: Response): Promise<Response> => {
+    const dashboardData = await Procedure(SPs.GetDashboardData);
+    
+    return res.json(dashboardData);
+  };
   getStudentCount = async (req: Request, res: Response): Promise<Response> => {
     const studentsCount =(await Procedure(SPs.GetStudentCount))[0]
     
