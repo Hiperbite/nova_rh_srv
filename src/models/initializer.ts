@@ -60,199 +60,201 @@ const initialData: InitializerType[] = [
 
         name: 'Executive Council', code: 'CEX', id: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
         childs: [
+
+        ]
+      },
+      {
+        id: "a34f8f58-0b7d-4ab6-837a-8428e149c7c0",
+        code: "DTI",
+        name: "Diretoria de Tecnologia da Informação",
+        departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
+        childs: [
           {
-            id: "a34f8f58-0b7d-4ab6-837a-8428e149c7c0",
-            code: "DTI",
-            name: "Diretoria de Tecnologia da Informação",
+            id: "d1f8f162-0e9f-428e-9329-1448906056cf",
+            code: "DEV",
+            name: "Departamento de Desenvolvimento de Software",
             childs: [
               {
-                id: "d1f8f162-0e9f-428e-9329-1448906056cf",
-                code: "DEV",
-                name: "Departamento de Desenvolvimento de Software",
+                id: "b3a9e4c2-6891-44e3-a6b2-70c09d5438d0",
+                code: "DWE",
+                name: "Subdepartamento de Desenvolvimento Web",
                 childs: [
-                  {
-                    id: "b3a9e4c2-6891-44e3-a6b2-70c09d5438d0",
-                    code: "DWE",
-                    name: "Subdepartamento de Desenvolvimento Web",
-                    childs: [
-                      { id: "8f5d59e6-9922-4ae0-87a1-15c7e4a22a4e", code: "FE", name: "Equipe de Frontend" },
-                      { id: "d42dbb4b-b70d-4e35-9279-07b0b947cd8a", code: "BE", name: "Equipe de Backend" }
-                    ]
-                  },
-                  {
-                    id: "83f8b609-21f2-4f53-99df-4db73100a52e",
-                    code: "DMO",
-                    name: "Subdepartamento de Desenvolvimento de Aplicativos Móveis",
-                    childs: [
-                      { id: "c68511b9-bfeb-4f3f-9cfe-76b40f9b8d91", code: "iOS", name: "Equipe de iOS" },
-                      { id: "daebcfda-3e6b-4a61-91b7-0d42530ef3c9", code: "AND", name: "Equipe de Android" }
-                    ]
-                  },
-                  {
-                    id: "a87abeca-d35f-41f4-af36-57db93e7b7f2",
-                    code: "ARS",
-                    name: "Subdepartamento de Arquitetura de Software",
-                    childs: [
-                      { id: "04f1f990-63f5-40a6-8371-0e74ab806500", code: "MIC", name: "Arquitetura de Microserviços" },
-                      { id: "3a7b1982-58be-4b27-bb61-1330c26bb68b", code: "NUV", name: "Arquitetura de Nuvem" }
-                    ]
-                  }
+                  { id: "8f5d59e6-9922-4ae0-87a1-15c7e4a22a4e", code: "FE", name: "Equipe de Frontend" },
+                  { id: "d42dbb4b-b70d-4e35-9279-07b0b947cd8a", code: "BE", name: "Equipe de Backend" }
                 ]
               },
               {
-                id: "5d9536bb-3cb7-4d7b-ba96-19ac19f10b2c",
-                code: "INF",
-                name: "Departamento de Infraestrutura e Operações",
+                id: "83f8b609-21f2-4f53-99df-4db73100a52e",
+                code: "DMO",
+                name: "Subdepartamento de Desenvolvimento de Aplicativos Móveis",
                 childs: [
-                  {
-                    id: "1d0d7db4-61b7-402d-9b12-944ec8184c75",
-                    code: "RES",
-                    name: "Subdepartamento de Redes e Segurança",
-                    childs: [
-                      { id: "06b46b7c-9c23-4ad4-a4f0-49a0a063b6dd", code: "RED", name: "Equipe de Rede" },
-                      { id: "af2b33a0-dc14-45ed-9a7b-95f2e3f04f63", code: "SEC", name: "Equipe de Segurança Cibernética" }
-                    ]
-                  },
-                  {
-                    id: "1e09e388-12b9-475c-b57a-7c2d4d2e84d4",
-                    code: "ADM",
-                    name: "Subdepartamento de Administração de Sistemas",
-                    childs: [
-                      { id: "8e460ba9-c9da-4774-8dd3-5db432c82177", code: "ADM", name: "Equipe de Administração de Servidores" },
-                      { id: "a0216076-abea-4c8c-8a24-5082be8c12a2", code: "DVO", name: "Equipe de DevOps" }
-                    ]
-                  },
-                  {
-                    id: "b549b112-b53b-4f14-aa11-3804064b0487",
-                    code: "GER",
-                    name: "Subdepartamento de Gerenciamento de Ativos",
-                    childs: [
-                      { id: "1cf50a00-378f-472b-8c33-977c036572fe", code: "HRD", name: "Controle de Ativos de Hardware" },
-                      { id: "17e156f0-6a2e-4565-85b3-57b50590bbf7", code: "SFT", name: "Gerenciamento de Licenças de Software" }
-                    ]
-                  }
+                  { id: "c68511b9-bfeb-4f3f-9cfe-76b40f9b8d91", code: "iOS", name: "Equipe de iOS" },
+                  { id: "daebcfda-3e6b-4a61-91b7-0d42530ef3c9", code: "AND", name: "Equipe de Android" }
                 ]
               },
               {
-                id: "045e756c-0b81-4c84-875b-1a48458c9ef6",
-                code: "DIA",
-                name: "Departamento de Análise de Dados e Inteligência Artificial",
+                id: "a87abeca-d35f-41f4-af36-57db93e7b7f2",
+                code: "ARS",
+                name: "Subdepartamento de Arquitetura de Software",
                 childs: [
-                  {
-                    id: "2b405b19-6166-4b5a-8b86-055632b01d6e",
-                    code: "CID",
-                    name: "Subdepartamento de Ciência de Dados",
-                    childs: [
-                      { id: "f424819e-7d13-48c6-b6ef-30e7b902db8d", code: "AND", name: "Equipe de Análise de Dados" },
-                      { id: "bd90d0f6-4881-4c19-86de-01b5e32056d3", code: "APM", name: "Equipe de Aprendizado de Máquina" }
-                    ]
-                  },
-                  {
-                    id: "b663dc4f-6605-4d7f-bcbf-3eb35413c0d9",
-                    code: "INT",
-                    name: "Subdepartamento de Inteligência de Negócios",
-                    childs: [
-                      { id: "021ab18d-9a3b-46c1-9ec3-9924c08f9cc4", code: "BI", name: "Equipe de Business Intelligence" },
-                      { id: "cd076d0d-d6fc-4c6d-9c91-cd62806ad3a5", code: "VIS", name: "Equipe de Visualização de Dados" }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: "27f47214-8b20-434a-b6d2-8ed3981e2f29",
-                code: "UXD",
-                name: "Departamento de Experiência do Usuário e Design",
-                childs: [
-                  {
-                    id: "0c670eda-20e6-4c4c-b1b0-3c22e7d5ea1c",
-                    code: "UXD",
-                    name: "Subdepartamento de Experiência do Usuário",
-                    childs: [
-                      { id: "a39d433d-094c-4657-b2f2-1d10d7abcb6e", code: "PES", name: "Equipe de Pesquisa de Usuário" },
-                      { id: "33f0e63a-4d53-4096-9f59-29eb43f2e5ca", code: "DIN", name: "Equipe de Design de Interação" }
-                    ]
-                  },
-                  {
-                    id: "af6a656d-40f3-4314-8b92-179e2c25ef2d",
-                    code: "DSV",
-                    name: "Subdepartamento de Design Visual",
-                    childs: [
-                      { id: "b0c65b8f-d01e-4b7c-b0da-c6d620b7e2c6", code: "GRA", name: "Equipe de Design Gráfico" },
-                      { id: "0ee03ff3-cd4d-4596-b46b-4c659b7482a0", code: "INT", name: "Equipe de Design de Interface" }
-                    ]
-                  }
+                  { id: "04f1f990-63f5-40a6-8371-0e74ab806500", code: "MIC", name: "Arquitetura de Microserviços" },
+                  { id: "3a7b1982-58be-4b27-bb61-1330c26bb68b", code: "NUV", name: "Arquitetura de Nuvem" }
                 ]
               }
             ]
           },
           {
-            id: "c3764843-27f4-47c9-a6a7-5c7917814f72",
-            code: "DOP",
-            name: "Diretoria de Operações",
+            id: "5d9536bb-3cb7-4d7b-ba96-19ac19f10b2c",
+            code: "INF",
+            name: "Departamento de Infraestrutura e Operações",
             childs: [
               {
-                id: "6a2ea521-4c9b-4fe0-a9f4-9c6b41670067",
-                code: "VEM",
-                name: "Departamento de Vendas e Marketing",
+                id: "1d0d7db4-61b7-402d-9b12-944ec8184c75",
+                code: "RES",
+                name: "Subdepartamento de Redes e Segurança",
                 childs: [
-                  {
-                    id: "19a237b6-44e5-4160-b9aa-42c1530f0a3b",
-                    code: "VEN",
-                    name: "Subdepartamento de Vendas",
-                    childs: [
-                      { id: "61c7b7e2-3f5b-4b7f-aa2b-e48eb7c3beab", code: "B2B", name: "Equipe de Vendas B2B" },
-                      { id: "5602ee8b-8de5-47a7-95a1-7e5e7e8c08a2", code: "B2C", name: "Equipe de Vendas B2C" }
-                    ]
-                  },
-                  {
-                    id: "7647f9ad-ea40-4e58-b849-6aa6bbd8aa4d",
-                    code: "MKT",
-                    name: "Subdepartamento de Marketing",
-                    childs: [
-                      { id: "df0f189b-4eac-4e58-90c5-31dd4633fb48", code: "DIG", name: "Equipe de Marketing Digital" },
-                      { id: "b0d43e08-3637-4f6e-9b6e-07ac8b3a49cd", code: "CON", name: "Equipe de Marketing de Conteúdo" }
-                    ]
-                  }
+                  { id: "06b46b7c-9c23-4ad4-a4f0-49a0a063b6dd", code: "RED", name: "Equipe de Rede" },
+                  { id: "af2b33a0-dc14-45ed-9a7b-95f2e3f04f63", code: "SEC", name: "Equipe de Segurança Cibernética" }
                 ]
               },
               {
-                id: "bb55d617-3c4d-4a79-b4b0-e16b1d85a4d0",
-                code: "FAD",
-                name: "Departamento Financeiro e Administrativo",
+                id: "1e09e388-12b9-475c-b57a-7c2d4d2e84d4",
+                code: "ADM",
+                name: "Subdepartamento de Administração de Sistemas",
                 childs: [
-                  {
-                    id: "e1a0e6b3-4d91-46ce-aacb-176d8a5d0ff1",
-                    code: "CON",
-                    name: "Subdepartamento de Contabilidade",
-                    childs: [
-                      { id: "89b69fbf-cb65-4a9d-a02a-b33d91fdd24c", code: "CPG", name: "Equipe de Contas a Pagar e Receber" },
-                      { id: "33245f6b-eeb2-4564-9324-9479c2710b92", code: "CGE", name: "Equipe de Contabilidade Geral" }
-                    ]
-                  },
-                  {
-                    id: "b2d9f112-c3ac-4fa9-8895-90c9f29b5974",
-                    code: "PLF",
-                    name: "Subdepartamento de Planejamento Financeiro",
-                    childs: [
-                      { id: "a9749796-cda4-409c-85e4-b967635ada73", code: "ORÇ", name: "Equipe de Orçamento" },
-                      { id: "54dd847e-020a-4e61-8a3e-0aa062012e5e", code: "AFN", name: "Equipe de Análise Financeira" }
-                    ]
-                  },
-                  {
-                    id: "8e0d8e15-0ff5-4d13-b363-688b9be13551",
-                    code: "RHP",
-                    name: "Subdepartamento de Recursos Humanos",
-                    childs: [
-                      { id: "7c14f8af-0f92-4d09-b5d3-36b76d7f2c3b", code: "RCS", name: "Equipe de Recrutamento e Seleção" },
-                      { id: "8b322ff0-322e-4d19-92a0-6f632f67c5a3", code: "DPS", name: "Equipe de Desenvolvimento de Pessoas" },
-                      { id: "3df9e3c9-1e8b-4c9b-bf83-65ecd039f6db", code: "APE", name: "Equipe de Administração de Pessoal" }
-                    ]
-                  }
+                  { id: "8e460ba9-c9da-4774-8dd3-5db432c82177", code: "ADM", name: "Equipe de Administração de Servidores" },
+                  { id: "a0216076-abea-4c8c-8a24-5082be8c12a2", code: "DVO", name: "Equipe de DevOps" }
+                ]
+              },
+              {
+                id: "b549b112-b53b-4f14-aa11-3804064b0487",
+                code: "GER",
+                name: "Subdepartamento de Gerenciamento de Ativos",
+                childs: [
+                  { id: "1cf50a00-378f-472b-8c33-977c036572fe", code: "HRD", name: "Controle de Ativos de Hardware" },
+                  { id: "17e156f0-6a2e-4565-85b3-57b50590bbf7", code: "SFT", name: "Gerenciamento de Licenças de Software" }
+                ]
+              }
+            ]
+          },
+          {
+            id: "045e756c-0b81-4c84-875b-1a48458c9ef6",
+            code: "DIA",
+            name: "Departamento de Análise de Dados e Inteligência Artificial",
+            childs: [
+              {
+                id: "2b405b19-6166-4b5a-8b86-055632b01d6e",
+                code: "CID",
+                name: "Subdepartamento de Ciência de Dados",
+                childs: [
+                  { id: "f424819e-7d13-48c6-b6ef-30e7b902db8d", code: "AND", name: "Equipe de Análise de Dados" },
+                  { id: "bd90d0f6-4881-4c19-86de-01b5e32056d3", code: "APM", name: "Equipe de Aprendizado de Máquina" }
+                ]
+              },
+              {
+                id: "b663dc4f-6605-4d7f-bcbf-3eb35413c0d9",
+                code: "INT",
+                name: "Subdepartamento de Inteligência de Negócios",
+                childs: [
+                  { id: "021ab18d-9a3b-46c1-9ec3-9924c08f9cc4", code: "BI", name: "Equipe de Business Intelligence" },
+                  { id: "cd076d0d-d6fc-4c6d-9c91-cd62806ad3a5", code: "VIS", name: "Equipe de Visualização de Dados" }
+                ]
+              }
+            ]
+          },
+          {
+            id: "27f47214-8b20-434a-b6d2-8ed3981e2f29",
+            code: "UXD",
+            name: "Departamento de Experiência do Usuário e Design",
+            childs: [
+              {
+                id: "0c670eda-20e6-4c4c-b1b0-3c22e7d5ea1c",
+                code: "UXD",
+                name: "Subdepartamento de Experiência do Usuário",
+                childs: [
+                  { id: "a39d433d-094c-4657-b2f2-1d10d7abcb6e", code: "PES", name: "Equipe de Pesquisa de Usuário" },
+                  { id: "33f0e63a-4d53-4096-9f59-29eb43f2e5ca", code: "DIN", name: "Equipe de Design de Interação" }
+                ]
+              },
+              {
+                id: "af6a656d-40f3-4314-8b92-179e2c25ef2d",
+                code: "DSV",
+                name: "Subdepartamento de Design Visual",
+                childs: [
+                  { id: "b0c65b8f-d01e-4b7c-b0da-c6d620b7e2c6", code: "GRA", name: "Equipe de Design Gráfico" },
+                  { id: "0ee03ff3-cd4d-4596-b46b-4c659b7482a0", code: "INT", name: "Equipe de Design de Interface" }
                 ]
               }
             ]
           }
-
+        ]
+      },
+      {
+        id: "c3764843-27f4-47c9-a6a7-5c7917814f72",
+        code: "DOP",
+        departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
+        name: "Diretoria de Operações",
+        childs: [
+          {
+            id: "6a2ea521-4c9b-4fe0-a9f4-9c6b41670067",
+            code: "VEM",
+            name: "Departamento de Vendas e Marketing",
+            childs: [
+              {
+                id: "19a237b6-44e5-4160-b9aa-42c1530f0a3b",
+                code: "VEN",
+                name: "Subdepartamento de Vendas",
+                childs: [
+                  { id: "61c7b7e2-3f5b-4b7f-aa2b-e48eb7c3beab", code: "B2B", name: "Equipe de Vendas B2B" },
+                  { id: "5602ee8b-8de5-47a7-95a1-7e5e7e8c08a2", code: "B2C", name: "Equipe de Vendas B2C" }
+                ]
+              },
+              {
+                id: "7647f9ad-ea40-4e58-b849-6aa6bbd8aa4d",
+                code: "MKT",
+                name: "Subdepartamento de Marketing",
+                childs: [
+                  { id: "df0f189b-4eac-4e58-90c5-31dd4633fb48", code: "DIG", name: "Equipe de Marketing Digital" },
+                  { id: "b0d43e08-3637-4f6e-9b6e-07ac8b3a49cd", code: "CON", name: "Equipe de Marketing de Conteúdo" }
+                ]
+              }
+            ]
+          },
+          {
+            id: "bb55d617-3c4d-4a79-b4b0-e16b1d85a4d0",
+            code: "FAD",
+            name: "Departamento Financeiro e Administrativo",
+            childs: [
+              {
+                id: "e1a0e6b3-4d91-46ce-aacb-176d8a5d0ff1",
+                code: "CON",
+                name: "Subdepartamento de Contabilidade",
+                childs: [
+                  { id: "89b69fbf-cb65-4a9d-a02a-b33d91fdd24c", code: "CPG", name: "Equipe de Contas a Pagar e Receber" },
+                  { id: "33245f6b-eeb2-4564-9324-9479c2710b92", code: "CGE", name: "Equipe de Contabilidade Geral" }
+                ]
+              },
+              {
+                id: "b2d9f112-c3ac-4fa9-8895-90c9f29b5974",
+                code: "PLF",
+                name: "Subdepartamento de Planejamento Financeiro",
+                childs: [
+                  { id: "a9749796-cda4-409c-85e4-b967635ada73", code: "ORÇ", name: "Equipe de Orçamento" },
+                  { id: "54dd847e-020a-4e61-8a3e-0aa062012e5e", code: "AFN", name: "Equipe de Análise Financeira" }
+                ]
+              },
+              {
+                id: "8e0d8e15-0ff5-4d13-b363-688b9be13551",
+                code: "RHP",
+                name: "Subdepartamento de Recursos Humanos",
+                childs: [
+                  { id: "7c14f8af-0f92-4d09-b5d3-36b76d7f2c3b", code: "RCS", name: "Equipe de Recrutamento e Seleção" },
+                  { id: "8b322ff0-322e-4d19-92a0-6f632f67c5a3", code: "DPS", name: "Equipe de Desenvolvimento de Pessoas" },
+                  { id: "3df9e3c9-1e8b-4c9b-bf83-65ecd039f6db", code: "APE", name: "Equipe de Administração de Pessoal" }
+                ]
+              }
+            ]
+          }
         ]
       }]
   },
@@ -1959,6 +1961,7 @@ function createRandomEmployees(): any {
 
     const roles: any[] = initialData?.find(({ model }: any) => model === 'Role')?.data ?? []
     const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
+    const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
     const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data ?? []
     const banks: any[] = initialData?.find(({ model }: any, i: number) => model === 'Bank' || i === 8)?.data ?? []
 
@@ -2008,15 +2011,15 @@ function createRandomEmployees(): any {
       contacts: [
         {
           descriptions: faker.internet.email(),
-          type: "EMAIL"
+          typeId: contactType?.find(({ code }: any) => code === 'EMAIL')?.id
         },
         {
           descriptions: faker.internet.email(),
-          type: "EMAIL"
+          typeId: contactType?.find(({ code }: any) => code === 'EMAIL')?.id
         },
         {
           descriptions: faker.phone.number('+244 9########'),
-          type: "PHONENUMBER"
+          typeId: contactType?.find(({ code }: any) => code === "PHONENUMBER")?.id
         }
       ],
       documents: [
@@ -2056,7 +2059,7 @@ function createRandomEmployees(): any {
   }
 
 
-  initialData.push({ model: 'Department', data: departments });
+  //initialData.push({ model: 'Department', data: departments });
 
   let i = 200;
   while (--i > 0 && employees.push(generateEmployee(i))) { }
@@ -2068,7 +2071,8 @@ createRandomEmployees();
 const initializer = (_?: any) =>
   initialData.forEach(({ model: m, data, include = { all: true } }: any) => {
     const s = sequelize;
-    let model = s.models[`${m}`];
+    let model: any = s.models[`${m}`];
+
     data.forEach(async (d: any, i: number) => {
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
@@ -2076,11 +2080,17 @@ const initializer = (_?: any) =>
           if (include) {
             let v = 0;
           }
+          if (m === 'Department') {
+            let u = 1;
+          }
           if (d.model === "Employee") {
             const xx = 100;
           }
           model.create(d, { include }).catch((e: any) => {
 
+            if (m === 'Department') {
+              let u = 1;
+            }
             let y = e;
             console.log(e)
 
@@ -2088,6 +2098,9 @@ const initializer = (_?: any) =>
         }
       }).catch((e: any) => {
 
+        if (m === 'Department') {
+          let u = 1;
+        }
         let y = e;
         console.log(e)
 
