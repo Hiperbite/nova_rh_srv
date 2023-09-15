@@ -22,7 +22,7 @@ import { Model, Department as Dep, Contract, Employee } from "../index";
     include: [{ model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },
   full: {
-    include: [Contract, { model: Dep, as: 'department' }, { model: Dep, as: 'childs', include: [{ model: Dep, as: 'childs', include: [{ model: Dep, as: 'childs' }] }] }]
+    include: [Contract, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   }
 }))
 @Table({

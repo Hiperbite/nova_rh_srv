@@ -11,6 +11,9 @@ import {
 import { Company, Country, Model } from "../index";
 
 
+@DefaultScope(() => ({
+    include: [Country]
+}))
 @Scopes(() => ({
     default: {
         include: [Country]
@@ -40,7 +43,7 @@ export default class Address extends Model {
         return this.descriptions + ', ' +
             this.city + ', ' +
             this.province + ', ' +
-            this.countryCode
+            this.country?.code
     }
 
     @Column({

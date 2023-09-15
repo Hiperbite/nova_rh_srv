@@ -8,7 +8,7 @@ import {
   DefaultScope,
   Scopes,
 } from "sequelize-typescript";
-import { Address, Contact, Document, Employee, Model } from "../index";
+import { Address, Contact, Country, Document, Employee, Model } from "../index";
 
 
 export type MaritalstatusType =
@@ -19,10 +19,11 @@ export type MaritalstatusType =
   | "OTHER";
 export type GenderType =
   | "M"
-  | "F";
+  | "W";
 
 @DefaultScope(() => ({
   include: [
+    Country,
     { model: Address, as: 'birthPlaceAddress' },
     { model: Address, as: 'livingAddress' }],
 }))
@@ -104,17 +105,23 @@ export default class Person extends Model {
     return Math.abs(currentDate.getUTCFullYear() - _birthDate.getUTCFullYear())
   }
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  nationality!: string;
+  @BelongsTo(() => Country)
+  nationality!: Country;
+
+  @ForeignKey(() => Country)
+  nationalityId!: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   gender!: GenderType;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true
+  })
+  socialSecurityNumber?: number
 
   @ForeignKey(() => Address)
   birthPlaceAddressId?: string;

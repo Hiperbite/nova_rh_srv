@@ -41,7 +41,11 @@ export default class Country extends Model {
         type: DataType.STRING,
         allowNull: false,
     })
-    nationality!: string;
+    get nationality() {
+        const str = this.getDataValue('nationality');
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+    };
 
     @HasMany(() => Address)
     address?: Address[]

@@ -1956,7 +1956,12 @@ function createRandomEmployees(): any {
     return flattened;
   }
 
-  const departments: any[] = flatten(initialData?.find(({ model }: any) => model === 'Department')?.data[0]) ?? []
+  const y = initialData?.filter(({ model }: any) => model === 'Department').flat(1)[0].data;
+  let departments: any[] = []
+  departments.push(flatten(y[0]))
+  departments.push(flatten(y[1]))
+  departments.push(flatten(y[2]))
+  departments = departments.flat(1)
   const generateEmployee = (key: number) => {
 
     const roles: any[] = initialData?.find(({ model }: any) => model === 'Role')?.data ?? []
@@ -1983,15 +1988,18 @@ function createRandomEmployees(): any {
       isActive: faker.datatype.boolean(0.8),
       descriptions: faker.lorem.paragraph(),
       type: "INT",
-      socialSecurityNumber: faker.finance.accountNumber(),
       avatar: faker.image.avatar(),
-      accountPaymentDatas: accountPaymentDatas((faker.number.int(2))),
+      accounts: accountPaymentDatas((faker.number.int(2))),
       person: {
+        socialSecurityNumber: faker.finance.accountNumber(),
         nationality: faker.location.county(),
         firstName: faker.person.firstName(),
-        otherName: faker.person.middleName(),
+        otherNames: faker.person.middleName(),
         lastName: faker.person.lastName(),
-        gender: faker.person.gender(),
+        descriptions: faker.person.bio(),
+        title: faker.person.prefix(),
+        maritalStatus: faker.helpers.arrayElement(["SINGLE", "MARRIED", "DIVORCED", "WIDOWED", "OTHER"]),
+        gender: ['M', 'W'][faker.datatype.boolean(0.8) ? 0 : 1],
         birthDate: faker.date.birthdate(),
         birthPlaceAddress: {
           descriptions: faker.location.streetAddress(),
@@ -2061,7 +2069,7 @@ function createRandomEmployees(): any {
 
   //initialData.push({ model: 'Department', data: departments });
 
-  let i = 200;
+  let i = 60;
   while (--i > 0 && employees.push(generateEmployee(i))) { }
   initialData.push({ model: 'Employee', data: employees });
 }

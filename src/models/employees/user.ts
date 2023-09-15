@@ -122,7 +122,8 @@ export default class User extends Model {
       ?? []
   }
   set permissions(roles: string[]) {
-    this.setDataValue('permissions', Object.entries(roles).map((p: any) => p.join('_')).join(','))
+    if (roles)
+      this.setDataValue('permissions', Object.entries(roles).map((p: any) => p.join('_')).join(','))
   }
 
   @Column({
@@ -200,14 +201,14 @@ export default class User extends Model {
         data
       })
     )
-@BeforeCreate
-static setUserName=(user:User)=>user.username||=randomUUID()
+  @BeforeCreate
+  static setUserName = (user: User) => user.username ||= randomUUID()
 
   @AfterUpdate
   @AfterCreate
   @AfterSave
   static async refreshPersons(user: User) {
-    
+
   }
 
   //TODO: fix password compare

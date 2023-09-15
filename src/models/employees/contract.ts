@@ -15,18 +15,21 @@ import {
 import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
 
 @DefaultScope(() => ({
-  include: [
-    Role,
-    AdditionalField,
-    WorkingHour,
-    { model: Employee, include: [Person, { model: User, as: 'user' }] },
-    { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
-    { model: Department, include: [{ as: 'department', model: Department }] }],
+  include: [Role, Department],
   orderBy: [['startDate', 'DESC']]
 }))
 @Scopes(() => ({
+  full: {
+    include: [
+      Role,
+      AdditionalField,
+      WorkingHour,
+      { model: Employee, include: [Person, { model: User, as: 'user' }] },
+      { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
+      { model: Department, include: [{ as: 'department', model: Department }] }],
+  },
   default: {
-
+    include: [Role, Department]
   },
   coworkers: {
     attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
@@ -151,7 +154,7 @@ export default class Contract extends Model {
       value: Number(salaryPackage?.baseValue),
       debit: true,
       quantity: 1,
-      startDate:salaryPackage?.startDate,
+      startDate: salaryPackage?.startDate,
       baseValuePeriod: salaryPackage?.baseValuePeriod,
       descriptions: 'Base',
 
