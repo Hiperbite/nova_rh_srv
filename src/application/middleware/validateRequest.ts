@@ -1,13 +1,42 @@
 import { Request, Response, NextFunction } from "express";
-import { filter } from "lodash";
-import sequelize from "../../models/index";
+import sequelize, { switchTo } from "../../models/index";
+import { MY_NODE_ENV, NODE_ENV } from "../../config";
 const uuidPattern = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/
+
+const encode = (str: string) => {
+  return str.replace(/./g, (c: any) => {
+    return ('00' + c.charCodeAt(0)).slice(-3);
+  });
+}
+
+const decode = (str: string) => {
+  return str.replace(/.{3}/g, (c: any) => {
+    return String.fromCharCode(c);
+  });
+}
+
+export const routerRequest = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { apikey }: any = req?.headers;
+  if (apikey === undefined) {
+    throw { code: 403 }
+  }
+  const currentKey = decode(apikey ?? '')
+
+  if ( NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
+    switchTo(currentKey)
+  }
+
+  next()
+}
 const validateRequest = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-
   const { where, order: o, include: i }: any = req.query
   if (where) {
     Object.keys(where).forEach((key: string) => {

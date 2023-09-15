@@ -59,9 +59,9 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
-const sequelize = new Sequelize({
+const sequelizeOptions = {
   dialect,
-  storage: "./data/database.sqlite",
+  storage: "./data/ccc.database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -115,7 +115,7 @@ const sequelize = new Sequelize({
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
-    
+
     WorkingHour,
     Notification,
 
@@ -132,19 +132,25 @@ const sequelize = new Sequelize({
     Bank,
     Role,
   ],
-});
-
+}
+let sequelize = new Sequelize(sequelizeOptions);
 const UniqIndex = createIndexDecorator({
   name: uuid() + '-index',
   type: 'UNIQUE',
   unique: true,
 });
 
+const switchTo = (db: string) => {
+  if (sequelize.options.dialect === 'sqlite')
+    sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+  else
+    sequelize.options.database = "n_" + db + "_nova_rh";
+}
 const Repo = sequelize.getRepository;
 (true &&
   sequelize
-    .sync({ alter: true, force: false})
-    //.then(initializer)
+    .sync({ alter: true, force: true })
+    .then(initializer)
     .catch(console.error)
 )
 
@@ -170,6 +176,7 @@ const Procedure = async (procedure: SPs, opts: any = []) =>
 export default sequelize;
 
 export {
+  switchTo,
   sequelize,
   Repo,
   Model,

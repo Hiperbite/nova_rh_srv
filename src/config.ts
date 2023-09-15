@@ -143,7 +143,7 @@ const config = () => {
   };
 
   const server = start();
-
+//startOrm();
   return { server, app, httpServer };
 };
 export default config;

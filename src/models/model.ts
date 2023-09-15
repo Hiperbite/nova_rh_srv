@@ -3,10 +3,8 @@ import {
   Column,
   DataType,
   BeforeCreate,
-  BeforeUpdate,
   AfterUpdate,
   AfterSave,
-  BelongsToMany,
   ForeignKey,
   BelongsTo,
   Scopes,
@@ -16,8 +14,6 @@ import {
 import _ from "lodash";
 import { v4 as uuids4 } from "uuid";
 import { Track, User } from "./index";
-import { NotificationApp } from "../application/common/notification.app";
-import { HasManyGetAssociationsMixin } from "sequelize";
 
 @Scopes(() => ({
   default: {
@@ -57,6 +53,7 @@ export default class Model extends Main {
 
   @AfterUpdate
   @AfterSave
+  @AfterBulkUpdate
   static afterModelUpdate = (model: Model, { transaction }: any = { transaction: null }) => {
 
     if (model?.previous()) { } else return model;
