@@ -538,6 +538,7 @@ const initialData: InitializerType[] = [
       code: "BW"
     },
     {
+      id: "13f8b609-21f2-4f53-99df-4db73100a00e",
       nationality: "brasileira",
       name: "Brasil",
       originalName: "Brazil",
@@ -1517,6 +1518,7 @@ const initialData: InitializerType[] = [
       code: "PR"
     },
     {
+      id: "13f8b609-21f2-4f53-99df-4db73100a11e",
       nationality: "portuguesa",
       name: "Portugal",
       originalName: "Portugal",
@@ -1547,6 +1549,7 @@ const initialData: InitializerType[] = [
       code: "CF"
     },
     {
+      id: "13f8b609-21f2-4f53-99df-4db73100a22e",
       nationality: "congolesa",
       name: "República Democrática do Congo",
       originalName: "Congo (DRC)",
@@ -1988,13 +1991,13 @@ function createRandomEmployees(): any {
   departments.push(flatten(y[2]))
   departments = departments.flat(1)
 
-  const generateEmployee = (key: number) => {
+  const roles: any[] = initialData?.find(({ model }: any) => model === 'Role')?.data ?? []
+  const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
+  const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
+  const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data.filter(({ id }: any) => id) ?? []
+  const banks: any[] = initialData?.find(({ model }: any) => model === 'Bank')?.data ?? []
 
-    const roles: any[] = initialData?.find(({ model }: any) => model === 'Role')?.data ?? []
-    const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
-    const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
-    const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data ?? []
-    const banks: any[] = initialData?.find(({ model }: any, i: number) => model === 'Bank' || i === 8)?.data ?? []
+  const generateEmployee = (key: number) => {
 
     const accountPaymentDatas = (i: number) =>
       [...Array(i + 1).keys()].map(() => ({
@@ -2015,7 +2018,6 @@ function createRandomEmployees(): any {
       accounts: accountPaymentDatas((faker.number.int(2))),
       person: {
         socialSecurityNumber: faker.finance.accountNumber(),
-        nationality: faker.location.county(),
         firstName: faker.person.firstName(),
         otherNames: faker.person.middleName(),
         lastName: faker.person.lastName(),
@@ -2024,6 +2026,7 @@ function createRandomEmployees(): any {
         maritalStatus: faker.helpers.arrayElement(["SINGLE", "MARRIED", "DIVORCED", "WIDOWED", "OTHER"]),
         gender: ['M', 'W'][faker.datatype.boolean(0.8) ? 0 : 1],
         birthDate: faker.date.birthdate(),
+        nationalityId: faker.helpers.arrayElement(countries?.map(({ id }: any) => id)),
         birthPlaceAddress: {
           descriptions: faker.location.streetAddress(),
           city: faker.location.city(),
@@ -2088,7 +2091,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 500;
+  let i = 100;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({ model: 'Employee', data: employees });
 }
@@ -2104,8 +2107,12 @@ const initializer = (_?: any) =>
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
         if (f === null) {
-
-          model.create(d, { include }).catch(console.log)
+          if (m === 'Employee') {
+            let y = 9
+          }
+          model.create(d, { include: include ?? { all: true } }).catch((e: any) => {
+            console.log(e)
+          })
         }
       }).catch(console.log)
     })

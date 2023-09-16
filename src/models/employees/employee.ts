@@ -98,7 +98,7 @@ export default class Employee extends Model {
   user?: User
 
   @HasOne(() => Person)
-  person?: Person;
+  person!: Person;
 
   @HasMany(() => Contact)
   contacts!: Contact[];

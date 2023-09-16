@@ -7,6 +7,7 @@ import {
   BelongsTo,
   DefaultScope,
   Scopes,
+  BeforeCreate,
 } from "sequelize-typescript";
 import { Address, Contact, Country, Document, Employee, Model } from "../index";
 
@@ -106,10 +107,10 @@ export default class Person extends Model {
   }
 
   @BelongsTo(() => Country)
-  nationality!: Country;
+  nationality?: Country;
 
   @ForeignKey(() => Country)
-  nationalityId!: string;
+  nationalityId?: string;
 
   @Column({
     type: DataType.STRING,
@@ -140,5 +141,10 @@ export default class Person extends Model {
 
   @ForeignKey(() => Employee)
   employeeId?: string;
+
+  @BeforeCreate
+  static initializers = (person: Person) => {
+    let y = person;
+  }
 };
 
