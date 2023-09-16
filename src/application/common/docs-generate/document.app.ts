@@ -12,7 +12,8 @@ const fonts = {
 };
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { AccountPaymentData, Employee, PayStub } from '../../../models/index';
+import { AccountPaymentData, Company, Employee, PayStub } from '../../../models/index';
+import { toDataURL } from '../../../routes/hendlers';
 
 
 //let USDollar =
@@ -49,32 +50,42 @@ const tableLayouts = {
 async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDefinitions> {
 
   const employee = await Employee.scope('all').findByPk(employeeId)
-
+  const [company] = await Company.findAll();
   const document: any = employee?.idCard || employee?.passport
 
+  const logo = company?.logos?.includes('http')
+    ? await toDataURL(company?.logos ?? '')
+    : company?.logos
   return {
 
-
+    pageMargins: [80, 60, 80, 60],
     content: [
       {
-        image: novaIcon,
-        width: 100,
-        marginTop: 35,
+        columnGap: 10,
+        columns: [
+          [{
+            image: logo ?? novaIcon,
+            width: 100,
+          },
+          company?.name + '\n' +
+          'NIF: ' + company?.nif + '\n'
+          ],
+          ''
+        ],
 
       },
       {
         text: 'Declaração de trabalho',
         style: 'header',
         alignment: 'center',
-
       },
       {
         text: [
-          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ' é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
+          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ', é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no/a ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento base mensal de ', { text: currency(employee?.contract?.salaryPackage?.baseValue), bold: true }, '.\n\n',
           'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
           { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
           { text: data.entity.toUpperCase(), bold: true },
-          '\n\nDirecção dos Recursos Humanos {nome da empresa}, em ',
+          '\n\n\nDirecção dos Recursos Humanos ' + company?.name + ', em ',
           { text: moment().format('DD [de] MMMM [de] YYYY') }, '\n\n'
         ],
         style: 'body',
@@ -82,7 +93,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
       },
       {
         text: [
-          'O Diretor dos Recursos Humanos\n\n',
+          '\n\n\nO Diretor dos Recursos Humanos\n\n',
           '___________________________\n\n',
 
         ],
@@ -110,7 +121,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
 
     ,
     defaultStyle: {
-      font: "Helvetica"
+      font: "Helvetica",
     },
     styles: {
       header: {
@@ -125,9 +136,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
         fontSize: 12,
         bold: false,
         alignment: 'justify',
-        marginLeft: 35,
-        marginRight: 35,
-        lineHeight: 2,
+        lineHeight: 1.5,
       },
       footer: {
         fontSize: 12,
@@ -590,9 +599,9 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
 
               body: [
                 ['', 'Resumo', ''],
-                ['', 'Banco:', banckAccount?.bank?.code??''],
-                ['', 'Conta:', banckAccount?.number??''],
-                ['', 'IBAN:', banckAccount?.iban??''],
+                ['', 'Banco:', banckAccount?.bank?.code ?? ''],
+                ['', 'Conta:', banckAccount?.number ?? ''],
+                ['', 'IBAN:', banckAccount?.iban ?? ''],
 
               ]
             }

@@ -53,7 +53,7 @@ export default class Model extends Main {
 
   @AfterUpdate
   @AfterSave
-  @AfterBulkUpdate
+  //@AfterBulkUpdate
   static afterModelUpdate = (model: Model, { transaction }: any = { transaction: null }) => {
 
     if (model?.previous()) { } else return model;

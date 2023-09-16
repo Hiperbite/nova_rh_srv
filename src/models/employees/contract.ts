@@ -1,3 +1,4 @@
+import { words } from "lodash";
 import moment from "moment";
 import {
   Table,
@@ -15,7 +16,7 @@ import {
 import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
 
 @DefaultScope(() => ({
-  include: [Role, Department],
+  include: [Role, Department,SalaryPackage, WorkingHour,AdditionalField],
   orderBy: [['startDate', 'DESC']]
 }))
 @Scopes(() => ({

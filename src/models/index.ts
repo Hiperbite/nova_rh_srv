@@ -1,5 +1,5 @@
 
-import { createIndexDecorator, Sequelize } from "sequelize-typescript";
+import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
 
 import Model from "./model";
@@ -59,7 +59,7 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
-const sequelizeOptions = {
+const sequelizeOptions:SequelizeOptions = {
   dialect,
   storage: "./data/ccc.database.sqlite",
   host: DB_HOST,
@@ -147,7 +147,7 @@ const switchTo = (db: string) => {
     sequelize.options.database = "n_" + db + "_nova_rh";
 }
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
     .sync({ alter: true, force: true })
     .then(initializer)
@@ -157,7 +157,7 @@ const Repo = sequelize.getRepository;
 enum SPs {
   GetDashboardData = "GetDashboardData",
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
-  GetCallendarDate = "GetCallendarDate(?,?)",
+  GetCalendarDate = "GetCalendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
   GetStudentsCountNationality = 'GetStudentsCountNationality',

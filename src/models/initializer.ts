@@ -1,12 +1,25 @@
+import { includes } from 'lodash';
 import {
+  AccountPaymentData,
+  AdditionalField,
+  AdditionalPayment,
+  Address,
+  Contact,
+  Contract,
   Department,
+  Document,
+  Employee,
+  Person,
+  Role,
+  SalaryPackage,
   sequelize,
+  WorkingHour,
 } from "./index";
 
 import { faker } from '@faker-js/faker';
 
 
-type InitializerType = { model: any, data: any[], include?: any[] }
+type InitializerType = { model: any, data: any[], include?: any }
 const initialData: InitializerType[] = [
 
   {
@@ -2091,9 +2104,25 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 100;
+  let i = 800;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
-  initialData.push({ model: 'Employee', data: employees });
+  initialData.push({
+    model: 'Employee', data: employees, include:
+      [Contact, AccountPaymentData,
+        Document,
+        {
+          model: Person, include: [
+            { model: Address, as: 'birthPlaceAddress' },
+            { model: Address, as: 'livingAddress' }]
+        },
+        {
+          model: Contract, include: [
+            AdditionalField,
+            WorkingHour,
+            { model: SalaryPackage, include: [AdditionalPayment] },
+          ]
+        }]
+  });
 }
 
 createRandomEmployees();

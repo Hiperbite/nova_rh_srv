@@ -1,3 +1,4 @@
+import { toDataURL } from "../../routes/hendlers";
 import {
     Scopes,
     Table,
@@ -6,7 +7,8 @@ import {
     Column,
     BelongsTo,
     ForeignKey,
-    DefaultScope
+    DefaultScope,
+    AfterFind
 } from "sequelize-typescript";
 
 import { Contact, Address, Model, Business, Country } from "../index";
@@ -24,7 +26,7 @@ import { Contact, Address, Model, Business, Country } from "../index";
     tableName: "Company"
 })
 export default class Company extends Model {
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true
@@ -73,6 +75,11 @@ export default class Company extends Model {
     })
     logos?: string;
 
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    base64logo?: string;
+
     @BelongsTo(() => Business)
     business!: Business
 
@@ -84,5 +91,12 @@ export default class Company extends Model {
 
     @HasMany(() => Address)
     address?: Address[];
+
+    @AfterFind
+    static initializer = async (company: Company) => {
+        if (company?.logos?.includes('http'))
+            company.base64logo = await toDataURL(company?.logos)
+    }
+
 
 }
