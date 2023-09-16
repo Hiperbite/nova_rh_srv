@@ -6,8 +6,8 @@ import { MY_NODE_ENV } from "../config";
 import sendEmail, { mailServices } from "../application/mailler/index";
 import { User } from "../models/index";
 import { initializer } from "../models/initializer";
-import { commonErrorHandler, genericErrorHendler, notFoundErrorHendler } from "application/middleware/errorHendler";
-import requireAuthentication from "application/middleware/requireAuthentication";
+import { commonErrorHandler, genericErrorHendler, notFoundErrorHendler } from "../application/middleware/errorHendler";
+import requireAuthentication from "../application/middleware/requireAuthentication";
 
 export const asyncHandler = (fn: any, model?: any) => (req: any, res: any, next: any) => {
   req.model = model

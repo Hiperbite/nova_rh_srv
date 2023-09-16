@@ -1,6 +1,6 @@
-import { logger } from "config";
+import { logger } from "../../config";
 
-export const genericErrorHendler = (err: any, req: any, res: any, next: any) {
+export const genericErrorHendler = (err: any, req: any, res: any, next: any) =>{
     // All errors from async & non-async route above will be handled here
     let errors = [];
 

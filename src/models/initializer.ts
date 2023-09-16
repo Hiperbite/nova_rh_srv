@@ -284,27 +284,27 @@ const initialData: InitializerType[] = [
   },
   {
     model: 'RoleLevel', data: [
-      
-      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1},
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2},
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3},
-      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4},
-      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5},
-      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6},
-      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7},
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8},
-      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9},
-      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10},
-      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11},
-      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12},
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13},
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14},
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15},
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16},
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17},
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18},
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19},
-      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20},
+
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1 },
+      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2 },
+      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3 },
+      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4 },
+      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5 },
+      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6 },
+      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7 },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8 },
+      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9 },
+      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10 },
+      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11 },
+      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12 },
+      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13 },
+      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14 },
+      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15 },
+      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16 },
+      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17 },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18 },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20 },
     ]
   },
   {
@@ -357,6 +357,7 @@ const initialData: InitializerType[] = [
       { code: '13', name: 'Loja' },
       { code: '14', name: 'Saúde' },
       { code: '15', name: 'Educação e Ensino' },
+      { code: '16', name: 'Outro' }
     ]
   },
   {
@@ -1899,20 +1900,20 @@ const initialData: InitializerType[] = [
     model: 'Company', data: [
       {
         code: 'A',
-        name: '',
-        description: '',
-        nif: '',
-        socialCapital: 0,
+        name: faker.company.name(),
+        description: faker.person.bio(),
+        nif: faker.finance.accountNumber(),
+        socialCapital: faker.finance.amount(),
         integrationToken: '',
-        slogan: '',
-        logos: '',
+        slogan: faker.company.buzzPhrase(),
+        logos: faker.image.avatarGitHub(),
         address: [{
           descriptions: faker.location.streetAddress(),
           city: faker.location.city(),
           province: faker.location.state(),
           countryId: '13f8b609-21f2-4f53-99df-4db73100a52e',
         }],
-        business: { code: '16', name: 'Outro' }
+        business: { code: '17', name: faker.commerce.department() }
       }]
   },
   {
@@ -1995,7 +1996,7 @@ function createRandomEmployees(): any {
     const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data ?? []
     const banks: any[] = initialData?.find(({ model }: any, i: number) => model === 'Bank' || i === 8)?.data ?? []
 
-    const accountPaymentDatas = (i: number) => 
+    const accountPaymentDatas = (i: number) =>
       [...Array(i + 1).keys()].map(() => ({
         iban: faker.finance.iban(),
         number: faker.finance.accountNumber(),
@@ -2064,7 +2065,7 @@ function createRandomEmployees(): any {
           departmentId: faker.helpers.arrayElement(departments?.map(({ id }: any) => id)),
           startDate: faker.date.past(),
           endDate: faker.date.future({ refDate: '2024-01-01T00:00:00.000Z' }),
-          type: faker.helpers.arrayElement(["F","H"]),
+          type: faker.helpers.arrayElement(["F", "H"]),
           salaryPackage: {
             baseValue: faker.finance.amount({ min: 100000, max: 500000, dec: 2 }),
             baseValuePeriod: 3,
@@ -2080,14 +2081,14 @@ function createRandomEmployees(): any {
           },
           workingHour: {
             period: faker.number.int(3),
-            hours: faker.number.int({min:30,max:60}),
+            hours: faker.number.int({ min: 30, max: 60 }),
             weekDays: ["Mo", "Tu", "Th", "Fr", "Sa"]
           }
         }
       ]
     }
   }
-  let i = 5;
+  let i = 500;
   while (--i > 0 && employees.push(generateEmployee(i))) { }
   initialData.push({ model: 'Employee', data: employees });
 }
@@ -2103,7 +2104,7 @@ const initializer = (_?: any) =>
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
         if (f === null) {
-          
+
           model.create(d, { include }).catch(console.log)
         }
       }).catch(console.log)
