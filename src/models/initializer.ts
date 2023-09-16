@@ -2089,7 +2089,7 @@ function createRandomEmployees(): any {
     }
   }
   let i = 500;
-  while (--i > 0 && employees.push(generateEmployee(i))) { }
+  while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({ model: 'Employee', data: employees });
 }
 

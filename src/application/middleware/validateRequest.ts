@@ -22,7 +22,7 @@ export const routerRequest = (
 ) => {
   const { apikey }: any = req?.headers;
   if (apikey === undefined) {
-    throw { code: 403 }
+   // throw { code: 403 }
   }
   const currentKey = decode(apikey ?? '')
 
