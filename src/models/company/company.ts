@@ -11,10 +11,10 @@ import {
     AfterFind
 } from "sequelize-typescript";
 
-import { Contact, Address, Model, Business, Country } from "../index";
+import { Contact, Address, Model, Business, Country, Payroll } from "../index";
 
 @DefaultScope(() => ({
-    include: [{ model: Address, include: [Country] }, Business]
+    include: [{ model: Address, include: [Country] }, Business, Payroll]
 }))
 @Scopes(() => ({
     default: {
@@ -50,6 +50,12 @@ export default class Company extends Model {
         allowNull: true
     })
     nif?: string
+
+    @Column({
+        type: DataType.DATEONLY,
+        allowNull: true
+    })
+    startActivityDate?: Date
 
     @Column({
         type: DataType.DECIMAL(32, 2),
@@ -88,6 +94,9 @@ export default class Company extends Model {
 
     @HasMany(() => Contact)
     contacts?: Contact[];
+
+    @HasMany(() => Payroll)
+    payrolls?: Payroll[];
 
     @HasMany(() => Address)
     address?: Address[];

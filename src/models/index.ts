@@ -59,7 +59,7 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
-const sequelizeOptions:SequelizeOptions = {
+const sequelizeOptions: SequelizeOptions = {
   dialect,
   storage: "./data/ccc.database.sqlite",
   host: DB_HOST,
@@ -149,8 +149,8 @@ const switchTo = (db: string) => {
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: true, force: true })
-    .then(initializer)
+    .sync({ alter: true, force: false })
+    //.then(initializer)
     .catch(console.error)
 )
 

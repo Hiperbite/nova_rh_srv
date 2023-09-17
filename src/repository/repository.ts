@@ -70,7 +70,7 @@ export default class Repository<T extends M>  {
       if (done) {
         await this.commit();
 
-        return model
+        return done
       }
       else {
         this.rollback();

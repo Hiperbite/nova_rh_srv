@@ -11,7 +11,7 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage, Payroll } from "../index";
+import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person } from "../index";
 import { payrollState } from "./payroll";
 
 @DefaultScope(() => ({
@@ -19,7 +19,7 @@ import { payrollState } from "./payroll";
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, { model: Employee, include: [Person] }] }]
     }
 }))
 @Table({

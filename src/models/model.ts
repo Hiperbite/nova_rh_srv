@@ -14,6 +14,7 @@ import {
 import _ from "lodash";
 import { v4 as uuids4 } from "uuid";
 import { Track, User } from "./index";
+import { logger } from "../config";
 
 @Scopes(() => ({
   default: {
@@ -63,16 +64,17 @@ export default class Model extends Main {
     const obj = Object.keys(before).map((k) => ({ [k]: model.dataValues[k] }));
 
     const after = Object.assign({}, ...obj);
-
+    const action = ['CREATED', 'UPDATED', 'DELETED', 'MODIFIED']
     Track.create({
       before,
       after,
       model: model.constructor.name,
       ref: model.id,
       userId: model.updatedById
-    }, { transaction }).catch(console.warn);
+    }).catch(logger.warn);
 
   };
+
 
   //static filter = null;
   privateFields: string[] = [];

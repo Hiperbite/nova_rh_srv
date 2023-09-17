@@ -15,8 +15,10 @@ import {
     BeforeUpdate,
     DefaultScope,
     BeforeCreate,
+    BelongsTo,
+    ForeignKey,
 } from "sequelize-typescript";
-import { Contract, Model, PayrollLine, PayrollStatus, PayStub, SalaryPackage } from "../index";
+import { Company, Contract, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, SalaryPackage } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -46,7 +48,7 @@ const stateButton = [
 
 @Scopes(() => ({
     default: {
-        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage] }] }]
+        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage,{model:Employee,include:[Person]}] }] }]
     },
     simple: {
         include: [PayStub]
@@ -96,6 +98,12 @@ export default class Payroll extends Model {
 
     @HasMany(() => PayStub)
     payStubs!: PayStub[]
+
+    @BelongsTo(() => Company)
+    company?: Company
+
+    @ForeignKey(() => Company)
+    companyId?: string
 
     @Column({
         type: DataType.VIRTUAL
@@ -238,7 +246,7 @@ export default class Payroll extends Model {
                 if (payroll?.payStubs?.find(({ contractId }: any) => contractId === stub?.contract?.id) === undefined) {
                     try {
                         const { month, year } = payroll;
-                        const existPayStub = await PayStub.findOne({ where: { month, year, contractId: stub?.contract?.id } , include: { all: true } });
+                        const existPayStub = await PayStub.findOne({ where: { month, year, contractId: stub?.contract?.id }, include: { all: true } });
                         if (existPayStub) {
                             existPayStub.payrollId = String(payroll?.id)
                             existPayStub.save()
@@ -255,7 +263,7 @@ export default class Payroll extends Model {
                                 payrollId: payroll?.id,
                                 lines: stub?.contract.payStubState.lines
 
-                            },  { include: { all: true } })
+                            }, { include: { all: true } })
                             payStub.contract = stub?.contract;
                             payStub.lines = stub?.contract.payStubState.lines
                             payStubs.push(payStub);
