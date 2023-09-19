@@ -4,8 +4,6 @@ import {
   ModelCtor,
   Repository as Repo,
 } from "sequelize-typescript";
-import sequelize from "../models/index";
-import IRepository from "./iRepository";
 import R from "./repository";
 
 export default class Repository<T extends M> extends R<T> {

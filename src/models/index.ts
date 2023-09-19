@@ -141,10 +141,10 @@ const UniqIndex = createIndexDecorator({
 });
 
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
-    .sync({ alter: true, force: false})
-    //.then(initializer)
+    .sync({ alter: false, force: false})
+    .then(initializer)
     .catch(console.error)
 )
 

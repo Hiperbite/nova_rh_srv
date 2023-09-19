@@ -105,6 +105,7 @@ const config = () => {
     "http://localhost:3500",
     "http://localhost:3000",
     "https://academic.app.hiperbite.com",
+    "https://novarh.hiperbite.com",
     "*",
   ];
 
