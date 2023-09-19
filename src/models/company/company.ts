@@ -1,3 +1,4 @@
+import { toDataURL } from "../../routes/hendlers";
 import {
     Scopes,
     Table,
@@ -6,13 +7,14 @@ import {
     Column,
     BelongsTo,
     ForeignKey,
-    DefaultScope
+    DefaultScope,
+    AfterFind
 } from "sequelize-typescript";
 
-import { Contact, Address, Model, Business, Country } from "../index";
+import { Contact, Address, Model, Business, Country, Payroll } from "../index";
 
 @DefaultScope(() => ({
-    include: [{ model: Address, include: [Country] }, Business]
+    include: [{ model: Address, include: [Country] }, Business, Payroll]
 }))
 @Scopes(() => ({
     default: {
@@ -24,7 +26,7 @@ import { Contact, Address, Model, Business, Country } from "../index";
     tableName: "Company"
 })
 export default class Company extends Model {
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true
@@ -50,6 +52,12 @@ export default class Company extends Model {
     nif?: string
 
     @Column({
+        type: DataType.DATEONLY,
+        allowNull: true
+    })
+    startActivityDate?: Date
+
+    @Column({
         type: DataType.DECIMAL(32, 2),
         allowNull: true
     })
@@ -73,6 +81,11 @@ export default class Company extends Model {
     })
     logos?: string;
 
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    base64logo?: string;
+
     @BelongsTo(() => Business)
     business!: Business
 
@@ -82,7 +95,17 @@ export default class Company extends Model {
     @HasMany(() => Contact)
     contacts?: Contact[];
 
+    @HasMany(() => Payroll)
+    payrolls?: Payroll[];
+
     @HasMany(() => Address)
     address?: Address[];
+
+    @AfterFind
+    static initializer = async (company: Company) => {
+        if (company?.logos?.includes('http'))
+            company.base64logo = await toDataURL(company?.logos)
+    }
+
 
 }

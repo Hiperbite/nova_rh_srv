@@ -51,7 +51,7 @@ export default class Repository<T extends M>  {
       final = await this.Model.create(data, { ...options, transaction: this.transaction });
       await this.commit();
     } catch (err: any) {
-            throw err;
+      throw err;
     }
 
     return final;
@@ -63,12 +63,19 @@ export default class Repository<T extends M>  {
 
     try {
       await this.start();
-      let [model, done] = await this.Model.update(d, { where: { id }, returning: true, transaction: this.transaction });
+      let model = await this.findOne(id)
+      let done = await model?.update(d, { transaction: this.transaction })
 
-      await this.commit();
-      let final = done ? await this.findOne(id) : model;
 
-      return final
+      if (done) {
+        await this.commit();
+
+        return done
+      }
+      else {
+        this.rollback();
+        return null
+      }
     } catch (err: any) {
       throw err;
     }

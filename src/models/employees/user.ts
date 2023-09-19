@@ -20,6 +20,7 @@ import { Model, Address, Employee, Person } from "../index";
 import bcrypt from "bcrypt";
 import { UserApp } from "../../application/common/user.app";
 import sendEmail, { mailServices } from "../../application/mailler/index";
+import { uniqueId } from "lodash";
 import { randomUUID } from "crypto";
 
 const UniqIndex = createIndexDecorator({
@@ -121,7 +122,8 @@ export default class User extends Model {
       ?? []
   }
   set permissions(roles: string[]) {
-    this.setDataValue('permissions', Object.entries(roles).map((p: any) => p.join('_')).join(','))
+    if (roles)
+      this.setDataValue('permissions', Object.entries(roles).map((p: any) => p.join('_')).join(','))
   }
 
   @Column({
@@ -175,9 +177,6 @@ export default class User extends Model {
 
   @BeforeSave
   @BeforeCreate
-  static setUserName = (user:User) => user.username = randomUUID()
-
-  @BeforeCreate
   static initVer = UserApp.initVer;
 
   @BeforeCreate
@@ -202,13 +201,14 @@ export default class User extends Model {
         data
       })
     )
-
+  @BeforeCreate
+  static setUserName = (user: User) => user.username ||= randomUUID()
 
   @AfterUpdate
   @AfterCreate
   @AfterSave
   static async refreshPersons(user: User) {
-    
+
   }
 
   //TODO: fix password compare

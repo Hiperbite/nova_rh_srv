@@ -10,5 +10,6 @@
             "database": "data/database.sqlite",
             "name": "Sqllite"
         }
-    ]
+    ],
+    "sqltools.useNodeRuntime": true
 }

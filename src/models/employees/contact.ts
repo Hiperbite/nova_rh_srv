@@ -27,9 +27,9 @@ import { includes } from "lodash";
 export default class Contact extends Model {
   @Column({
     type: DataType.STRING(100),
-    allowNull: true,
+    allowNull: false,
   })
-  descriptions?: string;
+  descriptions!: string;
 
   @BelongsTo(() => ContactType)
   type?: ContactType;

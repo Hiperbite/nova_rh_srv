@@ -1,5 +1,5 @@
 
-import { createIndexDecorator, Sequelize } from "sequelize-typescript";
+import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
 
 import Model from "./model";
@@ -59,9 +59,9 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 
-const sequelize = new Sequelize({
+const sequelizeOptions: SequelizeOptions = {
   dialect,
-  storage: "./data/database.sqlite",
+  storage: "./data/ccc.database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -115,7 +115,7 @@ const sequelize = new Sequelize({
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
-    
+
     WorkingHour,
     Notification,
 
@@ -132,25 +132,32 @@ const sequelize = new Sequelize({
     Bank,
     Role,
   ],
-});
-
+}
+let sequelize = new Sequelize(sequelizeOptions);
 const UniqIndex = createIndexDecorator({
   name: uuid() + '-index',
   type: 'UNIQUE',
   unique: true,
 });
 
+const switchTo = (db: string) => {
+  if (sequelize.options.dialect === 'sqlite')
+    sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+  else
+    sequelize.options.database = "n_" + db + "_nova_rh";
+}
 const Repo = sequelize.getRepository;
 (true &&
   sequelize
-    .sync({ alter: false, force: false})
+    .sync({ alter: false, force: false })
     .then(initializer)
     .catch(console.error)
 )
 
 enum SPs {
+  GetDashboardData = "GetDashboardData",
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
-  GetCallendarDate = "GetCallendarDate(?,?)",
+  GetCalendarDate = "GetCalendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
   GetStudentsCountNationality = 'GetStudentsCountNationality',
@@ -169,6 +176,7 @@ const Procedure = async (procedure: SPs, opts: any = []) =>
 export default sequelize;
 
 export {
+  switchTo,
   sequelize,
   Repo,
   Model,

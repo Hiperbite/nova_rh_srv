@@ -1,12 +1,13 @@
 
-import { Model, Table, Column, DataType, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { tr } from "@faker-js/faker";
+import { Model, Table, Column, DataType, BelongsTo, ForeignKey, AfterConnect } from "sequelize-typescript";
 import { User } from "../index";
 
 @Table({
     timestamps: true,
     tableName: "Tracks",
 })
-export default class  Track extends Model {
+export default class Track extends Model {
 
     @Column({
         type: DataType.TEXT,
@@ -18,7 +19,7 @@ export default class  Track extends Model {
     set before(value) {
         this.setDataValue('before', JSON.stringify(value));
     }
-    
+
     @Column({
         type: DataType.TEXT,
         allowNull: true,
@@ -40,10 +41,17 @@ export default class  Track extends Model {
         allowNull: true,
     })
     ref?: string;
-/*
+
     @ForeignKey(() => User)
     userId?: string;
 
     @BelongsTo(() => User)
-    user?: User;*/
+    user?: User
+
+    @AfterConnect
+    static afterTrackCreated = (track: Track) => {
+
+        let u = 0
+        let d = track;
+    }
 }

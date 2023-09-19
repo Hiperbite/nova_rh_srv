@@ -32,7 +32,7 @@ import {
 } from "../index";
 
 @DefaultScope(() => ({
-  include: [{ model: User, as: 'user' }]
+  include: []
 }))
 @Scopes(() => ({
   all: {
@@ -62,17 +62,7 @@ import {
   default: {
     include: [
       Person,
-      { model: User, as: 'user' },
-      { model: Contract, include: [AdditionalField, Role] },
-      {
-        model: Contract, include: [
-          PayStub,
-          {
-            model: SalaryPackage,
-            include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }]
-          },
-        ]
-      }]
+       Contract]
   }
 }))
 @Table({
@@ -104,17 +94,11 @@ export default class Employee extends Model {
   })
   avatar?: string | null;
 
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: true
-  })
-  socialSecurityNumber?: number
-
   @HasOne(() => User)
   user?: User
 
   @HasOne(() => Person)
-  person?: Person;
+  person!: Person;
 
   @HasMany(() => Contact)
   contacts!: Contact[];

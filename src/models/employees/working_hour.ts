@@ -7,7 +7,7 @@ import {
   Scopes,
 } from "sequelize-typescript";
 
-import { Contract,Model} from "../index";
+import { Contract, Model } from "../index";
 
 
 @Scopes(() => ({
@@ -47,7 +47,15 @@ export default class WorkingHour extends Model {
     return this.getDataValue('weekDays').split('_')
   };
   set weekDays(w: string[]) {
-    this.setDataValue('weekDays', w.join('_'))
+    if (w) {
+      try {
+
+        this.setDataValue('weekDays', typeof w == 'string' ? w : w?.join('_'))
+      } catch (error) {
+        let u = this;
+      }
+
+    }
   };
 
   @BelongsTo(() => Contract)

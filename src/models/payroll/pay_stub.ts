@@ -11,7 +11,7 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage, Payroll } from "../index";
+import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person } from "../index";
 import { payrollState } from "./payroll";
 
 @DefaultScope(() => ({
@@ -19,7 +19,7 @@ import { payrollState } from "./payroll";
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, { model: Employee, include: [Person] }] }]
     }
 }))
 @Table({
@@ -93,9 +93,9 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get netValue() {
-        const g = (this.lines?.filter(({ debit }: any) => debit).map(({ value }: any) => Number(value)).reduce((a: number, b: number) => a + b, 0)) ?? 0
-        const d = (this.lines?.filter(({ debit }: any) => !debit).map(({ value }: any) => Number(value)).reduce((a: number, b: number) => a + b, 0)) ?? 0
-        return g - d;
+        const g = (this.lines?.filter(({ debit }: any) => debit).map(({ value }: any) => value).reduce((a: number, b: number) => a + b, 0)) ?? 0
+        const d = (this.lines?.filter(({ debit }: any) => !debit).map(({ value }: any) => value).reduce((a: number, b: number) => a + b, 0)) ?? 0
+        return (this.grossValue ?? 0) - (this.deductionValue ?? 0);
     }
 
     @Column({

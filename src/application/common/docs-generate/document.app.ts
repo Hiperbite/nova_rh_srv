@@ -12,7 +12,14 @@ const fonts = {
 };
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { Employee, PayStub } from '../../../models/index';
+import { AccountPaymentData, Company, Employee, PayStub } from '../../../models/index';
+import { toDataURL } from '../../../routes/hendlers';
+
+
+//let USDollar =
+const currency = (value: number = 0) => (new Intl.NumberFormat('pt-PT',
+  { style: 'currency', currency: 'AOA' },
+)).format(value);
 
 const documents: any = {
   IDCARD: "Bilhete",
@@ -43,32 +50,42 @@ const tableLayouts = {
 async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDefinitions> {
 
   const employee = await Employee.scope('all').findByPk(employeeId)
-
+  const [company] = await Company.findAll();
   const document: any = employee?.idCard || employee?.passport
 
+  const logo = company?.logos?.includes('http')
+    ? await toDataURL(company?.logos ?? '')
+    : company?.logos
   return {
 
-
+    pageMargins: [80, 60, 80, 60],
     content: [
       {
-        image: novaIcon,
-        width: 100,
-        marginTop: 35,
+        columnGap: 10,
+        columns: [
+          [{
+            image: logo ?? novaIcon,
+            width: 100,
+          },
+          company?.name + '\n' +
+          'NIF: ' + company?.nif + '\n'
+          ],
+          ''
+        ],
 
       },
       {
         text: 'Declaração de trabalho',
         style: 'header',
         alignment: 'center',
-
       },
       {
         text: [
-          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ' é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento mensal de ', { text: 'Salário por extenso e numeral', bold: true }, '.\n\n',
+          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ', é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no/a ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento base mensal de ', { text: currency(employee?.contract?.salaryPackage?.baseValue), bold: true }, '.\n\n',
           'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
           { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
           { text: data.entity.toUpperCase(), bold: true },
-          '\n\nDirecção dos Recursos Humanos {nome da empresa}, em ',
+          '\n\n\nDirecção dos Recursos Humanos ' + company?.name + ', em ',
           { text: moment().format('DD [de] MMMM [de] YYYY') }, '\n\n'
         ],
         style: 'body',
@@ -76,7 +93,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
       },
       {
         text: [
-          'O Diretor dos Recursos Humanos\n\n',
+          '\n\n\nO Diretor dos Recursos Humanos\n\n',
           '___________________________\n\n',
 
         ],
@@ -104,7 +121,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
 
     ,
     defaultStyle: {
-      font: "Helvetica"
+      font: "Helvetica",
     },
     styles: {
       header: {
@@ -119,9 +136,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
         fontSize: 12,
         bold: false,
         alignment: 'justify',
-        marginLeft: 35,
-        marginRight: 35,
-        lineHeight: 2,
+        lineHeight: 1.5,
       },
       footer: {
         fontSize: 12,
@@ -317,22 +332,127 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
 
   const payStub = await PayStub.findOne({ where: { id: payStubId }, include: { all: true } })
 
+  const banckAccount = await AccountPaymentData.findOne({ where: { employeeId: payStub?.contract?.employeeId }, include: { all: true } })
+
   return {
 
 
     content: [
-      {
-        text: 'CONTRATO DE TRABALHO',
-        style: 'header',
-        alignment: 'center',
-
-      },
+      // header
+      ' ',
       {
 
         layout: {
           fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return (rowIndex % 2 === 0) ? '#eee' : null;
-          }
+            return '#FFF'//(rowIndex % 2 === 0) ? '#fafaff' : null;
+          },
+          hLineColor: function (i, node) {
+            return '#FFF'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+          },
+          vLineColor: function (i, node) {
+            return '#FFF'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+          },
+        },
+        //layout: 'headerLineOnly', // optional
+        table: {
+          // headers are automatically repeated if the table spans over multiple pages
+          // you can declare how many rows should be treated as headers
+          headerRows: 1,
+          widths: [300, '*', 300],
+
+          body: [
+            [
+              {
+                image: novaIcon,
+                width: 100,
+
+              },
+              '',
+              {
+                text: [{ text: 'RECIBO DE SALARIO\n', style: 'h1' }, { text: 'Janeiro de 2023' }],
+              }
+            ],
+            [
+              {
+                text: {
+                  text: [
+                    'COMERCIO GERAL\n',
+                    'NIF: 5417529743\n',
+                    'Luanda - Angola',
+                  ], fontSize: 9
+                },
+              },
+              '',
+              ''
+            ],
+            ['', '', '']
+
+          ]
+        }
+      },
+      ' ',
+      ' ',
+      {
+
+        layout: {
+          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
+            return (rowIndex % 2 === 0) ? '#fafaff' : "#fafaff";
+          },
+          hLineColor: function (i, node) {
+            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+          },
+          vLineColor: function (i, node) {
+            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+          },
+        },
+        style: {
+          margin: [-10, 0, 0, -10]
+        },
+        //layout: 'headerLineOnly', // optional
+        table: {
+          // headers are automatically repeated if the table spans over multiple pages
+          // you can declare how many rows should be treated as headers
+          headerRows: 1,
+          widths: [95, '*', 95, '*'],
+          body: [
+            [
+              { text: 'Nome:', style: 'd3' },
+              { text: payStub?.contract?.employee?.person?.fullName, style: 'd2' },
+              { text: 'Departamento:', style: 'd3' },
+              { text: payStub?.contract?.department?.name, style: 'd2' }
+            ],
+            [
+              { text: 'Numero:', style: 'd3' },
+              { text: payStub?.contract?.employee?.code, style: 'd2' },
+              { text: 'Função:', style: 'd3' },
+              { text: payStub?.contract?.role?.name?.split('-')[0], style: 'd2' }
+            ],
+            [
+              { text: 'Segurança Social:', style: 'd3' },
+              { text: payStub?.contract?.department?.name, style: 'd2' },
+              { text: 'Categoria:', style: 'd3' },
+              { text: payStub?.contract?.role?.name?.includes('-') ? payStub?.contract?.role?.name?.split('-')[1] : '...', style: 'd2' }
+            ],
+            [
+              { text: 'NIF:', style: 'd3' }, '',
+              { text: 'Nivel:', style: 'd3' }, ''],
+
+          ]
+        }
+      },
+      ' ',
+      {
+
+        layout: {
+          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
+            return null//(rowIndex % 2 === 0) ? '#fafaff' : null;
+          },
+          hLineColor: function (i, node) {
+            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+          },
+          vLineColor: function (i, node) {
+            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+          },
         },
         //layout: 'headerLineOnly', // optional
         table: {
@@ -360,47 +480,170 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
                 text: 'VALOR',
                 style: 'th',
               }
-            ],
-            ['1', 'Salário Base', '22',
+            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
+            {
+              text: currency(line?.value).split('AOA')[0],
+              style: 'textRight',
+            }])) ?? []),
+
+            [
+
               {
-                text: '600.000,00',
-                style: 'textRight',
-              }],
-            ['2', 'SUbsidio de Ferias', '22',
+                border: [true, true, true, true],
+                fillColor: '#FFF',
+                text: '',
+
+              },
               {
-                text: '90.000,00',
-                style: 'textRight',
-              }],
-            ['3', 'Subsidio de Trasnporte', '12',
+                fillColor: '#FFF',
+                text: '',
+              },
               {
-                text: '102.000,00',
-                style: 'textRight',
-              }],
+                fillColor: '#FFF',
+                text: 'Valor Bruto',
+                style: ['th', { alignment: 'right' }],
+              },
+              {
+                text: currency(payStub?.grossValue ?? 0)?.split('AOA')[0],
+                style: ['th', { alignment: 'right' }],
+              }
+            ]
+
+          ]
+        }
+      }, ' ',
+      {
+
+        layout: {
+          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
+            return null//(rowIndex % 2 === 0) ? '#fafaff' : null;
+          },
+          hLineColor: function (i, node) {
+            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+          },
+          vLineColor: function (i, node) {
+            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+          },
+        },
+        //layout: 'headerLineOnly', // optional
+        table: {
+          // headers are automatically repeated if the table spans over multiple pages
+          // you can declare how many rows should be treated as headers
+          headerRows: 1,
+          widths: [10, '*', 100, 100],
+
+          body: [
+            [
+
+              {
+                text: '#',
+                style: 'th',
+              },
+              {
+                text: 'DEDUÇÂO',
+                style: 'th',
+              },
+              {
+                text: 'QUANTIDADE',
+                style: 'th',
+              },
+              {
+                text: 'VALOR',
+                style: 'th',
+              }
+            ], ...(payStub?.lines?.filter(({ debit }: any) => !debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
+            {
+              text: currency(line?.value).split('AOA')[0],
+              style: 'textRight',
+            }])) ?? []),
+            [
+
+              {
+                border: [true, true, true, true],
+                fillColor: '#FFF',
+                text: '',
+
+              },
+              {
+                fillColor: '#FFF',
+                text: '',
+              },
+              {
+                fillColor: '#FFF',
+                text: 'Total',
+                style: ['th', { alignment: 'right' }],
+              },
+              {
+                text: currency(payStub?.deductionValue ?? 0)?.split('AOA')[0],
+                style: ['th', { alignment: 'right' }],
+              }
+            ]
 
           ]
         }
       },
       {
-        layout: 'lightHorizontalLines', // optional
-        table: {
-          // headers are automatically repeated if the table spans over multiple pages
-          // you can declare how many rows should be treated as headers
-          headerRows: 1,
-          widths: ['*', 'auto', 100, '*'],
+        columnGap: 50,
+        columns: [
 
-          body: [
-            ['#', 'ABONO', 'QUANTIDADE', 'VALOR'],
-            ['1', 'Salário Base', '22', '200.000,00'],
-            ['2', 'SUbsidio de Ferias', '22', '32.500,00'],
-            ['3', 'Subsidio de Trasnporte', '12', '50.000,00'],
+          {
 
-          ]
-        }
+            margin: [0, 0, 0, 0],
+            layout: 'lightHorizontalLines', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 3,
+
+              widths: [4, 40, 'auto'],
+
+              body: [
+                ['', 'Resumo', ''],
+                ['', 'Banco:', banckAccount?.bank?.code ?? ''],
+                ['', 'Conta:', banckAccount?.number ?? ''],
+                ['', 'IBAN:', banckAccount?.iban ?? ''],
+
+              ]
+            }
+          },
+
+          {
+
+            margin: [0, 0, 0, 0],
+            layout: 'lightHorizontalLines', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 3,
+
+              widths: [10, '*', '*'],
+
+              body: [
+                ['', 'Resumo', ''],
+                ['', 'Salario Bruto:',
+                  {
+                    text: currency(payStub?.grossValue ?? 0).split('AOA')[0],
+                    style: ['h2', { alignment: 'right' }],
+                  }],
+                ['', 'Deduções:',
+                  {
+                    text: currency(payStub?.deductionValue ?? 0).split('AOA')[0],
+                    style: ['h2', { alignment: 'right', }],
+                  }],
+                ['', 'Salario Líquido:', {
+                  text: currency(payStub?.netValue ?? 0).split('AOA')[0],
+                  style: ['h2', { alignment: 'right', fontSize: 18 }],
+                }],
+
+              ]
+            }
+          }
+        ],
       }
     ],
     footer: [
       {
-        text: moment().format('YYYYMMDD'),
+        text: JSON.stringify(banckAccount?.bank),
 
         alignment: 'center',
         style: 'lowFooter',
@@ -412,7 +655,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
     defaultStyle: {
       font: "Helvetica",
       lineHeight: 1.5,
-      fontSize: 11,
+      fontSize: 10,
       alignment: 'justify',
     },
     styles: {
@@ -423,6 +666,13 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
         marginTop: 35,
         marginBottom: 15,
         decoration: "underline",
+      },
+      d3: {
+        alignment: 'right',
+        color: '#333'
+      },
+      d2: {
+        bold: true,
       },
       headers: {
         fontSize: 18,
@@ -441,8 +691,9 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
       },
       th: {
         bold: true,
-        fontSize: 13,
-        color: 'black',
+        fontSize: 12,
+        color: '#333',
+        fillColor: '#fafaff',
         alignment: 'left',
       },
       tf: {
@@ -450,7 +701,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
         fontSize: 13,
         color: 'black',
         alignment: 'left',
-        fillColor: '#eee'
+        fillColor: '#fafaff'
       },
       h1: {
         fontSize: 14,

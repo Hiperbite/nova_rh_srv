@@ -29,10 +29,18 @@ const router = express.Router()
     // validateResource(createStudentSchema),
     asyncHandler(api.getStudentCount)
   )
+
   .get(
     "/callendar-date",
     asyncHandler(api.callendarDate)
   )
+
+  .get(
+    "/get-dashboard-data",
+    // validateResource(createStudentSchema),
+    asyncHandler(api.getDashboardData)
+  )
+
   .get(
     "/roles-employees-count",
     asyncHandler(api.rolesEmployeesCount)

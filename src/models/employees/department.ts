@@ -10,7 +10,8 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, Department as Dep, Contract, Employee } from "../index";
+import { Model, Department as Dep, Contract, Employee, Person } from "../index";
+import moment from "moment";
 
 /*
 @DefaultScope(() => ({
@@ -19,10 +20,10 @@ import { Model, Department as Dep, Contract, Employee } from "../index";
 */
 @Scopes(() => ({
   default: {
-    include: [{ model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
+    include: [{ model: Contract, include: [Employee] }, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },
   full: {
-    include: [Contract, { model: Dep, as: 'department' }, { model: Dep, as: 'childs', include: [{ model: Dep, as: 'childs', include: [{ model: Dep, as: 'childs' }] }] }]
+    include: [{ model: Contract, include: [{ model: Employee, include: [Person] }] },{ model: Dep, as: 'childs' }]
   }
 }))
 @Table({
@@ -71,13 +72,14 @@ export default class Department extends Model {
     type: DataType.VIRTUAL
   })
   get leaders() {
-    return this.contracts
-      ?.filter((c: Contract) => c?.isActive)
-      ?.filter((c: Contract) => c?.role?.no !== undefined)
-      ?.sort((p: Contract, n: Contract) => Number(p.role?.no) > Number(n.role?.no) ? -1 : 1)
-      ?.map((c: Contract) => c?.employee)
-      ?.find(() => true)
-
+    let y: any = this.contracts
+    y = y?.filter((c: Contract) => c?.isActive);
+    y = y?.filter((c: Contract) => c?.role?.no !== undefined);
+    y = y?.sort((p: Contract, n: Contract) => Number(p.role?.no) > Number(n.role?.no) ? -1 : 1);
+    y = y?.sort((p: Contract, n: Contract) => moment(p.startDate).isBefore(n.startDate) ? -1 : 1);
+    y = y?.map((c: Contract) => c?.employee);
+    y = y?.find(() => true);
+    return y
   }
   @Column({
     type: DataType.VIRTUAL

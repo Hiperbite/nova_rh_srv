@@ -32,6 +32,11 @@ class DashBoardApi {
 
     return res.json({ studentHonorRoll });
   };
+  getDashboardData = async (req: Request, res: Response): Promise<Response> => {
+    const dashboardData = await Procedure(SPs.GetDashboardData);
+    
+    return res.json(dashboardData);
+  };
   getStudentCount = async (req: Request, res: Response): Promise<Response> => {
     const studentsCount =(await Procedure(SPs.GetStudentCount))[0]
     
@@ -40,7 +45,7 @@ class DashBoardApi {
   callendarDate = async (req: Request, res: Response): Promise<Response> => {
     const {start, end} = req.query;
 
-    const calendarDates = await Procedure(SPs.GetCallendarDate, [start,end]);
+    const calendarDates = await Procedure(SPs.GetCalendarDate, [start,end]);
     
     return res.json(calendarDates);
   }

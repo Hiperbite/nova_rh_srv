@@ -1,6 +1,6 @@
 
-import { Column, DataType, Table, Scopes, HasMany } from "sequelize-typescript"
-import { AccountPaymentData, Model } from "../index"
+import { Column, DataType, Table, Scopes, HasMany, BelongsTo, ForeignKey } from "sequelize-typescript"
+import { AccountPaymentData, Country, Model } from "../index"
 
 @Scopes(() => ({
     default: {
@@ -30,11 +30,11 @@ export default class Bank extends Model {
     })
     prefix?: string;
 
-    @Column({
-        type: DataType.STRING,
-        allowNull: true
-    })
-    country?: string;
+    @BelongsTo(()=>Country)
+    country?: Country;
+
+    @ForeignKey(()=>Country)
+    countryId?: string;
 
     @HasMany(() => AccountPaymentData)
     accounts?: AccountPaymentData[];

@@ -26,7 +26,7 @@ const printLog = (info: any) => {
       body,
     };
     console.log(info)
-    return JSON.stringify(info);
+    return info;
   } catch (error) {
     console.error(error);
   }
