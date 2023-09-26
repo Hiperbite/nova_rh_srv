@@ -49,6 +49,12 @@ class DashBoardApi {
     
     return res.json(calendarDates);
   }
+  getEmployeeSearch = async(req: Request, res: Response): Promise<Response> => {
+    const {name} = req.query;
+    const searchEmployee = await Procedure(SPs.GetEmployeeSearch, [name]);
+
+    return res.json(searchEmployee);
+  }
   rolesEmployeesCount = async (req: Request, res: Response): Promise<Response> => {
     
     const rolesEmployeesCount = await Procedure(SPs.GetRolesEmployeesCount);
