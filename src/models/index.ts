@@ -147,10 +147,10 @@ const switchTo = (db: string) => {
     sequelize.options.database = "n_" + db + "_nova_rh";
 }
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
-    .sync({ alter: true, force: false })
-    //.then(initializer)
+    .sync({ alter: true, force: true })
+    .then(initializer)
     .catch(console.error)
 )
 
