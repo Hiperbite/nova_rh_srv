@@ -8,9 +8,9 @@ class AttendanceApi extends Api<Attendance> {
   create = async (req: Request, res: Response): Promise<Response> => {
     const { body } = req;
 
-    const justification: Attendance | void = await this.repo.create(body, { include: { all: true } });
+    const attendance: Attendance | void = await this.repo.create(body, { include: { all: true } });
 
-    return res.json(justification);
+    return res.json(attendance);
   };
 
   update = async (req: Request, res: Response): Promise<Response> => {

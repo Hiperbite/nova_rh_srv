@@ -156,7 +156,7 @@ const Repo = sequelize.getRepository;
 (true &&
   sequelize
     .sync({ alter: true, force: false })
-    //.then(initializer)
+    .then(initializer)
     .catch(console.error)
 )
 
