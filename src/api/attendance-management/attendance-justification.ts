@@ -13,15 +13,7 @@ class AttendanceJustificationApi extends Api<AttendanceJustification> {
     return res.json(justification);
   };
 
-  update = async (req: Request, res: Response): Promise<Response> => {
-
-    return res.json();
-
-  };
-
-  find = async (req: Request, res: Response): Promise<Response> => {
-    return res.json();
-  }
+  
 }
 
 export default new AttendanceJustificationApi();

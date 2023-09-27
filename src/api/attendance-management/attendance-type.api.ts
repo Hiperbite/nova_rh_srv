@@ -13,15 +13,6 @@ class AttendanceTypeApi extends Api<AttendanceType> {
     return res.json(justification);
   };
 
-  update = async (req: Request, res: Response): Promise<Response> => {
-
-    return res.json();
-
-  };
-
-  find = async (req: Request, res: Response): Promise<Response> => {
-    return res.json();
-  }
 }
 
 export default new AttendanceTypeApi();

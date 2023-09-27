@@ -54,7 +54,7 @@ import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
 import AttendanceType from "./attendance-management/type.model";
-import AttendanceJustification from "./attendance-management/justify.model";
+import AttendanceJustification from "./attendance-management/justification.model";
 import Attendance from "./attendance-management/attendance.model";
 
 dotenv.config();
@@ -153,10 +153,10 @@ const switchTo = (db: string) => {
     sequelize.options.database = "n_" + db + "_nova_rh";
 }
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
-    .sync({ alter: true, force: true })
-    .then(initializer)
+    .sync({ alter: true, force: false })
+    //.then(initializer)
     .catch(console.error)
 )
 
