@@ -13,7 +13,7 @@ import { AttendanceJustification, AttendanceType, Employee, Model } from "../ind
 }))
 @Table({
     timestamps: true,
-    tableName: "Attendance",
+    tableName: "Attendances",
 })
 export default class Attendance extends Model {
 

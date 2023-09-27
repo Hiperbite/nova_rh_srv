@@ -20,7 +20,7 @@ export default class AttendanceJustification extends Model {
         type: DataType.STRING,
         allowNull: true,
     })
-    description?: string;
+    name?: string;
 
     @Column({
         type: DataType.STRING,

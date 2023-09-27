@@ -28,7 +28,8 @@ import {
   SalaryPackage,
   AdditionalPayment,
   AdditionalPaymentType,
-  AccountPaymentData
+  AccountPaymentData,
+  Attendance
 } from "../index";
 
 @DefaultScope(() => ({
@@ -106,6 +107,9 @@ export default class Employee extends Model {
   @HasMany(() => AccountPaymentData)
   accounts!: AccountPaymentData[];
 
+  @HasMany(() => Attendance)
+  attendances!: Attendance[];
+  
   @Column({
     type: DataType.VIRTUAL
   })
