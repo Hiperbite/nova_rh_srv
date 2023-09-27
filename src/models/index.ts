@@ -53,6 +53,9 @@ import Country from "./common/country";
 import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
+import AttendanceType from "./attendance-management/type.model";
+import AttendanceJustification from "./attendance-management/justify.model";
+import Attendance from "./attendance-management/attendance.model";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
@@ -89,6 +92,9 @@ const sequelizeOptions: SequelizeOptions = {
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+    Attendance,
+    AttendanceType,
+    AttendanceJustification,
     Country,
     Business,
     Contact,
@@ -183,6 +189,9 @@ export {
   Model,
   ContactType,
   Contact,
+  Attendance,
+  AttendanceType,
+  AttendanceJustification,
   AccountPaymentData,
   Employee,
   Address,
