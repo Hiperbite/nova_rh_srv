@@ -27,7 +27,7 @@ import attendanceJustification from "./attendance-management/attendance-justific
 const routes = Router();
 
 
-routes.use('/attendances', attendance)
+routes.use('/attendances/attendances', attendance)
 routes.use('/attendances/justifications', attendanceJustification)
 routes.use('/attendances/types', attendanceType)
 
