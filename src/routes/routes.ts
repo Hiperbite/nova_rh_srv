@@ -14,12 +14,22 @@ import helpers from "./common/helper.routes";
 import employees from "./employees/employee.routes";
 import contracts from "./employees/contract.routes";
 /* import ausence from "./employees/ausence.routes";
- */import personal from "./employees/person.routes";
+ */
+import personal from "./employees/person.routes";
 import accountpaymentdata from "./employees/account_payment_data.routes"
 
 import payroll from "./payrolls/payroll.routes";
 
+import attendance from "./attendance-management/attendance.routes";
+import attendanceType from "./attendance-management/attendance-type.routes";
+import attendanceJustification from "./attendance-management/attendance-justification.routes";
+
 const routes = Router();
+
+
+routes.use('/attendances', attendance)
+routes.use('/attendances/justifications', attendanceJustification)
+routes.use('/attendances/types', attendanceType)
 
 routes.use('/users', userRoutes)
 routes.use('/auth', authRoutes)
@@ -40,7 +50,7 @@ routes.use('/employees/contracts', contracts)
  */
 routes.use('/employees/personal', personal)
 
- routes.use('/payrolls/payroll', payroll)
+routes.use('/payrolls/payroll', payroll)
 
 routes.use(commonRoutes)
 
