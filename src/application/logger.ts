@@ -1,5 +1,6 @@
+import { NODE_ENV } from "config";
 import winston from "winston";
-const { NODE_ENV } = process.env;
+//const { NODE_ENV } = process.env;
 
 
 const printLog = (info: any) => {
