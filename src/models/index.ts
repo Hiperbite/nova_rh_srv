@@ -67,12 +67,6 @@ const sequelizeOptions: SequelizeOptions = {
   password: DB_PASSWORD,
   database: DB_NAME,
 
-  dialectOptions: {
-    options: {
-      requestTimeout: 300000,
-      transactionType: 'IMMEDIATE'
-    }
-  },
   retry: {
     match: [
       /SQLITE_BUSY/,
@@ -147,7 +141,7 @@ const switchTo = (db: string) => {
     sequelize.options.database = "n_" + db + "_nova_rh";
 }
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
     .sync({ alter: true, force: true })
     .then(initializer)
