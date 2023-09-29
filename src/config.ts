@@ -10,7 +10,6 @@ import {
 import { createServer } from "http";
 import session, { MemoryStore } from "express-session";
 import bodyParser from "body-parser";
-import "reflect-metadata";
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
@@ -106,6 +105,7 @@ const config = () => {
     "http://localhost:3500",
     "http://localhost:3000",
     "https://academic.app.hiperbite.com",
+    "https://novarh.hiperbite.com",
     "*",
   ];
 

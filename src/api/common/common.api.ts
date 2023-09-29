@@ -3,12 +3,7 @@ import { Request, Response } from "express";
 
 import IRepository from "../../repository/iRepository";
 import { Paginate } from "../../repository/repository";
-interface IApi {
-  create(req: Request, res: Response): Response;
-  update(req: Request, res: Response): Response;
-  find(req: Request, res: Response): Response;
-  findBy(req: Request, res: Response): Response;
-}
+
 class ModelApi<Model> {
   constructor(private repo: IRepository<Model>) { };
 

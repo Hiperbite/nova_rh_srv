@@ -1,14 +1,11 @@
 
 import { Request, Response } from "express";
-import IRepository from "../repository/iRepository";
 import Repository, { Paginate } from "../repository/repository";
 import {
   ModelCtor,
   Model as M,
 } from "sequelize-typescript";
-import { Transaction } from "sequelize";
-import EmployeeRepository from "../repository/employees/employee.repository";
-//import {IApi } from "./IApi";
+
 
 
 class Api<T extends M> implements IApi {

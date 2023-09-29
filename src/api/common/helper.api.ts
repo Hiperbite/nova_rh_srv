@@ -10,12 +10,6 @@ import { canCreateEnrollment } from '../../application/business';
 
 const fs = require('fs');
 
-interface IApi {
-  create(req: Request, res: Response): Response;
-  update(req: Request, res: Response): Response;
-  find(req: Request, res: Response): Response;
-  findBy(req: Request, res: Response): Response;
-}
 class HelperApi {
   constructor() { };
 

@@ -1,12 +1,6 @@
 
 import { EmployeeApi } from "../../api/employees/employee.api";
 import express from "express";
-import Api from "../../api/Api";
-
-import {
-  Contact,
-  Employee,
-} from "../../models/index";
 
 /**
  * TODO: Find best place to put this stash
