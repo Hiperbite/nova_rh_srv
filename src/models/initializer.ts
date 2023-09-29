@@ -1923,6 +1923,7 @@ const initialData: InitializerType[] = [
         integrationToken: '',
         slogan: faker.company.buzzPhrase(),
         logos: faker.image.avatarGitHub(),
+        startActivityDate:'2023-06-10',
         address: [{
           descriptions: faker.location.streetAddress(),
           city: faker.location.city(),

@@ -35,6 +35,8 @@ const router = express.Router()
     asyncHandler(api.callendarDate)
   )
 
+  .get("/get-employee-search", asyncHandler(api.getEmployeeSearch))
+
   .get(
     "/get-dashboard-data",
     // validateResource(createStudentSchema),

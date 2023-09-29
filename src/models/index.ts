@@ -149,12 +149,13 @@ const switchTo = (db: string) => {
 const Repo = sequelize.getRepository;
 (true &&
   sequelize
-    .sync({ alter: false, force: false })
+    .sync({ alter: true, force: true })
     .then(initializer)
     .catch(console.error)
 )
 
 enum SPs {
+  GetEmployeeSearch = "GetEmployeeSearch(?)",
   GetDashboardData = "GetDashboardData",
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
   GetCalendarDate = "GetCalendarDate(?,?)",
