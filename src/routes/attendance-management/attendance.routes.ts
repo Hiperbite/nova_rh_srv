@@ -15,7 +15,7 @@ const router = express
 
   router.post(
     "/",
-    asyncHandler(attendanceApi.create)
+    asyncHandler(api.create)
   )
   router.put(
     "/:id",
@@ -24,6 +24,10 @@ const router = express
   router.get(
     "/:id",
     asyncHandler(api.find)
+  );
+  router.get(
+    "/code/:id",
+    asyncHandler(attendanceApi.findByCode)
   );
   router.get(
     "/",
