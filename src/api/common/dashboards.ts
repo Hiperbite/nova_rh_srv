@@ -37,6 +37,14 @@ class DashBoardApi {
     
     return res.json(dashboardData);
   };
+  getAttendanceData = async (req: Request, res: Response): Promise<Response> => {
+    const  {typeId, entryDate, kind} = req.query;
+
+    const attendanceData = await Procedure(SPs.GetAttendaceData, [typeId,entryDate,kind]);
+
+    return res.json(attendanceData);
+  }
+
   getStudentCount = async (req: Request, res: Response): Promise<Response> => {
     const studentsCount =(await Procedure(SPs.GetStudentCount))[0]
     

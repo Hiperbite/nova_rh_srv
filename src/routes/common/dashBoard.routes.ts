@@ -42,6 +42,10 @@ const router = express.Router()
     // validateResource(createStudentSchema),
     asyncHandler(api.getDashboardData)
   )
+  .get(
+    "/get-attendance-data",
+    asyncHandler(api.getAttendanceData)
+  )
 
   .get(
     "/roles-employees-count",

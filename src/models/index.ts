@@ -161,6 +161,7 @@ const Repo = sequelize.getRepository;
 )
 
 enum SPs {
+  GetAttendaceData = "GetAttendanceData(?,?,?)",
   GetEmployeeSearch = "GetEmployeeSearch(?)",
   GetDashboardData = "GetDashboardData",
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
