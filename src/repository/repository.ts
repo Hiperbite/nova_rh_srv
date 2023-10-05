@@ -158,7 +158,7 @@ export default class Repository<T extends M>  {
               ?.split(",")
               .filter((x: string) => exclude.indexOf(x) === -1)
             : { exclude },
-          include,
+          include : scope ? null : include,
           offset,
           limit,
           order,
