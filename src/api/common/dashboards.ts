@@ -38,11 +38,23 @@ class DashBoardApi {
     return res.json(dashboardData);
   };
   getAttendanceData = async (req: Request, res: Response): Promise<Response> => {
-    const  {typeId, entryDate, kind} = req.query;
+    
+    const  {typeId, entryDate, kind, page, pageSize} : any = req.query;
 
-    const attendanceData = await Procedure(SPs.GetAttendaceData, [typeId,entryDate,kind]);
+    const attendanceData : any = await Procedure(SPs.GetAttendaceData, [typeId,entryDate,kind,page, pageSize]);
 
-    return res.json(attendanceData);
+    const total = attendanceData?.length === 0 ? 0 : attendanceData[0]?.total;
+    const divider = !pageSize ? 1 : +(pageSize) ;
+    
+    const data = {
+      data: attendanceData,
+      page: +(page),
+      pageSize: +(pageSize),
+      total,
+      pages: total == 0 ? 0 : (total / divider),
+      message: []
+}
+    return res.json(data);
   }
 
   getStudentCount = async (req: Request, res: Response): Promise<Response> => {
