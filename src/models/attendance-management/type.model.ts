@@ -28,7 +28,5 @@ export default class AttendanceType extends Model {
     })
     code!: string;
 
-    @HasOne(() => Attendance)
-    attendance!: Attendance
   
 }
