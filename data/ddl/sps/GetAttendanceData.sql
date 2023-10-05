@@ -6,10 +6,7 @@ BEGIN
     DECLARE _count INT;
     DECLARE _data INT;
 
-    SET _offset = (pageSize * page) - 1;
-    IF _offset < 0 THEN
-        SET _offset = 0;
-    END IF;
+    SET _offset = (page -1) * pageSize;
 
     select count(*) INTO _count
         from `Attendances` INNER JOIN `Employees` on Employees.id = Attendances.`employeeId`
