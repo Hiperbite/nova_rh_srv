@@ -26,9 +26,8 @@ export const routerRequest = (
   }
   const currentKey = decode(apikey ?? '')
 
-  if ( NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
-    switchTo(currentKey)
-  }
+    switchTo(currentKey, req.headers?.referer??'')
+
 
   next()
 }

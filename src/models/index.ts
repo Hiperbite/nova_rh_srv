@@ -34,7 +34,7 @@ import DocumentSetting from "./Settings/document.settings";
 import Setting from "./Settings/Settings";
 
 import { v4 as uuid } from "uuid";
-import { logger } from "../config";
+import { logger, MY_NODE_ENV, NODE_ENV } from "../config";
 import LicenseSetting from "./Settings/license.settings";
 import Employee from "./employees/employee";
 import Contract from './employees/contract';
@@ -58,7 +58,7 @@ dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
-
+let referer = null;
 const sequelizeOptions: SequelizeOptions = {
   dialect,
   storage: "./data/ccc.database.sqlite",
@@ -134,11 +134,16 @@ const UniqIndex = createIndexDecorator({
   unique: true,
 });
 
-const switchTo = (db: string) => {
-  if (sequelize.options.dialect === 'sqlite')
-    sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
-  else
-    sequelize.options.database = "n_" + db + "_nova_rh";
+const switchTo = (db: string, ref: string) => {
+
+  sequelize.options.storage=ref
+  if (NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
+    if (sequelize.options.dialect === 'sqlite')
+      sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+    else
+      sequelize.options.database = "n_" + db + "_nova_rh";
+  }
+
 }
 const Repo = sequelize.getRepository;
 (false &&
