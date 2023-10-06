@@ -70,7 +70,7 @@ const validateRequest = (
 
   if (i) {
     const include = JSON.parse(i);
-    req.query.include = i
+    req.query.include = include
   }
 
   if (o) {

@@ -1,3 +1,4 @@
+import { includes } from 'lodash';
 
 import { Request, Response } from "express";
 import Repository, { Paginate } from "../repository/repository";
@@ -10,7 +11,7 @@ import {
 
 class Api<T extends M> implements IApi {
   //protected repo: any
-  constructor(private Model: ModelCtor<M>|any, protected repo?: any) {
+  constructor(private Model: ModelCtor<M> | any, protected repo?: any) {
     this.repo ||= new Repository<M>(this.Model)
   };
 
@@ -86,11 +87,12 @@ class Api<T extends M> implements IApi {
    */
   findBy = async (req: Request, res: Response): Promise<Response> => {
 
+    const { include = { all: true } } = req.query
     const models: Paginate<M> | undefined =
       await this.repo
         .paginate({
 
-          include: { all: true },
+          include,
           ...req.query,
         });
 
