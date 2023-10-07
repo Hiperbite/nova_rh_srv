@@ -43,7 +43,7 @@ export default class Address extends Model {
         return this.descriptions + ', ' +
             this.city + ', ' +
             this.province + ', ' +
-            this.country?.code
+            this.country?.name
     }
 
     @Column({

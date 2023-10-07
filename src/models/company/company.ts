@@ -14,7 +14,7 @@ import {
 import { Contact, Address, Model, Business, Country, Payroll } from "../index";
 
 @DefaultScope(() => ({
-    include: [{ model: Address, include: [Country] }, Business, Payroll]
+    include: [{ model: Address, include: [Country] }, Business, Payroll, Contact]
 }))
 @Scopes(() => ({
     default: {

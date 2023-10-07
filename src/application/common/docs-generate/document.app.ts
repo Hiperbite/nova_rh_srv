@@ -12,7 +12,7 @@ const fonts = {
 };
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { AccountPaymentData, Company, Employee, PayStub } from '../../../models/index';
+import { AccountPaymentData, Address, Company, Contact, Employee, PayStub } from '../../../models/index';
 import { toDataURL } from '../../../routes/hendlers';
 
 
@@ -330,10 +330,16 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumentDefinitions> {
 
 
-  const payStub = await PayStub.findOne({ where: { id: payStubId }, include: { all: true } })
+  const payStub = await PayStub.scope('default').findOne({ where: { id: payStubId }, include: { all: true } })
 
   const banckAccount = await AccountPaymentData.findOne({ where: { employeeId: payStub?.contract?.employeeId }, include: { all: true } })
 
+  const [company] = await Company.findAll();
+
+  const [address]: Address[] = company?.address ?? [new Address];
+  const logo = company?.logos?.includes('http')
+    ? await toDataURL(company?.logos ?? '')
+    : company?.logos
   return {
 
 
@@ -363,22 +369,27 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
           body: [
             [
               {
-                image: novaIcon,
+                image: logo ?? novaIcon,
                 width: 100,
 
               },
               '',
               {
-                text: [{ text: 'RECIBO DE SALARIO\n', style: 'h1' }, { text: 'Janeiro de 2023' }],
+                text: [{ text: 'RECIBO DE SALARIO\n', style: 'h1' },
+
+                moment().set('month', (payStub?.month ?? 0) - 1).format('MMMM').toUpperCase,
+                  ' DE ',
+                payStub?.year
+                ],
               }
             ],
             [
               {
                 text: {
                   text: [
-                    'COMERCIO GERAL\n',
-                    'NIF: 5417529743\n',
-                    'Luanda - Angola',
+                    company?.name + '\n',
+                    'NIF: ' + company?.nif + '\n',
+                    address?.province + ' - ' + address?.country?.name,
                   ], fontSize: 9
                 },
               },
@@ -434,7 +445,8 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
               { text: payStub?.contract?.role?.name?.includes('-') ? payStub?.contract?.role?.name?.split('-')[1] : '...', style: 'd2' }
             ],
             [
-              { text: 'NIF:', style: 'd3' }, '',
+              { text: 'NIF:', style: 'd3' },
+              { text: payStub?.contract?.employee?.idCard, style: 'd2' },
               { text: 'Nivel:', style: 'd3' }, ''],
 
           ]
@@ -595,13 +607,12 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
               // you can declare how many rows should be treated as headers
               headerRows: 3,
 
-              widths: [4, 40, 'auto'],
+              widths: [40, 150],
 
               body: [
-                ['', 'Resumo', ''],
-                ['', 'Banco:', banckAccount?.bank?.code ?? ''],
-                ['', 'Conta:', banckAccount?.number ?? ''],
-                ['', 'IBAN:', banckAccount?.iban ?? ''],
+                ['Banco:', banckAccount?.bank?.code ?? ''],
+                ['Conta:', banckAccount?.number ?? ''],
+                ['IBAN:', banckAccount?.iban ?? ''],
 
               ]
             }
@@ -616,21 +627,21 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
               // you can declare how many rows should be treated as headers
               headerRows: 3,
 
-              widths: [10, '*', '*'],
+              widths: ['*', '*'],
 
               body: [
-                ['', 'Resumo', ''],
-                ['', 'Salario Bruto:',
+                ['Resumo', ''],
+                ['Salario Bruto:',
                   {
                     text: currency(payStub?.grossValue ?? 0).split('AOA')[0],
                     style: ['h2', { alignment: 'right' }],
                   }],
-                ['', 'Deduções:',
+                ['Deduções:',
                   {
                     text: currency(payStub?.deductionValue ?? 0).split('AOA')[0],
                     style: ['h2', { alignment: 'right', }],
                   }],
-                ['', 'Salario Líquido:', {
+                ['Salario Líquido:', {
                   text: currency(payStub?.netValue ?? 0).split('AOA')[0],
                   style: ['h2', { alignment: 'right', fontSize: 18 }],
                 }],
@@ -641,15 +652,25 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
         ],
       }
     ],
-    footer: [
-      {
-        text: JSON.stringify(banckAccount?.bank),
-
-        alignment: 'center',
-        style: 'lowFooter',
-
-      },
-    ]
+    footer: {
+      columnGap: 50,
+      columns: [
+        [
+          {
+            text: company?.name + '',
+            style: ['lowFooter', 'd2', { margin: [0, 0, 0, 10] }],
+          }, {
+            text:
+              company?.contacts?.map(({ descriptions }: any) => descriptions ?? '').join(' | ') + '\n'
+              + address?.fullAddress,
+            style: ['lowFooter', { margin: [0, 0, 0, 10] }],
+          },]
+        , {
+          text: '\n\nwww.nova.ao',
+          style: ['lowFooter', { alignment: 'right' }]
+        },
+      ]
+    }
 
     ,
     defaultStyle: {
@@ -724,6 +745,9 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
       },
       lowFooter: {
         fontSize: 9,
+
+        marginLeft: 50,
+        marginRight: 50,
       },
       textRight: {
 
