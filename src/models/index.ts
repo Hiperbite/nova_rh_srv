@@ -138,11 +138,25 @@ const UniqIndex = createIndexDecorator({
 const switchTo = (db: string, ref: string) => {
 
   sequelize.options.storage = ref
-  if (NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
+  if (true || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
     if (sequelize.options.dialect === 'sqlite')
       sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
-    else
-      sequelize.options.database = "n_" + db + "_nova_rh";
+    else {
+      const key = ref
+        .replace('https://', '')
+        .replace('http://', '')
+        .replace('wwww.', '')
+        .replace('.nova.ao', '')
+        .replace('.', '_')
+
+      logger.info({ message: '......................................' })
+      logger.info({ message: 'request coming from: ' + ref })
+      logger.info({ message: 'client key : ' + key })
+      logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
+      
+      sequelize.options.database = DB_NAME + '_' + key;
+      sequelize.options.username = DB_USER + '_' + key;
+    }
   }
 
 }
