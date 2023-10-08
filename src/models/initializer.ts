@@ -272,6 +272,15 @@ const initialData: InitializerType[] = [
       }]
   },
   {
+    model: 'Category', data: [
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Trainee', no: 0 },
+      { id: "10f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Junior', no: 1 },
+      { id: "20f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Full', no: 2 },
+      { id: "30f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Senior', no: 3 },
+      { id: "40f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Specialist', no: 4 },
+    ]
+  },
+  {
     model: 'Role', data: [
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Project manager' },
       { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '2', name: 'Software Architect' },
@@ -1923,7 +1932,7 @@ const initialData: InitializerType[] = [
         integrationToken: '',
         slogan: faker.company.buzzPhrase(),
         logos: faker.image.avatarGitHub(),
-        startActivityDate:'2023-06-10',
+        startActivityDate: '2023-06-10',
         address: [{
           descriptions: faker.location.streetAddress(),
           city: faker.location.city(),

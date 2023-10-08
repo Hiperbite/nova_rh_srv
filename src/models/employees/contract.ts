@@ -13,12 +13,12 @@ import {
   BeforeCreate,
 } from "sequelize-typescript";
 
-import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
-
+import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
+/*
 @DefaultScope(() => ({
   include: [Role, Department,SalaryPackage, WorkingHour,AdditionalField],
   orderBy: [['startDate', 'DESC']]
-}))
+}))*/
 @Scopes(() => ({
   full: {
     include: [
@@ -82,6 +82,12 @@ export default class Contract extends Model {
 
   @ForeignKey(() => Role)
   roleId?: string;
+
+  @BelongsTo(() => Category)
+  category?: Category;
+
+  @ForeignKey(() => Category)
+  categoryId?: string;
 
   @BelongsTo(() => Department)
   department!: Department;

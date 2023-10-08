@@ -53,6 +53,7 @@ import Country from "./common/country";
 import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
+import Category from "./employees/category";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
@@ -99,7 +100,7 @@ const sequelizeOptions: SequelizeOptions = {
     Track,
     Attachment,
     Sequence,
-
+    Category,
     Contract,
     AdditionalPaymentType,
     AdditionalPayment,
@@ -136,7 +137,7 @@ const UniqIndex = createIndexDecorator({
 
 const switchTo = (db: string, ref: string) => {
 
-  sequelize.options.storage=ref
+  sequelize.options.storage = ref
   if (NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
     if (sequelize.options.dialect === 'sqlite')
       sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
@@ -148,8 +149,8 @@ const switchTo = (db: string, ref: string) => {
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: true, force: true })
-    .then(initializer)
+    .sync({ alter: true, force: false })
+    //.then(initializer)
     .catch(console.error)
 )
 
@@ -191,6 +192,7 @@ export {
   Document,
   Person,
   RoleLevel,
+  Category,
   Role,
   Contract,
   AdditionalField,

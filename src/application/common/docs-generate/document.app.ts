@@ -1,3 +1,4 @@
+import { number } from 'zod';
 import moment from 'moment';
 import { novaIcon } from '../../../public/assets/imgs/index';
 import PdfPrinter from 'pdfmake';
@@ -22,7 +23,7 @@ const currency = (value: number = 0) => (new Intl.NumberFormat('pt-PT',
 )).format(value);
 
 const documents: any = {
-  IDCARD: "Bilhete",
+  IDCARD: "Bilhete de Identidade",
   PASSPORT: "Passaporte"
 }
 const tableLayouts = {
@@ -156,8 +157,12 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 
   const employee = await Employee.scope('all').findByPk(employeeId)
 
+  const [company] = await Company.findAll();
   const document: any = employee?.idCard || employee?.passport
 
+  const [address]: Address[] = company?.address ?? [new Address];
+
+  const g = employee?.person?.gender == 'M'
   return {
 
 
@@ -169,33 +174,96 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 
       },
       {
+        text: 'Entre'
+      },
+      {
         text: [
-          'Entre [Nome da Empresa], com sede em [Endereço da Empresa], adiante denominada "EMPRESA", e',
-          { text: employee?.person?.fullName + ",", bold: true }, ', portador do',
-          { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true },
-          ', residente em ', { text: employee?.person?.livingAddress?.fullAddress, bold: true },
-          ', adiante denominado "EMPREGADO", celebram o presente contrato de trabalho, de acordo com os termos e condições abaixo:'],
+          company?.name + '',
+          ', com sede em ',
+          (company?.address ?? [{}])[0]?.fullAddress + '',
+          ' contribuinte fiscal n° ',
+          company?.nif + '',
+          ', com o Capital Social de ',
+          currency(company?.socialCapital) + '',
+          ', matriculado na Conservatória do Registo Comercial de Luanda, aqui representado pelos Administradores, adiante designado por "EMPREGADOR".']
+      },
+      { text: 'E' },
+      {
+        text: [
+          employee?.person?.fullName + ', ',
+          employee?.person?.maritalStatus + ', ',
+          employee?.person?.nationality?.nationality + ', ',
+          'portador (a) do ', documents[document?.type], ' n.° ',
+          document?.number + ', ',
+          ' emitido em 19/07/2017, válido até 18/07/2026,',
+          ' contribuinte fiscal n° ',
+          document?.number + ', ',
+          ' residente ',
+          employee?.person?.livingAddress?.fullAddress + ' ',
+          (employee?.person?.gender == 'M' ?
+            ' adiante designado por "TRABALHADOR".' :
+            ' adiante designada por "TRABALHADORA".'),
+        ],
         alignment: 'justify',
 
       },
       {
-        text: '1. CARGO E FUNÇÃO:',
+        text: 'CLÁUSULA PRIMEIRA \n (Objecto e Funções):',
         style: 'h1',
       },
       {
-        text: 'O EMPREGADO será contratado para o cargo de [Cargo do Empregado], desempenhando funções relacionadas à Tecnologia da Informação (TI) e outras atividades correlatas conforme determinado pela EMPRESA.',
+        text: [
+          'Pelo presente contrato, o EMPREGADOR contrata o TRABALHADOR para exercer as funções de ',
+          employee?.role?.name + ' ',
+          'na ',
+          employee?.department?.name + ' ',
+          ', na Província de ',
+          address?.province + ', ',
+          ' reservando-se a faculdade de o transferir para outro local de trabalho, sempre que para tal se mostrar necessário ao cabal desempenho da sua função ou por razões operacionais ou, ainda, de gestão de pessoal.',
+        ],
+      },
+      {
+        text: [
+          'A', g ? 'o' : 'a', ' TRABALHADOR', g ? '' : 'A', ' é garantid', g ? 'o' : 'a', ' a ocupação efetiva do posto de trabalho de ',
+          employee?.role?.name + ' ',
+          'pertencente ao Qualificador Ocupacional e integrado no Grupo 4 da: Escala Salarial, cuja categoria ocupacional é a de ',
+          employee?.role?.name + ' ',
+        ]
       },
 
-
-
       {
-        text: '2. LOCAL E HORÁRIO DE TRABALHO:',
+        text: 'CLÁUSULA SEGUNDA\n(Início e Duração do Contrato)',
         style: 'h1',
       },
       {
-        text: 'O local de trabalho do EMPREGADO será na sede da EMPRESA, ou em outros locais designados pela EMPRESA, de acordo com as necessidades do projeto. O horário de trabalho será [Horário de Trabalho], de [Dias de Trabalho] por semana.',
+        text: ['O contrato de trabalho é celebrado por um prazo de ',
+          moment(employee?.contract?.endDate).diff(moment(employee?.contract?.startDate), 'month').toString(),
+          ' meses, com início em ',
+          moment(employee?.contract?.startDate).format('dd/MM/YYYY'),
+          ' e término em ',
+          moment(employee?.contract?.endDate).format('dd/MM/YYYY'),
+          ', renovável automaticamente por iguais períodos de 3 (três) meses até ao limite máximo de 5 (cinco) anos.'],
+      },
+      {
+        text: ' As partes poderão opor-se à renovação do contrato, mediante comunicação escrita enviada por correio eletrónico com indicação do domínio do EMPREGADOR, carta registada com aviso de recepção ou protocolo de recepção, com a antecedência mínima de 15 (quinze) dias úteis, face ao termo do prazo inicial ou das respectivas renovações.',
+      },
+      {
+        text: 'CLÁUSULA TERCEIRA\n(Período Experimental)',
+        style: 'h1',
+      },
+      {
+        text: ['O presente contrato fica sujeito a um período experimental de 30 (trinta) dias, durante o qual qualquer uma das partes o pode fazer cessar, sem necessidade de aviso prévio, não conferindo, tal rescisão, direito a qualquer tipo de indemnização ou compensação.'],
       },
 
+      {
+        text: 'CLÁUSULA QUARTA\n(Horário de Trabalho)',
+        style: 'h1',
+      },
+      {
+        text: [
+          g?'O':'A',
+          ' TRABALHAD',g?'O': 'A','R prestará as suas funções dentro do horário de quarenta e duas (42) horas semanais, distribuídas de segunda-feira a sexta-feira, dentro do período de 08h30 e término às 17h00, sem prejuízo de qualquer alteração de horário de trabalho, decorrente de necessidades objectivas de funcionamento dos serviços do EMPREGADOR e nos termos legais'],
+      },
 
 
       {

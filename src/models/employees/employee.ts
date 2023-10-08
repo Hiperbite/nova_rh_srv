@@ -22,13 +22,13 @@ import {
   Person,
   User,
   Contract,
-  AdditionalField,
-  Role,
   PayStub,
   SalaryPackage,
   AdditionalPayment,
   AdditionalPaymentType,
-  AccountPaymentData
+  AccountPaymentData,
+  Role,
+  Department
 } from "../index";
 
 @DefaultScope(() => ({
@@ -62,7 +62,11 @@ import {
   default: {
     include: [
       Person,
-       Contract]
+      {
+        model: Contract,
+        include: [Role, Department],
+      }
+    ]
   }
 }))
 @Table({
@@ -115,7 +119,7 @@ export default class Employee extends Model {
     c = c?.filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate ?? moment().add(1, 'years').format('YYYY-MM-DD')) || moment().isBefore(startDate))
     c = c?.
       sort((n: Contract, p: Contract) =>
-        moment(n.startDate).isBefore(moment(p.startDate)) ? 1 : -1)[0];
+        moment(n.startDate).isBefore(moment(p.startDate)) ? -1 : 1)[0];
 
     return c;
   }

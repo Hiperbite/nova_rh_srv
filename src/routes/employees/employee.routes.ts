@@ -22,17 +22,17 @@ router
   )
 
 
+
+  .put(
+    "/:id",
+    asyncHandler(api.update)
+  )
+
   .put(
     "/close-contract/:id",
     // validateResource(updateStudentSchema),
     asyncHandler(api.closeContract)
   )
-
-  .put(
-    ":id",
-    asyncHandler(api.update)
-  )
-
   .delete(
     "/:id",
     // validateResource(updateStudentSchema),
