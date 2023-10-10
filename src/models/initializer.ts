@@ -2018,6 +2018,7 @@ function createRandomEmployees(): any {
   const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
   const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
   const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data.filter(({ id }: any) => id) ?? []
+  const categories: any[] = initialData?.find(({ model }: any) => model === 'Category')?.data.filter(({ id }: any) => id) ?? []
   const banks: any[] = initialData?.find(({ model }: any) => model === 'Bank')?.data ?? []
 
   const generateEmployee = (key: number) => {
@@ -2088,6 +2089,7 @@ function createRandomEmployees(): any {
       contracts: [
         {
           roleId: faker.helpers.arrayElement(roles?.map(({ id }: any) => id)),
+          categoryId: faker.helpers.arrayElement(categories?.map(({ id }: any) => id)),
           departmentId: faker.helpers.arrayElement(departments?.map(({ id }: any) => id)),
           startDate: faker.date.past(),
           endDate: faker.date.future({ refDate: '2024-01-01T00:00:00.000Z' }),
@@ -2114,7 +2116,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 1000;
+  let i = 5;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:

@@ -16,7 +16,7 @@
 
         <p class="text-gray-700">
             Lembre-se de que você pode acessar sua conta a qualquer momento em <a class="text-decoration-none" 
-            href="<%=app.WEB_CLIENT_URL%>/authentication/reset-password/<%=data.verificationCode%>/<%=data.id%>"
+            href="<%=app.WEB_CLIENT_URL%>authentication/reset-password/<%=data.verificationCode%>/<%=data.id%>"
              target="_blank">link</a> usando seu nome de usuário e senha escolhidos durante o registro.
         </p>
 
