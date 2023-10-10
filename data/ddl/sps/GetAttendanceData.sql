@@ -16,14 +16,14 @@ BEGIN
     #comparação por dia
     CASE
       WHEN kind = "DATE" THEN
-        select Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName, "DATE", _count as total from `Attendances` 
+        select Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName, _count as total from `Attendances` 
             INNER JOIN `Employees` on `Employees`.id = `Attendances`.`employeeId` 
             INNER JOIN `Persons` on Employees.id = Persons.`employeeId` 
             LEFT JOIN `Contracts` on Contracts.`employeeId` = Employees.id 
             INNER JOIN `Departments` on `Departments`.id = Contracts.`departmentId`
         where Attendances.typeId = typeId and DATE(Attendances.startDate) = DATE(entryDate) and Contracts.isActive = 1 ORDER BY Attendances.`createdAt` limit pageSize OFFSET _offset;
       WHEN kind = "MONTH" THEN
-        select Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName, "MONTH", _count as total from `Attendances` 
+        select Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName,_count as total from `Attendances` 
             INNER JOIN `Employees` on `Employees`.id = `Attendances`.`employeeId` 
             LEFT JOIN `Contracts` on Contracts.`employeeId` = Employees.id 
             INNER JOIN `Departments` on `Departments`.id = Contracts.`departmentId` 
@@ -31,7 +31,7 @@ BEGIN
         where Attendances.typeId = typeId and LEFT(DATE(entryDate),7) = LEFT(Attendances.startDate,7) and Contracts.isActive = 1 ORDER BY Attendances.`createdAt` DESC limit pageSize OFFSET _offset;
       ELSE
         SELECT 
-            Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName, "NONE", _count as total
+            Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName, _count as total
             from `Attendances` INNER JOIN `Employees` on Employees.id = Attendances.`employeeId`
             LEFT JOIN `Contracts` on Contracts.`employeeId` = Employees.id 
             INNER JOIN `Departments` on `Departments`.id = Contracts.`departmentId` 
