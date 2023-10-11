@@ -6,10 +6,21 @@ import {
     BelongsTo,
     ForeignKey,
 } from "sequelize-typescript";
-import { AttendanceJustification, AttendanceType, Employee, Model } from "../index";
+import { AttendanceJustification, AttendanceType, Employee, Person, Model } from "../index";
 
 @Scopes(() => ({
-
+    withPerson: {
+        include: [
+            {
+                model: Employee,
+                as: "employee",
+                include: [{
+                    model: Person,
+                    attributes: ['id', 'fullName','firstName','lastName']
+                }]
+            }
+        ]
+    }
 }))
 @Table({
     timestamps: true,
