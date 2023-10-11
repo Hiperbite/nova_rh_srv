@@ -46,7 +46,7 @@ CALL `GetAttendanceData`("46f04abc-05f4-4a15-aaea-3e94cc82b8ff","2023-10-10","MO
 select * from `Attendances` order by `createdAt` DESC;
 
 SELECT 
-    Attendances.startDate, Attendances.endDate,avatar,Employees.code, Departments.code, Departments.name, firstName, lastName
+    Attendances.startDate, Attendances.endDate,avatar,Employees.code, D                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         epartments.code, Departments.name, firstName, lastName
     from `Attendances` inner join `Employees` on Employees.id = Attendances.`employeeId`
     LEFT JOIN `Contracts` on Contracts.`employeeId` = Employees.id 
     INNER JOIN `Departments` on `Departments`.id = Contracts.`departmentId` 

@@ -3,7 +3,8 @@ import {
     Column,
     DataType,
     Scopes,
-    HasOne,
+    BelongsTo,
+    ForeignKey,
 } from "sequelize-typescript";
 import { Attendance, Model } from "../index";
 
@@ -12,15 +13,15 @@ import { Attendance, Model } from "../index";
 }))
 @Table({
     timestamps: true,
-    tableName: "AttendanceTypes",
+    tableName: "AttendanceJustifications",
 })
-export default class AttendanceType extends Model {
+export default class AttendanceJustification extends Model {
 
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
-    name?: string;
+    description?: string;
 
     @Column({
         type: DataType.STRING,
@@ -28,5 +29,9 @@ export default class AttendanceType extends Model {
     })
     code!: string;
 
-  
+    @BelongsTo(() => Attendance)
+    attendance!: Attendance
+
+    @ForeignKey(() => Attendance)
+    attendanceId!: string;
 }

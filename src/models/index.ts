@@ -53,9 +53,9 @@ import Country from "./common/country";
 import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
-import AttendanceType from "./attendance-management/type.model";
-import AttendanceJustification from "./attendance-management/justification.model";
-import Attendance from "./attendance-management/attendance.model";
+import AttendanceType from "./attendance/type";
+import AttendanceJustification from "./attendance/justification";
+import Attendance from "./attendance/attendance";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
@@ -153,10 +153,10 @@ const switchTo = (db: string) => {
     sequelize.options.database = "n_" + db + "_nova_rh";
 }
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
-    .sync({ alter: true, force: true })
-    .then(initializer)
+    .sync({ alter: true, force: false })
+    //.then(initializer)
     .catch(console.error)
 )
 

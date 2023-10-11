@@ -5,6 +5,7 @@ import {
     Scopes,
     BelongsTo,
     ForeignKey,
+    HasMany,
 } from "sequelize-typescript";
 import { AttendanceJustification, AttendanceType, Employee, Model } from "../index";
 
@@ -35,12 +36,9 @@ export default class Attendance extends Model {
     @ForeignKey(() => AttendanceType)
     typeId!: string;
 
-    @BelongsTo(() => AttendanceJustification)
-    justifications!: AttendanceJustification[]
+    @HasMany(() => AttendanceJustification)
+    justifications?: AttendanceJustification[]
   
-    @ForeignKey(() => AttendanceJustification)
-    justificationId!: string;
-
     @BelongsTo(() => Employee)
     employee!: Employee
   
