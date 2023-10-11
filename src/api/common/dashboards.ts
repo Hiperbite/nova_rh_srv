@@ -51,7 +51,7 @@ class DashBoardApi {
       page: +(page),
       pageSize: +(pageSize),
       total,
-      pages: total == 0 ? 0 : (total / divider),
+      pages: !(total > pageSize) ? 1 : (total / divider),
       message: []
 }
     return res.json(data);

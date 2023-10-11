@@ -24,7 +24,7 @@ export default class Attendance extends Model {
     startDate?: string;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.DATE,
         allowNull: true
     })
     endDate!: string;
