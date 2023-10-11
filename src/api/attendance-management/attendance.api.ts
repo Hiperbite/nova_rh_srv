@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Attendance, } from "../../models/index";
+import { Attendance, Procedure, SPs, } from "../../models/index";
 import Api from "../Api";
 import { Paginate } from "../../repository/repository";
 
@@ -20,10 +20,11 @@ class AttendanceApi extends Api<Attendance> {
 
   };
 
-  findByCode = async (req: Request, res: Response): Promise<Response> => {
-
+    findByCode = async (req: Request, res: Response): Promise<Response> => {
+    const {id} = req.params;
     //const  {typeId, entryDate, kind, page, pageSize } = req.query;
-    return res.json(req.query)
+    const attendance = await Attendance.scope("withPerson").findAll({where: {typeId: id}});
+    return res.json(attendance);
   
   }
 }

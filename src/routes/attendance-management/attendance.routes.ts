@@ -26,7 +26,7 @@ const router = express
     asyncHandler(api.find)
   );
   router.get(
-    "/type",
+    "/type/:id",
     asyncHandler(attendanceApi.findByCode)
   );
   router.get(
