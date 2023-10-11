@@ -20,26 +20,12 @@ class AttendanceApi extends Api<Attendance> {
 
   };
 
-  findByCode = async (req: Request, res: Response): Promise<Response> => {
-
-    const { typeId, entryDate, kind, page, pageSize }: any = req.query;
-
-    const attendanceData: any = await Procedure(SPs.GetAttendaceData, [typeId, entryDate, kind, page, pageSize]);
-
-    const total = attendanceData?.length === 0 ? 0 : attendanceData[0]?.total;
-    const divider = !pageSize ? 1 : +(pageSize);
-
-    const data = {
-      data: attendanceData,
-      page: +(page),
-      pageSize: +(pageSize),
-      total,
-      pages: !(total > pageSize) ? 1 : (total / divider),
-      message: []
-    }
-    
-    return res.json(data);
-
+    findByCode = async (req: Request, res: Response): Promise<Response> => {
+    const {id} = req.params;
+    //const  {typeId, entryDate, kind, page, pageSize } = req.query;
+    const attendance = await Attendance.scope("withPerson").findAll({where: {typeId: id}});
+    return res.json(attendance);
+  
   }
 }
 

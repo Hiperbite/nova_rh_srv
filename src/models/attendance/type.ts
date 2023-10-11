@@ -3,6 +3,7 @@ import {
     Column,
     DataType,
     Scopes,
+    HasOne,
     HasMany,
 } from "sequelize-typescript";
 import { Attendance, Model } from "../index";
@@ -12,15 +13,15 @@ import { Attendance, Model } from "../index";
 }))
 @Table({
     timestamps: true,
-    tableName: "AttendanceJustifications",
+    tableName: "AttendanceTypes",
 })
-export default class AttendanceJustification extends Model {
+export default class AttendanceType extends Model {
 
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
-    description?: string;
+    name!: string;
 
     @Column({
         type: DataType.STRING,
@@ -29,5 +30,7 @@ export default class AttendanceJustification extends Model {
     code!: string;
 
     @HasMany(() => Attendance)
-    attendances!: Attendance[]
+    attendance?: Attendance[]
+
+
 }
