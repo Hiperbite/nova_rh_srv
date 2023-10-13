@@ -271,6 +271,7 @@ export default class Employee extends Model {
     } catch (e: any) { }
 
   }
+  
   static filter = EmployeeApp.filter
 }
 

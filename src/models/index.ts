@@ -53,7 +53,7 @@ import Country from "./common/country";
 import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
-import AttendanceType from "./attendance/type";
+import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 
