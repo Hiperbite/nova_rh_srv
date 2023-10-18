@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
-import { Attendance, Procedure, SPs, } from "../../models/index";
+import { Attendance } from "../../models/index";
 import Api from "../Api";
-import { Paginate } from "../../repository/repository";
+import Repository, { Paginate } from "../../repository/repository";
+import {
+  Model as M,
+} from "sequelize-typescript";
 
 class AttendanceApi extends Api<Attendance> {
-  constructor() { super(Attendance) };
+  constructor() { 
+    super(Attendance) 
+    this.repo = new Repository<M>(Attendance);
+  };
 
   create = async (req: Request, res: Response): Promise<Response> => {
     const { body } = req;
@@ -22,8 +28,9 @@ class AttendanceApi extends Api<Attendance> {
 
     findByCode = async (req: Request, res: Response): Promise<Response> => {
     const {id} = req.params;
-    //const  {typeId, entryDate, kind, page, pageSize } = req.query;
+
     const attendance = await Attendance.scope("withPerson").findAll({where: {typeId: id}});
+    
     return res.json(attendance);
   
   }

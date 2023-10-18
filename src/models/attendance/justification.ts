@@ -5,6 +5,7 @@ import {
     Scopes,
     BelongsTo,
     ForeignKey,
+    BeforeCreate,
 } from "sequelize-typescript";
 import { Attendance, Model } from "../index";
 
@@ -34,4 +35,12 @@ export default class AttendanceJustification extends Model {
 
     @ForeignKey(() => Attendance)
     attendanceId!: string;
+
+    @BeforeCreate
+    static initCodeField = async (justification: AttendanceJustification) => {        
+        let code = await AttendanceJustification.count();
+        
+        justification.code = String(code).padStart(8, '0');
+
+  };
 }
