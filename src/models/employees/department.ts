@@ -19,6 +19,9 @@ import moment from "moment";
 }))
 */
 @Scopes(() => ({
+  simple:{
+    include: [Contract, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
+  },
   default: {
     include: [{ model: Contract, include: [Employee] }, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },

@@ -7,7 +7,7 @@ import {
     ForeignKey,
     HasMany,
 } from "sequelize-typescript";
-import { AttendanceJustification, AttendanceType, Employee, Person, Model } from "../index";
+import { AttendanceJustification, AttendanceType, Employee, Person, Model, Contract } from "../index";
 
 @Scopes(() => ({
     withPerson: {
@@ -15,7 +15,7 @@ import { AttendanceJustification, AttendanceType, Employee, Person, Model } from
             {
                 model: Employee,
                 as: "employee",
-                include: [{
+                include: [Contract,{
                     model: Person,
                     attributes: ['id', 'fullName','firstName','lastName']
                 }]
