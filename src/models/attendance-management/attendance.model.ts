@@ -5,23 +5,11 @@ import {
     Scopes,
     BelongsTo,
     ForeignKey,
-    HasMany,
 } from "sequelize-typescript";
-import { AttendanceJustification, AttendanceType, Employee, Person, Model, Contract } from "../index";
+import { AttendanceJustification, AttendanceType, Employee, Model } from "../index";
 
 @Scopes(() => ({
-    withPerson: {
-        include: [
-            {
-                model: Employee,
-                as: "employee",
-                include: [Contract,{
-                    model: Person,
-                    attributes: ['id', 'fullName', 'firstName', 'lastName']
-                }]
-            }
-        ]
-    }
+
 }))
 @Table({
     timestamps: true,
@@ -43,22 +31,25 @@ export default class Attendance extends Model {
 
     @BelongsTo(() => AttendanceType)
     type!: AttendanceType
-
+  
     @ForeignKey(() => AttendanceType)
     typeId!: string;
 
-    @HasMany(() => AttendanceJustification)
-    justifications?: AttendanceJustification[]
+    @BelongsTo(() => AttendanceJustification)
+    justifications!: AttendanceJustification[]
+  
+    @ForeignKey(() => AttendanceJustification)
+    justificationId!: string;
 
     @BelongsTo(() => Employee)
     employee!: Employee
-
+  
     @ForeignKey(() => Employee)
     employeeId!: string;
 
     @BelongsTo(() => Employee)
     approver!: Employee
-
+  
     @ForeignKey(() => Employee)
     approverId!: string;
 }
