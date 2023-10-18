@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "ac2a1fce-b4a3-4399-a36c-3acf6a2b5d3f",
+		"name": "Company",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30176852",
+		"_collection_link": "https://hiperbite.postman.co/workspace/Nova-HR~3c986d12-adeb-48ad-8910-cfb0203fdfa6/collection/28437117-ac2a1fce-b4a3-4399-a36c-3acf6a2b5d3f?action=share&source=collection_link&creator=30176852"
+	},
+	"item": [
+		{
+			"name": "Business",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/company/business",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"business"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Outro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/company/business",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"business"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Desenvolvimento de Software\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100//company/business/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"",
+								"company",
+								"business",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "b915463a-45e0-42a7-a175-55818c67271f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/company/business/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"business",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1d6898c9-4fad-4d24-9752-3df577700d9b"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/company/company?scope=default",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"company"
+							],
+							"query": [
+								{
+									"key": "scope",
+									"value": "default"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Nova Empresa\", \r\n    \"description\":\"Construção e Serviços\",\r\n    \"nif\":\"534523452345\", \r\n    \"socialCapital\":20, \r\n    \"integrationToken\": \"asdkfljasfasf\",\r\n    \"slogan\": \"É Nós\", \r\n    \"businessId\": \"f0709b2f-8f63-42eb-bd1d-7c65ec646cbc\",\r\n    \"address\":[{\r\n        \"descriptions\":\"{{$randomStreetAddress}}\",\r\n        \"city\":\"{{$randomCity}}\",\r\n        \"province\":\"{{$randomCity}}\",\r\n        \"countryCode\":\"{{$randomCountryCode}}\"\r\n    }],\r\n    \"contacts\":[{\r\n        \"descriptions\": \"brunofortunatomateus@gmail.com\",\r\n        \"type\":\"EMAIL\"\r\n    }], \r\n    \"logos\":\"enough\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/company/company",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"businessId\": \"b915463a-45e0-42a7-a175-55818c67271f\",\r\n    \"description\": \"Construção e Serviços\",\r\n    \"logos\": \"enough\",\r\n    \"name\": \"Nova Empresa\",\r\n    \"nif\": \"534523452345\",\r\n    \"slogan\": \"É Nós\",\r\n    \"socialCapital\": \"21\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/company/company/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"company",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "b51ecd91-b964-471b-b56f-dc611093df9e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/company/company/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"company",
+								"company",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "b51ecd91-b964-471b-b56f-dc611093df9e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
