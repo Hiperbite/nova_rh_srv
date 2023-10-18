@@ -21,6 +21,12 @@ const router = express
     "/:id",
     asyncHandler(api.update)
   );
+
+  router.delete(
+    "/:id",
+    asyncHandler(api.delete)
+  );
+
   router.get(
     "/:id",
     asyncHandler(api.find)

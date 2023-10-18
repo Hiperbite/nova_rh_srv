@@ -53,7 +53,7 @@ import Country from "./common/country";
 import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
-import AttendanceType from "./attendance/type";
+import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 
@@ -153,7 +153,7 @@ const switchTo = (db: string) => {
     sequelize.options.database = "n_" + db + "_nova_rh";
 }
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)

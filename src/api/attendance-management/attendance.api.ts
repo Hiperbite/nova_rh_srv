@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Attendance } from "../../models/index";
+import { Attendance, Employee } from "../../models/index";
 import Api from "../Api";
 import Repository, { Paginate } from "../../repository/repository";
 import {
@@ -13,7 +13,16 @@ class AttendanceApi extends Api<Attendance> {
   };
 
   create = async (req: Request, res: Response): Promise<Response> => {
-    const { body } = req;
+    let { body } = req;
+
+    let employee: any = await Employee.findOne({
+      where: {
+        code: body?.employeeCode
+      }
+    })
+
+    if (employee)
+      body = { ...body, ...employee.id }
 
     const attendance: Attendance | void = await this.repo.create(body, { include: { all: true } });
 
@@ -32,7 +41,7 @@ class AttendanceApi extends Api<Attendance> {
     const attendance = await Attendance.scope("withPerson").findAll({where: {typeId: id}});
     
     return res.json(attendance);
-  
+
   }
 }
 
