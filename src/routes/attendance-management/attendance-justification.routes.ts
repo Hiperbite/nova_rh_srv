@@ -1,7 +1,7 @@
 import express from "express";
 import Api from "../../api/Api";
 import validateResource from "../../application/middleware/validateResource";
-import { justificationCreateSchema, justificationUpdateSchema } from "../../application/schema/attendance/attendance.schema";
+import { justificationCreateSchema, justificationUpdateSchema } from "../../application/schema/attendance/attendance.justification.schema";
 import { AttendanceJustification} from "./../../models/index";
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
