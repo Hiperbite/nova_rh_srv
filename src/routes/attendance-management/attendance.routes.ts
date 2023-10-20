@@ -2,6 +2,8 @@ import Api from "../../api/Api";
 import express from "express";
 import { Attendance } from "./../../models/index";
 import { AttendanceApi } from "../../api/attendance-management/attendance.api";
+import validateResource from "../../application/middleware/validateResource";
+import { attendanceCreateSchema } from "../../application/schema/attendance/attendance.schema";
 
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
@@ -15,6 +17,7 @@ const router = express
 
   router.post(
     "/",
+    validateResource(attendanceCreateSchema),
     asyncHandler(api.create)
   )
   router.put(
