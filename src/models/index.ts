@@ -137,7 +137,7 @@ const UniqIndex = createIndexDecorator({
 
 const switchTo = (db: string, ref: string) => {
 
-  if (true || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
+  if (false || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
     if (sequelize.options.dialect === 'sqlite')
       sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
     else {
@@ -165,8 +165,8 @@ const switchTo = (db: string, ref: string) => {
 const Repo = sequelize.getRepository;
 (true &&
   sequelize
-    .sync({ alter: true, force: true })
-    .then(initializer)
+    .sync({ alter: true, force: false })
+    //.then(initializer)
     .catch(console.error)
 )
 
