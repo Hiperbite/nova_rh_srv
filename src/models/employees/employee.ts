@@ -28,7 +28,8 @@ import {
   AdditionalPaymentType,
   AccountPaymentData,
   Role,
-  Department
+  Department,
+  Attendance
 } from "../index";
 
 @DefaultScope(() => ({
@@ -110,6 +111,9 @@ export default class Employee extends Model {
   @HasMany(() => AccountPaymentData)
   accounts!: AccountPaymentData[];
 
+  @HasMany(() => Attendance)
+  attendances!: Attendance[];
+  
   @Column({
     type: DataType.VIRTUAL
   })
@@ -271,6 +275,7 @@ export default class Employee extends Model {
     } catch (e: any) { }
 
   }
+  
   static filter = EmployeeApp.filter
 }
 

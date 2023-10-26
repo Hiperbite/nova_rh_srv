@@ -10,7 +10,7 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 
-import { Address, Business, Model } from "../index";
+import { Address, Bank, Business, Model } from "../index";
 
 
 @Scopes(() => ({
@@ -49,6 +49,9 @@ export default class Country extends Model {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
     };
+
+    @HasMany(() => Bank)
+    banks?: Bank[]
 
     @HasMany(() => Address)
     address?: Address[]

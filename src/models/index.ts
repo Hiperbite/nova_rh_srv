@@ -54,6 +54,9 @@ import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
 import Category from "./employees/category";
+import AttendanceType from "./attendance/attendance-type";
+import AttendanceJustification from "./attendance/justification";
+import Attendance from "./attendance/attendance";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
@@ -84,6 +87,9 @@ const sequelizeOptions: SequelizeOptions = {
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+    Attendance,
+    AttendanceType,
+    AttendanceJustification,
     Country,
     Business,
     Contact,
@@ -163,7 +169,7 @@ const switchTo = (db: string, ref: string) => {
   sequelize.options.storage = ref
 }
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)
@@ -171,6 +177,7 @@ const Repo = sequelize.getRepository;
 )
 
 enum SPs {
+  GetAttendaceData = "GetAttendanceData(?,?,?,?,?)",
   GetEmployeeSearch = "GetEmployeeSearch(?)",
   GetDashboardData = "GetDashboardData",
   GetRolesEmployeesCount = "GetRolesEMployeesCount",
@@ -199,6 +206,9 @@ export {
   Model,
   ContactType,
   Contact,
+  Attendance,
+  AttendanceType,
+  AttendanceJustification,
   AccountPaymentData,
   Employee,
   Address,

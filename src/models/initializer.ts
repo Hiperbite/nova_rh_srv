@@ -23,6 +23,14 @@ type InitializerType = { model: any, data: any[], include?: any }
 const initialData: InitializerType[] = [
 
   {
+    model: 'AttendanceType', data: [
+      { name: 'Atrasos', code: 'AR' },
+      { name: 'Ausências', code: 'AS' },
+      { name: 'Férias', code: 'FE' },
+      { name: 'Horas Extras', code: 'HE' },
+    ]
+  },
+  {
     model: 'ContactType', data: [
       { code: 'EMAIL', name: 'E-mail' },
       { code: 'LINKEDIN', name: 'LinkedIn' },
