@@ -35,11 +35,21 @@ export default class Track extends Model {
         type: DataType.STRING,
         allowNull: true,
     })
+
+    
     model?: string;
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
+
+    
+    clientInfo?: string;
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+
     ref?: string;
 
     @ForeignKey(() => User)

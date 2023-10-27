@@ -1,34 +1,44 @@
+import { ipInfoApi } from "../providers/IpInfo.api";
 import winston from "winston";
 const { NODE_ENV } = process.env;
 
 
 const printLog = (info: any) => {
   try {
-    const {
-      ip,
-      method,
-      url,
-      query,
-      params,
-      body,
-      headers,
-    }: any = info?.meta?.req ?? {};
 
-    const log = {
-      level: info.level,
-      status: info.meta?.res?.statusCode,
-      ip,
-      message: info?.message,
-      method,
-      url,
-      query,
-      params,
-      body,
-    };
-    console.log(info)
-    return info;
+
+    ipInfoApi().then(data => {
+
+      info.client = data;
+
+      const {
+        method,
+        url,
+        query,
+        params,
+        body,
+        headers,
+        connection
+      }: any = info?.meta?.req ?? {};
+
+
+      const log = {
+        level: info.level,
+        status: info.meta?.res?.statusCode,
+        message: info?.message,
+        method,
+        url,
+        query,
+        params,
+        body,
+      };
+
+
+      return info;
+    })
+
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 
   return "error writing logs";
@@ -63,7 +73,8 @@ export const loggerOptions = {
   msg: "HTTP > code: {{res.statusCode}}, METHOD: {{req.method}}, RESPONSE_TIME: {{res.responseTime}}ms, URL: {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
   expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
   colorize: true, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-  // ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
+  // ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response,
+
 };
 //app.use(expressWinston.logger(loggerOptions));
 
