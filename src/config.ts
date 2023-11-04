@@ -102,6 +102,7 @@ const config = () => {
   const allowedOrigins: string[] = [
     "http://localhost:3000",
     "https://rh.demo.nova.ao",
+    "https://rh.hiperbite.nova.ao",
     "*",
   ];
 

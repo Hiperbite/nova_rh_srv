@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node --stack-size=65500 dist/app.js ",
-        "dev": "nodemon  --inspect --stack-size=65500 src/app.ts --host 192.168.0.101",
+        "dev": "nodemon --trace-warnings  --inspect --stack-size=65500 src/app.ts --host 192.168.0.101",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Sebastião Lutonda",

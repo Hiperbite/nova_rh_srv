@@ -65,7 +65,7 @@ const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 let referer = null;
 const sequelizeOptions: SequelizeOptions = {
   dialect,
-  storage: "./data/ccc.database.sqlite",
+  storage: "./data/database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -142,7 +142,7 @@ const UniqIndex = createIndexDecorator({
 });
 
 const switchTo = (db: string, ref: string) => {
-
+return;
   if (false || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
     if (sequelize.options.dialect === 'sqlite')
       sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });

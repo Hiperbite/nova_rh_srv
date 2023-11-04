@@ -87,7 +87,7 @@ class Api<T extends M> implements IApi {
    */
   findBy = async (req: Request, res: Response): Promise<Response> => {
 
-    const { include = { all: true } } = req.query
+    const { include  } = req.query
     const models: Paginate<M> | undefined =
       await this.repo
         .paginate({

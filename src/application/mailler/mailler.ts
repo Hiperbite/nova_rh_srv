@@ -44,6 +44,10 @@ async function sendEmail(payload: SendMailOptions) {
     payload.from =
     smtp.user;
 
+    /**
+     * TODO: FIX THIS WARNING
+     *  Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification
+     */
   if (NODE_ENV !== 'production') {
     payload.subject = `${MY_NODE_ENV} MODE - ${payload.subject}`
     payload.from = MAILER_USER

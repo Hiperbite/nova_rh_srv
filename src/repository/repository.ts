@@ -77,6 +77,8 @@ export default class Repository<T extends M>  {
         return null
       }
     } catch (err: any) {
+
+      this.rollback();
       throw err;
     }
 
@@ -145,9 +147,9 @@ export default class Repository<T extends M>  {
           ? limit
           : (Number(page) - 1) * limit;
 
-
     const fromScope = scope ?
       this.repo.scope(scope) : this.repo;
+
     return new Paginate(
       await fromScope.findAll(
         {
@@ -158,15 +160,14 @@ export default class Repository<T extends M>  {
               ?.split(",")
               .filter((x: string) => exclude.indexOf(x) === -1)
             : { exclude },
-          include ,
+          include,
           offset,
           limit,
           order,
         }),
-
       Number(page),
       limit,
-      await this.size({ include, where })
+      await this.size({ scope, where })
     );
   };
 

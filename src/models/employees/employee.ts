@@ -45,11 +45,11 @@ import {
     include: [
       {
         model: Contract, include: [
+          Role, Department,
           PayStub,
           {
             model: SalaryPackage,
             include: [
-
               {
                 model: AdditionalPayment,
                 include: [AdditionalPaymentType]
@@ -113,7 +113,7 @@ export default class Employee extends Model {
 
   @HasMany(() => Attendance)
   attendances!: Attendance[];
-  
+
   @Column({
     type: DataType.VIRTUAL
   })
@@ -180,7 +180,7 @@ export default class Employee extends Model {
     type: DataType.VIRTUAL
   })
   get payStub() {
-
+/*
     let myPayrolls: any[] = [];
 
     this.contracts?.forEach((contact: Contract) => {
@@ -217,7 +217,8 @@ export default class Employee extends Model {
       }
 
     })
-    return myPayrolls;
+    */
+    return ;//myPayrolls;
 
   }
 
@@ -275,7 +276,7 @@ export default class Employee extends Model {
     } catch (e: any) { }
 
   }
-  
+
   static filter = EmployeeApp.filter
 }
 
