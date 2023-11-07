@@ -13,6 +13,9 @@ import {
 import { Address, Bank, Business, Model } from "../index";
 
 
+@Scopes(() => ({
+    simple: {   }
+}))
 @Table({
     timestamps: true,
     tableName: "Countries",

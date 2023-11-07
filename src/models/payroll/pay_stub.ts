@@ -93,8 +93,6 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get netValue() {
-        const g = (this.lines?.filter(({ debit }: any) => debit).map(({ value }: any) => value).reduce((a: number, b: number) => a + b, 0)) ?? 0
-        const d = (this.lines?.filter(({ debit }: any) => !debit).map(({ value }: any) => value).reduce((a: number, b: number) => a + b, 0)) ?? 0
         return (this.grossValue ?? 0) - (this.deductionValue ?? 0);
     }
 

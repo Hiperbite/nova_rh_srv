@@ -26,7 +26,7 @@ import moment from "moment";
     include: [{ model: Contract, include: [Employee] }, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },
   full: {
-    include: [{ model: Contract, include: [{ model: Employee, include: [Person] }] },{ model: Dep, as: 'childs' }]
+    include: [{ model: Contract, include: [{ model: Employee, include: [Person] }] }, { model: Dep, as: 'childs' }]
   }
 }))
 @Table({

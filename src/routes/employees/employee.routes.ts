@@ -1,12 +1,6 @@
 
 import { EmployeeApi } from "../../api/employees/employee.api";
 import express from "express";
-import Api from "../../api/Api";
-
-import {
-  Contact,
-  Employee,
-} from "../../models/index";
 
 /**
  * TODO: Find best place to put this stash
@@ -28,17 +22,17 @@ router
   )
 
 
+
+  .put(
+    "/:id",
+    asyncHandler(api.update)
+  )
+
   .put(
     "/close-contract/:id",
     // validateResource(updateStudentSchema),
     asyncHandler(api.closeContract)
   )
-
-  .put(
-    ":id",
-    asyncHandler(api.update)
-  )
-
   .delete(
     "/:id",
     // validateResource(updateStudentSchema),

@@ -280,6 +280,15 @@ const initialData: InitializerType[] = [
       }]
   },
   {
+    model: 'Category', data: [
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Trainee', no: 0 },
+      { id: "10f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Junior', no: 1 },
+      { id: "20f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Full', no: 2 },
+      { id: "30f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Senior', no: 3 },
+      { id: "40f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Specialist', no: 4 },
+    ]
+  },
+  {
     model: 'Role', data: [
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Project manager' },
       { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '2', name: 'Software Architect' },
@@ -1931,6 +1940,7 @@ const initialData: InitializerType[] = [
         integrationToken: '',
         slogan: faker.company.buzzPhrase(),
         logos: faker.image.avatarGitHub(),
+        startActivityDate: '2023-06-10',
         address: [{
           descriptions: faker.location.streetAddress(),
           city: faker.location.city(),
@@ -2016,6 +2026,7 @@ function createRandomEmployees(): any {
   const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
   const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
   const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data.filter(({ id }: any) => id) ?? []
+  const categories: any[] = initialData?.find(({ model }: any) => model === 'Category')?.data.filter(({ id }: any) => id) ?? []
   const banks: any[] = initialData?.find(({ model }: any) => model === 'Bank')?.data ?? []
 
   const generateEmployee = (key: number) => {
@@ -2086,6 +2097,7 @@ function createRandomEmployees(): any {
       contracts: [
         {
           roleId: faker.helpers.arrayElement(roles?.map(({ id }: any) => id)),
+          categoryId: faker.helpers.arrayElement(categories?.map(({ id }: any) => id)),
           departmentId: faker.helpers.arrayElement(departments?.map(({ id }: any) => id)),
           startDate: faker.date.past(),
           endDate: faker.date.future({ refDate: '2024-01-01T00:00:00.000Z' }),
@@ -2112,7 +2124,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 800;
+  let i = 1;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:

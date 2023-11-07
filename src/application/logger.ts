@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 import { ipInfoApi } from "../providers/IpInfo.api";
+=======
+import { NODE_ENV } from "../config";
+>>>>>>> d58f7ec54d669745f4bdb3d595095da57d0e8f03
 import winston from "winston";
-const { NODE_ENV } = process.env;
+//const { NODE_ENV } = process.env;
 
 
 const printLog = (info: any) => {

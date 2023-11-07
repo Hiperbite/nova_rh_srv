@@ -26,9 +26,8 @@ export const routerRequest = (
   }
   const currentKey = decode(apikey ?? '')
 
-  if ( NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
-    switchTo(currentKey)
-  }
+    switchTo(currentKey, req.headers?.referer??'')
+
 
   next()
 }
@@ -70,7 +69,7 @@ const validateRequest = (
 
   if (i) {
     const include = JSON.parse(i);
-    req.query.include = i
+    req.query.include = include
   }
 
   if (o) {

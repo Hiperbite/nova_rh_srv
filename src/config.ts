@@ -10,7 +10,6 @@ import {
 import { createServer } from "http";
 import session, { MemoryStore } from "express-session";
 import bodyParser from "body-parser";
-import "reflect-metadata";
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
@@ -58,7 +57,7 @@ const config = () => {
   app.set("port", PORT);
 
   app.use(errorHandler);
- 
+
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
@@ -102,11 +101,8 @@ const config = () => {
   app.use(limiter);
 
   const allowedOrigins: string[] = [
-    "https://www.yoursite.com",
-    "http://127.0.0.1:5500",
-    "http://localhost:3500",
     "http://localhost:3000",
-    "https://academic.app.hiperbite.com",
+    "https://rh.demo.nova.ao",
     "*",
   ];
 
@@ -144,7 +140,7 @@ const config = () => {
   };
 
   const server = start();
-//startOrm();
+  //startOrm();
   return { server, app, httpServer };
 };
 export default config;

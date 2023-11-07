@@ -1,13 +1,13 @@
 {
     "name": "nova_rh",
     "version": "1.0.0",
-    "homepage": "academic.nova.app.hiperbite.com",
+    "homepage": "",
     "description": "Nova HR",
     "main": "index.js",
     "scripts": {
         "build": "tsc",
-        "start": "node --stack-size=65500 dist/app.js",
-        "dev": "nodemon  --inspect --stack-size=65500 src/app.ts",
+        "start": "node --stack-size=65500 dist/app.js ",
+        "dev": "nodemon  --inspect --stack-size=65500 src/app.ts --host 192.168.0.101",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Sebastião Lutonda",
@@ -72,6 +72,7 @@
         "public-ip": "^6.0.1",
         "puppeteer": "^20.8.0",
         "reflect-metadata": "^0.1.13",
+        "rxjs": "^7.8.1",
         "sequelize": "^6.32.1",
         "sequelize-paginate": "^1.1.6",
         "sequelize-typescript": "^2.1.5",

@@ -34,7 +34,7 @@ import DocumentSetting from "./Settings/document.settings";
 import Setting from "./Settings/Settings";
 
 import { v4 as uuid } from "uuid";
-import { logger } from "../config";
+import { logger, MY_NODE_ENV, NODE_ENV } from "../config";
 import LicenseSetting from "./Settings/license.settings";
 import Employee from "./employees/employee";
 import Contract from './employees/contract';
@@ -53,6 +53,7 @@ import Country from "./common/country";
 import { initializer } from "./initializer";
 import Bank from "./company/bank";
 import ContactType from "./employees/contact-type";
+import Category from "./employees/category";
 import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
@@ -61,7 +62,7 @@ dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
-
+let referer = null;
 const sequelizeOptions: SequelizeOptions = {
   dialect,
   storage: "./data/ccc.database.sqlite",
@@ -70,12 +71,6 @@ const sequelizeOptions: SequelizeOptions = {
   password: DB_PASSWORD,
   database: DB_NAME,
 
-  dialectOptions: {
-    options: {
-      requestTimeout: 300000,
-      transactionType: 'IMMEDIATE'
-    }
-  },
   retry: {
     match: [
       /SQLITE_BUSY/,
@@ -111,7 +106,7 @@ const sequelizeOptions: SequelizeOptions = {
     Track,
     Attachment,
     Sequence,
-
+    Category,
     Contract,
     AdditionalPaymentType,
     AdditionalPayment,
@@ -146,11 +141,32 @@ const UniqIndex = createIndexDecorator({
   unique: true,
 });
 
-const switchTo = (db: string) => {
-  if (sequelize.options.dialect === 'sqlite')
-    sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
-  else
-    sequelize.options.database = "n_" + db + "_nova_rh";
+const switchTo = (db: string, ref: string) => {
+
+  if (false || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
+    if (sequelize.options.dialect === 'sqlite')
+      sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+    else {
+      const key = ref
+        .replace('https://', '')
+        .replace('http://', '')
+        .replace('wwww.', '')
+        .replace('.nova.ao', '')
+        .replace('.', '_')
+        .replace('/', '')
+
+      logger.info({ message: '......................................' })
+      logger.info({ message: 'request coming from: ' + ref })
+      logger.info({ message: 'client key : ' + key })
+
+      sequelize.options.database = DB_NAME + '_' + key;
+      sequelize.options.username = DB_USER + '_' + key;
+      logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
+      sequelize = new Sequelize({ ...sequelizeOptions, ...{ database: DB_NAME + '_' + key, username: DB_USER + '_' + key } });
+    }
+  }
+
+  sequelize.options.storage = ref
 }
 const Repo = sequelize.getRepository;
 (false &&
@@ -202,6 +218,7 @@ export {
   Document,
   Person,
   RoleLevel,
+  Category,
   Role,
   Contract,
   AdditionalField,

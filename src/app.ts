@@ -1,4 +1,3 @@
-import "reflect-metadata";
 
 import router from "./routes";
 
