@@ -1,3 +1,4 @@
+
 CREATE PROCEDURE GetEmployeeSearch(IN NAME VARCHAR(100))
 BEGIN
     select firstName, lastName, Employees.id, Employees.avatar,Employees.code 
