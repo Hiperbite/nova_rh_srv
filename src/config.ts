@@ -100,7 +100,9 @@ const config = () => {
   app.use(limiter);
 
   const allowedOrigins: string[] = [
-    "http://localhost:3000",
+    //"http://localhost:3000",
+    //"http://localhost:3001",
+    //"http://localhost:3002",
     "https://rh.demo.nova.ao",
     "https://rh.hiperbite.nova.ao",
     "*",
@@ -109,7 +111,7 @@ const config = () => {
   const corsOptions = {
     credentials: true, // This is important.
     origin: (origin: any, callback: any) => {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      if (true || allowedOrigins.indexOf(origin) !== -1 || !origin) {
         callback(null, true);
       } else {
         callback(new Error("DUde,u r not allowed by CORS"));
