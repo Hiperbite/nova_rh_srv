@@ -46,7 +46,7 @@ export default class Repository<T extends M>  {
 
     let final;
 
-    try {
+    try {                                                                           
       await this.start();
       final = await this.Model.create(data, { ...options, transaction: this.transaction });
       await this.commit();

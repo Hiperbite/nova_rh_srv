@@ -47,7 +47,7 @@ export default class File extends Model {
   fileName?: string;
 
   @Column({
-    type: DataType.DATE,
+    type: DataType.STRING,
     allowNull: true,
   })
   permissions?: string;
