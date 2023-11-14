@@ -9,6 +9,9 @@ import trackRoutes from "./common/track.routes";
 import company from "./company/company.routes";
 import business from "./company/business.routes";
 
+import files from "./doc-manager/file.routes";
+
+
 import dashboards from "./common/dashBoard.routes";
 import helpers from "./common/helper.routes";
 import employees from "./employees/employee.routes";
@@ -34,6 +37,10 @@ routes.use('/attendances/types', attendanceType)
 routes.use('/users', userRoutes)
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)
+
+
+routes.use('/doc-manager/files', files)
+
 //routes.use('/commons/contacts', contactRoutes)
 routes.use('/commons/dashboards', dashboards)
 routes.use('/commons/helpers', helpers)
