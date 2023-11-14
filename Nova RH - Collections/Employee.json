@@ -1,0 +1,776 @@
+{
+	"info": {
+		"_postman_id": "4762e9cd-54ee-4c8b-88bd-c53284b2aee4",
+		"name": "Employee",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30176852",
+		"_collection_link": "https://hiperbite.postman.co/workspace/Nova-HR~3c986d12-adeb-48ad-8910-cfb0203fdfa6/collection/5701267-4762e9cd-54ee-4c8b-88bd-c53284b2aee4?action=share&source=collection_link&creator=30176852"
+	},
+	"item": [
+		{
+			"name": "Personal",
+			"item": [
+				{
+					"name": "One",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/personal/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"personal",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firsName\": \"Bruno\",\r\n    \"lastName\": \"Mateus\",\r\n    \"gender\": \"M\",\r\n    \"birthdate\": \"2002-05-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/personal/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"personal",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "971c2213-c6b6-4cef-a9a4-1166b0f6caf7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "apikey",
+								"value": "movicel",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:6100/employees/personal?attributes=birthDate,id&where[id]=aab550e4-cdb5-4db7-9fdf-c1d0e96383e9&scope=empty",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"personal"
+							],
+							"query": [
+								{
+									"key": "attributes",
+									"value": "birthDate,id"
+								},
+								{
+									"key": "where[id]",
+									"value": "aab550e4-cdb5-4db7-9fdf-c1d0e96383e9"
+								},
+								{
+									"key": "scope",
+									"value": "empty"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/employees",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"employees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/employees/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"employees",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "b2472c92-3444-4f26-bc69-102461e6b139"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActive\": {{$randomBoolean}},\n    \"descriptions\": \"{{$randomLoremText}}\",\n    \"type\": \"INT\",\n    \"avatar\": \"{{$randomAvatarImage}}\",\n    \"person\": {\n        \"nationality\": \"{{$randomCountry}}\",\n        \"firstName\": \"{{$randomFirstName}}\",\n        \"otherName\": \"{{$randomFirstName}}\",\n        \"lastName\": \"{{$randomLastName}}\",\n        \"gender\": \"M\",\n        \"birthDate\": \"{{$randomDatePast}}\",\n        \"birthPlaceAddress\": {\n            \"descriptions\": \"{{$randomStreetAddress}}\",\n            \"city\": \"{{$randomCity}}\",\n            \"province\": \"{{$randomCity}}\"\n        },\n        \"livingAddress\": {\n            \"descriptions\": \"{{$randomStreetAddress}}\",\n            \"city\": \"{{$randomCity}}\",\n            \"province\": \"{{$randomCity}}\"\n        }\n    },\n    \"contacts\": [\n        {\n            \"descriptions\": \"brunofotunatomateus@gmail.com\",\n            \"typeId\": \"00f8b609-21f2-4f53-99df-4db73100a52e\"\n        },\n        {\n            \"descriptions\": \"{{$randomPhoneNumberExt}}-{{$randomPhoneNumber}}\",\n            \"type\": \"PHONENUMBER\"\n        }\n    ],\n    \"documents\": [\n        {\n            \"type\": \"IDCARD\",\n            \"number\": \"{{$randomBankAccountIban}}\"\n        }\n    ],\n    \"contracts\": [\n        {\n            \"startDate\": \"{{$randomDateFuture}}\",\n            \"endDate\": \"{{$randomDateFuture}}\",\n            \"type\": \"F\",\n            \"salaryPackage\": {\n                \"baseValue\": 900000,\n                \"baseValuePeriod\": 3,\n                \"startDate\": \"2023-09-14\",\n                \"additionalPayments\": [\n                    {\n                        \"baseValue\": 60000,\n                        \"baseValuePeriod\": 2,\n                        \"startDate\": \"2023-09-14\"\n                    }\n                ]\n            },\n            \"additionalFields\": [\n                {\n                    \"title\": \"Titulo 1\",\n                    \"descriptions\": \"Descrição 1\"\n                },\n                {\n                    \"title\": \"Titulo 2\",\n                    \"descriptions\": \"Descrição 2\"\n                }\n            ],\n            \"workingHour\": {\n                \"period\": 1,\n                \"hours\": 8,\n                \"weekDays\": [\n                    \"Mo\",\n                    \"Tu\",\n                    \"Fr\",\n                    \"Sa\"\n                ]\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/employees",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"employees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/employees/close-contract/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"employees",
+								"close-contract",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "9e7d0cbd-65d7-4989-9bec-40c0d9d77f1d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AccountPaymentData",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/account-payment-data",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"account-payment-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/account-payment-data/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"account-payment-data",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "18bcc81b-35c9-496f-8d51-fd6fadbdbc95"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"iban\": \"000091213031232400\",\n    \"account_number\": \"02934230123912332\",\n    \"bank_name\": \"BAI\",\n    \"currency_counts\":\"AO\",\n    \"employeeId\": \"e55c2a98-3d56-4011-a0f3-54def7f4589c\",\n    \"countryId\": \"1c15395e-7d99-48de-b261-55d9cfff1455\",\n    \"swift\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/account-payment-data",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"account-payment-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"iban\": \"0000A006625443031232400\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/account-payment-data/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"account-payment-data",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "fd9070bc-7b61-4cff-9c5a-d892671a6076"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contracts",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/contracts?where[employeeId]=d80ce165-0b70-4540-9e30-e9a8f9546ba5",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "where[employeeId]",
+									"value": "d80ce165-0b70-4540-9e30-e9a8f9546ba5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/contracts/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"contracts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "008d2010-56d8-4f15-95b8-8b6937d5576b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": \"4c8cad1d-4095-46b8-a213-9a23a12cb57b\",\n    \"employeeId\": \"61c2b429-6a2f-4e0c-88f5-1ef477b20801\",\n    \"startDate\": \"{{$randomDateFuture}}\",\n    \"endDate\": \"{{$randomDateFuture}}\",\n    \"type\": \"F\",\n    \"salaryPackage\": {\n        \"baseValue\": 900000,\n        \"baseValuePeriod\": 3,\n        \"startDate\": \"2023-07-10\",\n        \"additionalPayments\": [\n            {\n                \"baseValue\": 60000,\n                \"baseValuePeriod\": 2,\n                \"startDate\": \"2023-07-10\",\n                \"typeId\": \"3bd7c8b4-c258-4bc7-aafd-2db72975551a\"\n            }\n        ]\n    },\n    \"additionalFields\": [\n        {\n            \"title\": \"Titulo 1\",\n            \"descriptions\": \"Descrição 1\"\n        },\n        {\n            \"title\": \"Titulo 2\",\n            \"descriptions\": \"Descrição 2\"\n        }\n    ],\n    \"workingHour\":{\n        \"period\":1,\n        \"hours\":8,\n        \"weekDays\":[\"Mo\",\"Tu\",\"Fr\",\"Sa\"]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/contracts",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": \"4c8cad1d-4095-46b8-a213-9a23a12cb57b\",\n    \"employeeId\": \"c2a5cabc-4bc5-4e0e-9974-5482c6e23e6d\",\n    \"departmentId\":\"9c3e9043 Bd6e-4f9a-9e7c-9c883efbe95c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/contracts/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"contracts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ausence",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/ausence",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"ausence"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:6100/employees/ausence/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"ausence",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "fd9070bc-7b61-4cff-9c5a-d892671a6076"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"000091213031232400\",\n    \"code\": \"AR001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/ausence",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"ausence"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"0000A006625443031232400\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:6100/employees/ausence/:id",
+							"protocol": "http",
+							"host": [
+								"localhost:6100"
+							],
+							"path": [
+								"employees",
+								"ausence",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "fd9070bc-7b61-4cff-9c5a-d892671a6076"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

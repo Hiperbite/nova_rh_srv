@@ -43,6 +43,7 @@ const {
   refreshTokenPrivateKey,
   refreshTokenPublicKey,
   TOKEN_EXPIRE_IN,
+  IP_INFO_TOKEN
 } = process.env;
 
 const app: Application = express();
@@ -189,6 +190,7 @@ export {
   accessTokenPublicKey,
   refreshTokenPrivateKey,
   refreshTokenPublicKey,
+  IP_INFO_TOKEN,
   smtp,
   logLevel,
   logger,
