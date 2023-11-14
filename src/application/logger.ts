@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import { ipInfoApi } from "../providers/IpInfo.api";
-=======
+  import { ipInfoApi } from "../providers/IpInfo.api";
 import { NODE_ENV } from "../config";
->>>>>>> d58f7ec54d669745f4bdb3d595095da57d0e8f03
 import winston from "winston";
 //const { NODE_ENV } = process.env;
 
@@ -42,7 +39,7 @@ const printLog = (info: any) => {
     })
 
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 
   return "error writing logs";
@@ -71,7 +68,7 @@ export const loggerOptions = {
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp(),
-    winston.format.printf(printLog),
+    //winston.format.printf(printLog),
   ),
   meta: true, // optional: control whether you want to log the meta data about the request (default to true)
   msg: "HTTP > code: {{res.statusCode}}, METHOD: {{req.method}}, RESPONSE_TIME: {{res.responseTime}}ms, URL: {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
