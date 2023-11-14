@@ -2084,7 +2084,7 @@ function createRandomEmployees(): any {
           typeId: contactType?.find(({ code }: any) => code === 'EMAIL')?.id
         },
         {
-          descriptions: faker.phone.number('+244 9########'),
+          descriptions: faker.phone.number(),
           typeId: contactType?.find(({ code }: any) => code === "PHONENUMBER")?.id
         }
       ],

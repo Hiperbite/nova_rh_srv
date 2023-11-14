@@ -26,7 +26,6 @@ const printLog = (info: any) => {
       params,
       body,
     };
-    console.log(info)
     return info;
   } catch (error) {
     console.error(error);
@@ -53,12 +52,20 @@ export const loggerOptions = {
         "-" +
         String(d.getDate()).padStart(2, "0"))()}.log.json`,
     }),
+  
+  new(require('winston-daily-rotate-file'))({
+      filename: `logs/apimodules.log`,
+      timestamp: new Date(),
+      datePattern: 'yyyy-M-D',
+      prepend: false,
+      json: true,
+  }),
     new winston.transports.Console(),
   ],
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp(),
-    winston.format.printf(printLog),
+  //  winston.format.printf(printLog),
   ),
   meta: true, // optional: control whether you want to log the meta data about the request (default to true)
   msg: "HTTP > code: {{res.statusCode}}, METHOD: {{req.method}}, RESPONSE_TIME: {{res.responseTime}}ms, URL: {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
