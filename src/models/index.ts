@@ -57,6 +57,7 @@ import Category from "./employees/category";
 import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
+import File from "./doc-manager/file";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
@@ -65,7 +66,7 @@ const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 let referer = null;
 const sequelizeOptions: SequelizeOptions = {
   dialect,
-  storage: "./data/ccc.database.sqlite",
+  storage: "./data/database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -132,6 +133,8 @@ const sequelizeOptions: SequelizeOptions = {
     RoleLevel,
     Bank,
     Role,
+
+    File
   ],
 }
 let sequelize = new Sequelize(sequelizeOptions);
@@ -142,7 +145,7 @@ const UniqIndex = createIndexDecorator({
 });
 
 const switchTo = (db: string, ref: string) => {
-return;
+return ;
   if (false || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
     if (sequelize.options.dialect === 'sqlite')
       sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
@@ -171,8 +174,8 @@ return;
 const Repo = sequelize.getRepository;
 (true &&
   sequelize
-    .sync({ alter: true, force: false })
-    //.then(initializer)
+    .sync({ alter: true, force: true })
+    .then(initializer)
     .catch(console.error)
 )
 
@@ -257,5 +260,6 @@ export {
   LicenseSetting,
   Setting,
   Department,
-  WorkingHour
+  WorkingHour,
+  File
 };
