@@ -9,14 +9,16 @@ import {
   Department,
   Document,
   Employee,
+  File,
   Person,
   Role,
   SalaryPackage,
   sequelize,
   WorkingHour,
 } from "./index";
-
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker/locale/pt_BR'
+//import { faker } from '@faker-js/faker';
+import { FileType } from './doc-manager/file';
 
 
 type InitializerType = { model: any, data: any[], include?: any }
@@ -2084,7 +2086,7 @@ function createRandomEmployees(): any {
           typeId: contactType?.find(({ code }: any) => code === 'EMAIL')?.id
         },
         {
-          descriptions: faker.phone.number('+244 9########'),
+          descriptions: faker.phone.number,
           typeId: contactType?.find(({ code }: any) => code === "PHONENUMBER")?.id
         }
       ],
@@ -2147,6 +2149,36 @@ function createRandomEmployees(): any {
 
 createRandomEmployees();
 
+const generateFile = () => {
+
+  const type: FileType = faker.helpers.arrayElement(["DIR", "FILE", "OTHER", "SHORTCUT"])
+  const innerFIles = 3//Math.random() * (3 - 0) + 0;
+  const file: any = {
+    fileName: type === 'DIR' ? faker.lorem.word() : faker.system.commonFileName(),
+    path: faker.system.directoryPath(),
+    type,
+    permissions: "a",
+    files: type === 'DIR' && innerFIles > 0 ? [...Array().keys()].map((_: number) => generateFile()) : [],
+    isActive: true,
+  }
+
+
+  return file;
+}
+const initFiles=() => {
+  let i = 5;
+  let files: any[] = []
+  while (--i > 0, files.push(generateFile())) {
+
+  }
+  initialData.push({
+    model: 'File', data: files, include:
+      [{ model: File, 'as': 'files' }]
+  });
+
+}
+
+initFiles()
 const initializer = (_?: any) =>
   initialData.forEach(({ model: m, data, include = { all: true } }: any) => {
     const s = sequelize;
