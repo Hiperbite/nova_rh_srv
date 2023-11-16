@@ -19,6 +19,7 @@ import {
 import { faker } from '@faker-js/faker/locale/pt_BR'
 //import { faker } from '@faker-js/faker';
 import { FileType } from './doc-manager/file';
+import moment from 'moment';
 
 
 type InitializerType = { model: any, data: any[], include?: any }
@@ -2149,16 +2150,17 @@ function createRandomEmployees(): any {
 
 createRandomEmployees();
 
-const generateFile = () => {
+const generateFile = (path:string='/') => {
 
   const type: FileType = faker.helpers.arrayElement(["DIR", "FILE", "OTHER", "SHORTCUT"])
-  const innerFIles = 3//Math.random() * (3 - 0) + 0;
+  const innerFIles = Math.floor(Math.random() * (10)) ;
   const file: any = {
     fileName: type === 'DIR' ? faker.lorem.word() : faker.system.commonFileName(),
-    path: faker.system.directoryPath(),
+    path,
     type,
+    code: moment().toDate()+String(Math.random()),
     permissions: "a",
-    files: type === 'DIR' && innerFIles > 0 ? [...Array().keys()].map((_: number) => generateFile()) : [],
+    files: type === 'DIR' && innerFIles > 1 ? [...Array(innerFIles).keys()].map((_: number) => generateFile(path+faker.lorem.word()+'/')) : [],
     isActive: true,
   }
 
@@ -2166,14 +2168,13 @@ const generateFile = () => {
   return file;
 }
 const initFiles=() => {
-  let i = 5;
+  let i = 15;
   let files: any[] = []
-  while (--i > 0, files.push(generateFile())) {
+  while (--i >= 0 && files.push(generateFile())) {
 
   }
   initialData.push({
-    model: 'File', data: files, include:
-      [{ model: File, 'as': 'files' }]
+    model: 'File', data: files
   });
 
 }
@@ -2188,14 +2189,16 @@ const initializer = (_?: any) =>
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
         if (f === null) {
-          if (m === 'Employee') {
+          if (m === 'File') {
             let y = 9
           }
           model.create(d, { include: include ?? { all: true } }).catch((e: any) => {
             console.log(e)
           })
         }
-      }).catch(console.log)
+      }).catch((e:any)=>{
+        console.log(e)
+      })
     })
   })
 
