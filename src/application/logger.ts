@@ -1,4 +1,4 @@
-  import { ipInfoApi } from "../providers/IpInfo.api";
+import { ipInfoApi } from "../providers/IpInfo.api";
 import { NODE_ENV } from "../config";
 import winston from "winston";
 //const { NODE_ENV } = process.env;

@@ -10,7 +10,7 @@ import {
 } from "../../service/auth.service";
 
 import { verifyJwt } from "../../application/jwt";
-import { User } from "../../models/index";
+import { User, Employee } from "../../models/index";
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -43,16 +43,21 @@ export async function createSessionHandler(
     // sign a refresh token
     const refreshToken = await signRefreshToken({ userId: String(user.id) });
 
+
+
+    const employeeId = user.employeeId;
+
     // send the tokens
     return res.status(status).send({
         accessToken,
         refreshToken,
-        user: user.dto(),
+        user: { ...user.dto(), employeeId },
+
     });
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
-    
+
     const refreshToken = get(req, "headers.x-refresh");
 
     const decoded = verifyJwt<{ session: string }>(
