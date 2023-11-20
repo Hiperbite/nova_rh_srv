@@ -50,7 +50,7 @@ const validateRequest = (
       if (where[key] === 'null')
         where[key] = null;
       if (where[key] === 'undefined')
-        where[key] = null;
+        delete where[key];
     })
     req.query.where = where
   }
