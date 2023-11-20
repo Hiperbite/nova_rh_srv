@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createSessionHandler,
+  lockAccessTokenHandler,
   refreshAccessTokenHandler,
 } from "../../api/common/auth.api";
 import validateResource from "../../application/middleware/validateResource";
@@ -18,6 +19,9 @@ const router = express
     asyncHandler(createSessionHandler)
   )
 
-  .post("/refresh", asyncHandler(refreshAccessTokenHandler));
+  .post("/refresh", asyncHandler(refreshAccessTokenHandler))
+  
+  .post("/lock-session", asyncHandler(lockAccessTokenHandler))
+  ;
 
 export default router;
