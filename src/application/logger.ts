@@ -9,33 +9,7 @@ const printLog = (info: any) => {
 
 
     ipInfoApi().then(data => {
-
       info.client = data;
-
-      const {
-        method,
-        url,
-        query,
-        params,
-        body,
-        headers,
-        connection
-      }: any = info?.meta?.req ?? {};
-
-
-      const log = {
-        level: info.level,
-        status: info.meta?.res?.statusCode,
-        message: info?.message,
-        method,
-        url,
-        query,
-        params,
-        body,
-      };
-
-
-      return info;
     })
 
   } catch (error) {
@@ -63,6 +37,14 @@ export const loggerOptions = {
         "-" +
         String(d.getDate()).padStart(2, "0"))()}.log.json`,
     }),
+  
+  new(require('winston-daily-rotate-file'))({
+      filename: `logs/apimodules.log`,
+      timestamp: new Date(),
+      datePattern: 'yyyy-M-D',
+      prepend: false,
+      json: true,
+  }),
     new winston.transports.Console(),
   ],
   format: winston.format.combine(

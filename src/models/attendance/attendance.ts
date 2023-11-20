@@ -10,12 +10,16 @@ import {
 import { AttendanceJustification, AttendanceType, Employee, Person, Model, Contract } from "../index";
 
 @Scopes(() => ({
+    default: {
+        include: [AttendanceType]
+    },
     withPerson: {
         include: [
+            AttendanceType,
             {
                 model: Employee,
                 as: "employee",
-                include: [Contract,{
+                include: [Contract, {
                     model: Person,
                     attributes: ['id', 'fullName', 'firstName', 'lastName']
                 }]

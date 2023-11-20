@@ -25,7 +25,8 @@ export const routerRequest = (
    // throw { code: 403 }
   }
   const currentKey = decode(apikey ?? '')
-
+  console.log(encode('demo'));
+  console.log(encode('hiperbite'));
     switchTo(currentKey, req.headers?.referer??'')
 
 

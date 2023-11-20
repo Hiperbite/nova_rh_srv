@@ -25,6 +25,7 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
       Role,
       AdditionalField,
       WorkingHour,
+      SalaryPackage,
       { model: Employee, include: [Person, { model: User, as: 'user' }] },
       { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
       { model: Department, include: [{ as: 'department', model: Department }] }],
@@ -111,7 +112,7 @@ export default class Contract extends Model {
     type: DataType.VIRTUAL
   })
   get actualPayrollState() {
-
+/*
     let myPayrolls: any[] = [];
     const startDate = moment(this.startDate);
     let current = startDate.add(1, 'm');
@@ -142,14 +143,15 @@ export default class Contract extends Model {
       })
       current = current.add(1, 'M');
     }
-    return myPayrolls;
+    */
+    return ;//myPayrolls;
 
   }
   @Column({
     type: DataType.VIRTUAL
   })
   get payStubState() {
-
+/*
     const salaryPackage: any = this?.salaryPackage
     const additionalPayments: any = salaryPackage?.additionalPayments
 
@@ -230,8 +232,8 @@ export default class Contract extends Model {
       deductionValue,
       netValue
     }
-
-    return state;
+*/
+    return ;//state;
 
   }
 

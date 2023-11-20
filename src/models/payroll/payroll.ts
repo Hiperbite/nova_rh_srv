@@ -17,8 +17,9 @@ import {
     BeforeCreate,
     BelongsTo,
     ForeignKey,
+    AfterCreate,
 } from "sequelize-typescript";
-import { Company, Contract, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, SalaryPackage } from "../index";
+import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, Role, SalaryPackage } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -48,7 +49,7 @@ const stateButton = [
 
 @Scopes(() => ({
     default: {
-        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage,{model:Employee,include:[Person]}] }] }]
+        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage, Role, Department, { model: Employee, include: [Person] }] }] }]
     },
     simple: {
         include: [PayStub]
@@ -183,12 +184,10 @@ export default class Payroll extends Model {
     @BeforeCreate
     static validateEligibility = async (payroll: Payroll) => {
 
-        const now: any = payroll?.year + '-' + payroll?.month + '-01';
-
-        const lastPayrollDate = moment(now).add(-1, 'M').toDate()
-        const year = lastPayrollDate.getFullYear()
-        const month = lastPayrollDate.getMonth() + 1
+        const year = payroll?.date?.getFullYear()
+        const month = (payroll?.date?.getMonth() ?? 1) - 1
         const existPayroll: any = await Payroll.findOne({ where: { year, month } })
+
         if (existPayroll === null || existPayroll?.state < payrollState.Approved) {
 
             if (existPayroll === null) {
@@ -201,134 +200,43 @@ export default class Payroll extends Model {
         }
     }
 
-    @AfterFind
-    static proposalStubs = async (payroll: Payroll) => {
-        const payStubs: PayStub[] = [];
-        if (payroll?.year === undefined) return;
-        if ((payroll.state ?? 0) > payrollState.Confirmed) {
-            /*
-                        const { month, year } = payroll;
-                        const existPayStub = await PayStub.findAll({ where: { month, year } });
-                        if (existPayStub)
-                            for (let p of existPayStub)
-                                payroll.payStubs.push(p);
-              */
-            return payroll;
-        }
+    @AfterCreate
+    static proposalStubs = async (payroll: Payroll, { transaction }: any = { transaction: null }) => {
 
         payroll.initialPayStubs = [];
-
-        const proposalStubs = (await Contract.findAll({
+        const contractIds = payroll?.payStubs?.map(({ contractId }: any) => contractId)
+        const elegibleContracts = (await Contract.findAll({
             where: {
                 isActive: true,
                 startDate: { [Op.or]: { [Op.eq]: null, [Op.lt]: payroll?.year + '-' + payroll?.month + '-31' } },
                 endDate: { [Op.or]: { [Op.eq]: null, [Op.gt]: payroll?.year + '-' + payroll?.month + '-01' } }
             },
             order: [['endDate', 'ASC']]
-        }))?.map((contract: any) => ({
-            date: payroll.date,
-            month: payroll.month,
-            year: payroll?.year,
-            state: 0,
-            descriptions: '',
-            contract,
-        }))
+        })).filter(({ contractId }: any) => !contractIds?.find((x: string) => x === contractId))
 
-        if (payroll?.state === payrollState.Approved) {
-        }
-        else if (payroll?.state === payrollState.Confirmed) {
-
-            for (let stub of proposalStubs) {
-                const a: any = stub;
-                //payStubs.push(a);
-                let payStub = new PayStub();
-
-                if (payroll?.payStubs?.find(({ contractId }: any) => contractId === stub?.contract?.id) === undefined) {
-                    try {
-                        const { month, year } = payroll;
-                        const existPayStub = await PayStub.findOne({ where: { month, year, contractId: stub?.contract?.id }, include: { all: true } });
-                        if (existPayStub) {
-                            existPayStub.payrollId = String(payroll?.id)
-                            existPayStub.save()
-                            payStubs.push(existPayStub);
-                        }
-                        else {
-                            payStub = await PayStub.create({
-                                date: payroll.date,
-                                month: payroll.month,
-                                year: payroll?.year,
-                                state: 0,
-                                descriptions: '',
-                                contractId: stub?.contract?.id,
-                                payrollId: payroll?.id,
-                                lines: stub?.contract.payStubState.lines
-
-                            }, { include: { all: true } })
-                            payStub.contract = stub?.contract;
-                            payStub.lines = stub?.contract.payStubState.lines
-                            payStubs.push(payStub);
-                        }
-                    }
-                    catch (e: any) {
-                        if (e?.existPayStub)
-                            payStubs.push(e?.existPayStub);
-                    }
-                }
+        let payStubs = [];
+        for (let contract of elegibleContracts) {
+            try {
+                let payStub = await PayStub.create
+                    ({
+                        date: payroll.date,
+                        month: payroll.month,
+                        year: payroll?.year,
+                        state: 0,
+                        descriptions: '',
+                        contractId: contract?.id,
+                        payrollId: payroll?.id
+                    }, { transaction })
+                payStubs.push(payStub);
             }
-        }
-        else {
-            for (let stub of proposalStubs) {
-                payroll?.initialPayStubs?.push(stub);
-
-                const a: any = stub;
-                //  payStubs.push(a);
-                let payStub = new PayStub();
-                if (payroll?.payStubs?.find(({ contractId }: any) => contractId === stub?.contract?.id) === undefined) {
-
-                    try {
-                        const { month, year } = payroll;
-                        const existPayStub = await PayStub.findOne({ where: { month, year, contractId: stub?.contract?.id } });
-                        if (existPayStub) {
-                            existPayStub.payrollId = String(payroll?.id)
-                            existPayStub.save()
-                            payStubs.push(existPayStub);
-                        }
-                        else {
-                            const lines = stub?.contract.payStubState.lines//.filter(({ startDate }: any) => startDate === undefined || startDate && moment(startDate).isSameOrBefore(new Date(payroll?.year ?? 0, (payroll?.month ?? 0) - 1, 1)))
-                            payStub = new PayStub({
-                                date: payroll.date,
-                                month: payroll.month,
-                                year: payroll?.year,
-                                state: 0,
-                                descriptions: '',
-                                contractId: stub?.contract?.id,
-                                contract: stub?.contract,
-                                payrollId: payroll?.id,
-                                lines
-
-                            }, { include: { all: true } })
-                            payStub.contract = stub?.contract;
-                            //    payStub.lines = stub?.contract.payStubState.lines
-                            payStubs.push(payStub);
-                        }
-                    }
-                    catch (e: any) {
-                        if (e?.existPayStub)
-
-
-                            payStubs.push(e?.existPayStub);
-                    }
-                }
+            catch (err: any) {
+                let y = err
+                throw y;
             }
 
         }
-        for (let p of payStubs) {
-            if (payroll.payStubs === undefined)
-                payroll.payStubs = []
-            payroll.payStubs.push(p);
-        }
-
-        return payroll;
+        payroll.payStubs = [...(payroll?.payStubs ?? []), ...payStubs];
+        //  return payroll;
     }
 
 }

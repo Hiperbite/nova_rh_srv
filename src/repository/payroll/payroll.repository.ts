@@ -20,12 +20,11 @@ export default class PayrollRepository extends R<Payroll> {
     try {
       await this.start();
 
-      const employee: Payroll | void = await this.repo.create(data, { ...options, transaction: this.transaction });
+      const payroll: Payroll | void = await this.repo.create(data, { ...options, transaction: this.transaction });
 
-      if (employee) {
-        await this.commit();
-        return employee
-      }
+      await this.commit();
+
+      return payroll
 
     } catch (e: any) {
 

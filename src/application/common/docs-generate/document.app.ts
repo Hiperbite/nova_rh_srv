@@ -398,7 +398,7 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumentDefinitions> {
 
 
-  const payStub = await PayStub.scope('default').findOne({ where: { id: payStubId }, include: { all: true } })
+  const payStub = await PayStub.scope('full').findOne({ where: { id: payStubId }, include: { all: true } })
 
   const banckAccount = await AccountPaymentData.findOne({ where: { employeeId: payStub?.contract?.employeeId }, include: { all: true } })
 
@@ -508,7 +508,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
             ],
             [
               { text: 'Segurança Social:', style: 'd3' },
-              { text: payStub?.contract?.department?.name, style: 'd2' },
+              { text: payStub?.contract?.employee?.person?.socialSecurityNumber, style: 'd2' },
               { text: 'Categoria:', style: 'd3' },
               { text: payStub?.contract?.role?.name?.includes('-') ? payStub?.contract?.role?.name?.split('-')[1] : '...', style: 'd2' }
             ],
@@ -560,7 +560,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
                 text: 'VALOR',
                 style: 'th',
               }
-            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
+            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, '',
             {
               text: currency(line?.value).split('AOA')[0],
               style: 'textRight',

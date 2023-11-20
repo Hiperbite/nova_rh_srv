@@ -1,10 +1,11 @@
-import {Column, Table, Scopes, DataType, ForeignKey, BelongsTo} from "sequelize-typescript";
+import { Column, Table, Scopes, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 
 import { Model, Employee, Country, Bank } from "../index";
 
+
 @Scopes(() => ({
     default: {
-        include: []
+        include: [{ model: Bank, include: [Country] }, Country]
     }
 }))
 
@@ -13,7 +14,7 @@ import { Model, Employee, Country, Bank } from "../index";
     tableName: "AccountPaymentDatas",
 })
 
-export default class AccountPaymentData extends Model{
+export default class AccountPaymentData extends Model {
     @Column({
         type: DataType.STRING,
         allowNull: false

@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node --stack-size=65500 dist/app.js ",
-        "dev": "nodemon  --inspect --stack-size=65500 src/app.ts --host 192.168.0.101",
+        "dev": "nodemon --trace-warnings  --inspect --stack-size=65500 src/app.ts --host 192.168.0.101",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Sebastião Lutonda",
@@ -81,6 +81,7 @@
         "sqlite3": "^5.1.6",
         "uuid": "^9.0.0",
         "winston": "^3.9.0",
+        "winston-daily-rotate-file": "^4.7.1",
         "zod": "^3.21.4"
     }
 }

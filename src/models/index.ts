@@ -65,7 +65,7 @@ const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 let referer = null;
 const sequelizeOptions: SequelizeOptions = {
   dialect,
-  storage: "./data/ccc.database.sqlite",
+  storage: "./data/database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
@@ -142,12 +142,12 @@ const UniqIndex = createIndexDecorator({
 });
 
 const switchTo = (db: string, ref: string) => {
-
+//return;
   if (false || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
     if (sequelize.options.dialect === 'sqlite')
       sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
     else {
-      const key = ref
+      const key = db ?? ref
         .replace('https://', '')
         .replace('http://', '')
         .replace('wwww.', '')
@@ -158,20 +158,20 @@ const switchTo = (db: string, ref: string) => {
       logger.info({ message: '......................................' })
       logger.info({ message: 'request coming from: ' + ref })
       logger.info({ message: 'client key : ' + key })
-
-      sequelize.options.database = DB_NAME + '_' + key;
-      sequelize.options.username = DB_USER + '_' + key;
+      //hiperbit_hiperbite_rh
+     const database = sequelize.options.database = DB_NAME + '_' + key + '_rh';
+      //sequelize.options.username = DB_USER + '_' + key;
       logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
-      sequelize = new Sequelize({ ...sequelizeOptions, ...{ database: DB_NAME + '_' + key, username: DB_USER + '_' + key } });
+      sequelize = new Sequelize({ ...sequelizeOptions, ...{ database } });
     }
   }
 
   sequelize.options.storage = ref
 }
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
-    .sync({ alter: true, force: true })
+    .sync({ alter: true, force: true})
     .then(initializer)
     .catch(console.error)
 )

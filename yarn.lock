@@ -2614,6 +2614,13 @@ fetch-blob@^3.1.2, fetch-blob@^3.1.4:
     node-domexception "^1.0.0"
     web-streams-polyfill "^3.0.3"
 
+file-stream-rotator@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/file-stream-rotator/-/file-stream-rotator-0.6.1.tgz#007019e735b262bb6c6f0197e58e5c87cb96cec3"
+  integrity sha512-u+dBid4PvZw17PmDeRcNOtCP9CCK/9lRN2w+r1xIS7yOL9JFrIBKTvrYsxT4P0pGtThYTn++QS5ChHaUov3+zQ==
+  dependencies:
+    moment "^2.29.1"
+
 file-type@3.9.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/file-type/-/file-type-3.9.0.tgz#257a078384d1db8087bc449d107d52a52672b9e9"
@@ -4088,7 +4095,7 @@ moment-timezone@^0.5.43:
   dependencies:
     moment "^2.29.4"
 
-moment@^2.29.4:
+moment@^2.29.1, moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -4391,6 +4398,11 @@ object-hash@^1.1.2:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-1.3.1.tgz#fde452098a951cb145f039bb7d455449ddc126df"
   integrity sha512-OSuu/pU4ENM9kmREg0BdNrUDIl1heYa4mBZacJc+vVWz4GtAwu7jO8s4AIt2aGRUTqxykpWzI3Oqnsm13tTMDA==
+
+object-hash@^2.0.1:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-2.2.0.tgz#5ad518581eefc443bd763472b8ff2e9c2c0d54a5"
+  integrity sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==
 
 object-inspect@^1.6.0, object-inspect@^1.9.0:
   version "1.13.1"
@@ -5778,9 +5790,9 @@ stream-length@^1.0.2:
     bluebird "^2.6.2"
 
 streamx@^2.15.0:
-  version "2.15.4"
-  resolved "https://registry.yarnpkg.com/streamx/-/streamx-2.15.4.tgz#497b8102d076ae12b43c456e0bb16940d1ba0999"
-  integrity sha512-uSXKl88bibiUCQ1eMpItRljCzDENcDx18rsfDmV79r0e/ThfrAwxG4Y2FarQZ2G4/21xcOKmFFd1Hue+ZIDwHw==
+  version "2.15.5"
+  resolved "https://registry.yarnpkg.com/streamx/-/streamx-2.15.5.tgz#87bcef4dc7f0b883f9359671203344a4e004c7f1"
+  integrity sha512-9thPGMkKC2GctCzyCUjME3yR03x2xNo0GPKGkRw2UMYN+gqWa9uqpyNWhmsNCutU5zHmkUum0LsCRQTXUgUCAg==
   dependencies:
     fast-fifo "^1.1.0"
     queue-tick "^1.0.1"
@@ -6364,7 +6376,17 @@ wide-align@^1.1.2, wide-align@^1.1.5:
   dependencies:
     string-width "^1.0.2 || 2 || 3 || 4"
 
-winston-transport@^4.5.0:
+winston-daily-rotate-file@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/winston-daily-rotate-file/-/winston-daily-rotate-file-4.7.1.tgz#f60a643af87f8867f23170d8cd87dbe3603a625f"
+  integrity sha512-7LGPiYGBPNyGHLn9z33i96zx/bd71pjBn9tqQzO3I4Tayv94WPmBNwKC7CO1wPHdP9uvu+Md/1nr6VSH9h0iaA==
+  dependencies:
+    file-stream-rotator "^0.6.1"
+    object-hash "^2.0.1"
+    triple-beam "^1.3.0"
+    winston-transport "^4.4.0"
+
+winston-transport@^4.4.0, winston-transport@^4.5.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-4.6.0.tgz#f1c1a665ad1b366df72199e27892721832a19e1b"
   integrity sha512-wbBA9PbPAHxKiygo7ub7BYRiKxms0tpfU2ljtWzb3SjRjv5yl6Ozuy/TkXf00HTAt+Uylo3gSkNwzc4ME0wiIg==
