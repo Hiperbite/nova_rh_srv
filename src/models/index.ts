@@ -169,10 +169,10 @@ const switchTo = (db: string, ref: string) => {
   sequelize.options.storage = ref
 }
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
-    .sync({ alter: true, force: false })
-    //.then(initializer)
+    .sync({ alter: true, force: true })
+    .then(initializer)
     .catch(console.error)
 )
 
