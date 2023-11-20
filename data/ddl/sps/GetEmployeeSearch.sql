@@ -1,4 +1,4 @@
-
+-- Active: 1667157413070@@127.0.0.1@3306@nova_rh
 CREATE PROCEDURE GetEmployeeSearch(IN NAME VARCHAR(100))
 BEGIN
     select firstName, lastName, Employees.id, Employees.avatar,Employees.code 

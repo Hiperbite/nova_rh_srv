@@ -5,6 +5,7 @@ import { CreateSessionInput } from "../../application/schema";
 
 import {
     findSessionById,
+    lockAccessToken,
     signAccessToken,
     signRefreshToken,
 } from "../../service/auth.service";
@@ -37,23 +38,16 @@ export async function createSessionHandler(
         return res.status(403).send(message);
     }
 
+    const employeeId = user.employeeId;
+
     // sign a access token
-    const accessToken = signAccessToken(user);
+    const accessToken = signAccessToken(user, employeeId);
 
     // sign a refresh token
     const refreshToken = await signRefreshToken({ userId: String(user.id) });
 
-
-
-    const employeeId = user.employeeId;
-
     // send the tokens
-    return res.status(status).send({
-        accessToken,
-        refreshToken,
-        user: { ...user.dto(), employeeId },
-
-    });
+    return res.status(status).send({ accessToken, refreshToken });
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
@@ -82,6 +76,28 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
     }
 
     const accessToken = signAccessToken(user);
+
+    return res.send({ accessToken });
+}
+
+export async function lockAccessTokenHandler(req: Request, res: Response) {
+
+    const token = get(req, "headers.authorization");
+
+    const decoded: any = verifyJwt<{ session: string }>(
+        String(token?.split(" ")[1]),
+        "accessTokenPublicKey"
+    );
+
+    const user: User | null | any = await User.findOne({ where: { id: decoded?.id } });
+
+    if (!(decoded && user)) {
+        return res.status(401).send("Could not lock access token");
+    }
+
+    user.role = "ROLE_LOCKED";
+    
+    const accessToken = signAccessToken(user, decoded?.employeeId);
 
     return res.send({ accessToken });
 }

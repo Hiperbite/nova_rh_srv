@@ -1,4 +1,5 @@
 
+-- Active: 1667157413070@@127.0.0.1@3306@nova_rh
 
 CREATE PROCEDURE GetAttendanceData(IN typeId VARCHAR(100), IN page INTEGER, IN pageSize INTEGER)
 BEGIN

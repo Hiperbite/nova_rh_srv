@@ -281,11 +281,11 @@ const initialData: InitializerType[] = [
   },
   {
     model: 'Category', data: [
-      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Trainee', no: 0 },
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '0', name: 'Trainee', no: 0 },
       { id: "10f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Junior', no: 1 },
-      { id: "20f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Full', no: 2 },
-      { id: "30f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Senior', no: 3 },
-      { id: "40f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Specialist', no: 4 },
+      { id: "20f8b609-21f2-4f53-99df-4db73100a52e", code: '2', name: 'Full', no: 2 },
+      { id: "30f8b609-21f2-4f53-99df-4db73100a52e", code: '3', name: 'Senior', no: 3 },
+      { id: "40f8b609-21f2-4f53-99df-4db73100a52e", code: '4', name: 'Specialist', no: 4 },
     ]
   },
   {
@@ -315,26 +315,26 @@ const initialData: InitializerType[] = [
   {
     model: 'RoleLevel', data: [
 
-      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2 },
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3 },
-      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4 },
-      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5 },
-      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6 },
-      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7 },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8 },
-      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9 },
-      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10 },
-      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11 },
-      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12 },
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13 },
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14 },
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15 },
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16 },
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17 },
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18 },
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19 },
-      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20 },
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1 ,code: 1 },
+      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2 ,code: 2 },
+      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3 ,code: 3 },
+      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4 ,code: 4 },
+      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5 ,code: 5 },
+      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6 ,code: 6 },
+      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7 ,code: 7 },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8 ,code: 8 },
+      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9 ,code: 9 },
+      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10,code: 10 },
+      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11,code: 11 },
+      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12,code: 12 },
+      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13,code: 13 },
+      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14,code: 14 },
+      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15,code: 15 },
+      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16,code: 16 },
+      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17,code: 17 },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18,code: 18 },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19,code: 19 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20,code: 20 },
     ]
   },
   {
@@ -1954,11 +1954,11 @@ const initialData: InitializerType[] = [
     model: 'Bank', data:
       [
         { id: '00f5236e-7192-4ef3-96bc-5485666c6435', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Angolano de Negócios e Comércio', code: 'BANC' },
-        { id: '0b2dfe5f-fc47-456f-a3f8-de4d5958559d', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Regional do Keve', code: 'Banco Keve' },
+        { id: '0b2dfe5f-fc47-456f-a3f8-de4d5958559d', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Regional do Keve', code: 'Keve' },
         { id: '0f5a7108-aa63-49b7-8ee7-01c3453cc480', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Angolano de Investimentos', code: 'BAI' },
         { id: '1b084b4a-7a7c-41c1-847f-9be817fde214', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco de Fomento Angola', code: 'BFA' },
         { id: '2c8945ce-c7c9-4ccd-aea1-32a1d456da13', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Finibanco Angola', code: 'Finibanco' },
-        { id: '471a5502-efe8-40bd-b95d-fee6315b6b7b', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Standard Bank de Angola', code: 'Standard Bank' },
+        { id: '471a5502-efe8-40bd-b95d-fee6315b6b7b', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Standard Bank de Angola', code: 'SBA' },
         { id: '4897a994-6ded-4a54-80ee-f218c7803dab', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco de Negocios Internacional', code: 'BNI' },
         { id: '5a403513-5e00-4308-a92d-4e05078fe484', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Millennium Atlântico', code: 'BMA' },
         { id: '8d92a5c6-221d-4512-a903-a224e71f1f0c', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Sol', code: 'SOL' },
@@ -1968,7 +1968,7 @@ const initialData: InitializerType[] = [
         { id: 'b1f75590-b87a-4355-9ac8-dde427c9a6bf', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco de Comércio e Indústria', code: 'BCI' },
         { id: 'bac2f1a3-24c4-4169-81c4-133c70a702cd', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco de Investimento Rural', code: 'BIR' },
         { id: 'cc4da0a6-b59b-452d-aa9a-9eea5c3b5f64', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Caixa Geral Angola', code: 'BCGA' },
-        { id: 'd09183db-ca9d-4958-ab13-07ed3e31897b', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Económico', code: 'Banco Económico' },
+        { id: 'd09183db-ca9d-4958-ab13-07ed3e31897b', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco Económico', code: 'Economico' },
         { id: 'd1afba1f-6fdb-4f24-9b84-1297c11df19b', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco BIC', code: 'BIC' },
         { id: 'f60f722e-8ef2-4034-90e8-2352d6f3da51', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco BAI Microfinanças', code: 'BMF' },
         { id: 'fcbb10be-e074-401c-9f9b-29a07196d0c2', countryId: '13f8b609-21f2-4f53-99df-4db73100a52e', name: 'Banco de Desenvolvimento de Angola', code: 'BDA' }
@@ -2124,7 +2124,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 200;
+  let i = 300;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:
