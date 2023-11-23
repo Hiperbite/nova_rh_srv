@@ -1,5 +1,5 @@
 
-import { createIndexDecorator, Sequelize } from "sequelize-typescript";
+import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
 
 import Model from "./model";
@@ -34,7 +34,7 @@ import DocumentSetting from "./Settings/document.settings";
 import Setting from "./Settings/Settings";
 
 import { v4 as uuid } from "uuid";
-import { logger } from "../config";
+import { logger, MY_NODE_ENV, NODE_ENV } from "../config";
 import LicenseSetting from "./Settings/license.settings";
 import Employee from "./employees/employee";
 import Contract from './employees/contract';
@@ -45,29 +45,38 @@ import Payroll from "./payroll/payroll";
 import PayrollLine from "./payroll/payroll_line";
 import PayrollLineType from "./payroll/payroll_line_type";
 import Department from "./employees/department";
-import AdditionalField         from "./employees/additional_field";
+import AdditionalField from "./employees/additional_field";
 import WorkingHour from "./employees/working_hour";
 import PayStub from "./payroll/pay_stub";
 import PayrollStatus from "./payroll/payroll_status";
 import Country from "./common/country";
 import { initializer } from "./initializer";
+import Bank from "./company/bank";
+import ContactType from "./employees/contact-type";
+import Category from "./employees/category";
+import AttendanceType from "./attendance/attendance-type";
+import AttendanceJustification from "./attendance/justification";
+import Attendance from "./attendance/attendance";
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD,DB_DIALECT, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
-
-const sequelize = new Sequelize({
+let referer = null;
+const sequelizeOptions: SequelizeOptions = {
   dialect,
   storage: "./data/database.sqlite",
   host: DB_HOST,
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-  dialectOptions: {
-    options: {
-      requestTimeout: 300000
-    }
+
+  retry: {
+    match: [
+      /SQLITE_BUSY/,
+    ],
+    name: 'query',
+    max: 5
   },
   pool: {
     max: 15,
@@ -78,6 +87,9 @@ const sequelize = new Sequelize({
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+    Attendance,
+    AttendanceType,
+    AttendanceJustification,
     Country,
     Business,
     Contact,
@@ -94,7 +106,7 @@ const sequelize = new Sequelize({
     Track,
     Attachment,
     Sequence,
-
+    Category,
     Contract,
     AdditionalPaymentType,
     AdditionalPayment,
@@ -115,36 +127,61 @@ const sequelize = new Sequelize({
     EventType,
     EventSchedule,
 
-    /*LocalSetting,
-    SystemSetting,
-    DocumentSetting,
-    LicenseSetting,
-    Setting,
-*/
     Department,
-
+    ContactType,
     RoleLevel,
-    //  Role,
-    Role
+    Bank,
+    Role,
   ],
-});
-
+}
+let sequelize = new Sequelize(sequelizeOptions);
 const UniqIndex = createIndexDecorator({
   name: uuid() + '-index',
   type: 'UNIQUE',
   unique: true,
 });
 
+const switchTo = (db: string, ref: string) => {
+return;
+  if ( NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
+    if (sequelize.options.dialect === 'sqlite')
+      sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+    else {
+      const key = db ?? ref
+        .replace('https://', '')
+        .replace('http://', '')
+        .replace('wwww.', '')
+        .replace('.nova.ao', '')
+        .replace('.', '_')
+        .replace('/', '')
+
+      logger.info({ message: '......................................' })
+      logger.info({ message: 'request coming from: ' + ref })
+      logger.info({ message: 'client key : ' + key })
+      //hiperbit_hiperbite_rh
+     const database = sequelize.options.database = DB_NAME + '_' + key + '_rh';
+      //sequelize.options.username = DB_USER + '_' + key;
+      logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
+      sequelize = new Sequelize({ ...sequelizeOptions, ...{ database } });
+    }
+  }
+
+  sequelize.options.storage = ref
+}
 const Repo = sequelize.getRepository;
-
-sequelize
-  .sync({ alter: true, force: true })
-  .then(initializer)
-  .catch(console.error)
-
-
+(false &&
+  sequelize
+    .sync({ alter: true, force: true})
+    .then(initializer)
+    .catch(console.error)
+)
 
 enum SPs {
+  GetAttendaceData = "GetAttendanceData(?,?,?,?,?)",
+  GetEmployeeSearch = "GetEmployeeSearch(?)",
+  GetDashboardData = "GetDashboardData",
+  GetRolesEmployeesCount = "GetRolesEMployeesCount",
+  GetCalendarDate = "GetCalendarDate(?,?)",
   GetStudentsCountOlder = 'GetStudentsCountOlder',
   GetStudentsCountAge = 'GetStudentsCountAge',
   GetStudentsCountNationality = 'GetStudentsCountNationality',
@@ -154,17 +191,24 @@ enum SPs {
   GetStudentHonorRoll = 'GetStudentHonorRoll',
   GetStudentCount = 'GetStudentCount'
 }
-const Procedure = async (procedure: SPs, opts: any = {}) =>
+const Procedure = async (procedure: SPs, opts: any = []) =>
   await sequelize
-    .query('CALL ' + procedure, {})
+    .query('CALL ' + procedure, {
+      replacements: opts
+    })
 
 export default sequelize;
 
 export {
+  switchTo,
   sequelize,
   Repo,
   Model,
+  ContactType,
   Contact,
+  Attendance,
+  AttendanceType,
+  AttendanceJustification,
   AccountPaymentData,
   Employee,
   Address,
@@ -174,6 +218,7 @@ export {
   Document,
   Person,
   RoleLevel,
+  Category,
   Role,
   Contract,
   AdditionalField,
@@ -185,9 +230,9 @@ export {
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
+  Bank,
 
   Business,
-
   User,
   Track,
   Token,

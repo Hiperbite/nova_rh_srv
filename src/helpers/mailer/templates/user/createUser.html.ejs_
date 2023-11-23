@@ -1,233 +1,42 @@
-<table class="v-font-size"
-    style="line-height: 140%; text-align: left; word-wrap: break-word;font-family:'Open Sans',sans-serif;">
-    
-    <br />
-    <br />
-    <table class="card-body" role="presentation" border="0"
-            cellpadding="0" cellspacing="0"
-            style="width: 100%;">
-            <tbody>
-                <tr>
-                    <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 20px;"
-                        align="left">
-                        <div
-                            class="space-y-3">
-                            <p class="text-gray-700"
-                                style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;"
-                                align="left">
-                                Prezado <code class="text-danger" style="color: #dc3545;"><%=data.username%></code>, a Nova RH deseja-lhe boas vindas.
-                            </p>
-                            <table
-                                class="s-3 w-full"
-                                role="presentation"
-                                border="0"
-                                cellpadding="0"
-                                cellspacing="0"
-                                style="width: 100%;"
-                                width="100%">
-                                <tbody>
-                                    <tr>
-                                        <td style="line-height: 12px; font-size: 12px; width: 100%; height: 12px; margin: 0;"
-                                            align="left"
-                                            width="100%"
-                                            height="12">
-                                            &#160;
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <p class="text-gray-700"
-                                style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;"
-                                align="left">
-                                Este &#233;
-                                um email de
-                                acesso, na
-                                qual
-                                est&#225;
-                                dispon&#237;vel
-                                as suas
-                                credenciais
-                                de acesso ao
-                                sistema.</p>
-                            <table
-                                class="s-3 w-full"
-                                role="presentation"
-                                border="0"
-                                cellpadding="0"
-                                cellspacing="0"
-                                style="width: 100%;"
-                                width="100%">
-                                <tbody>
-                                    <tr>
-                                        <td style="line-height: 12px; font-size: 12px; width: 100%; height: 12px; margin: 0;"
-                                            align="left"
-                                            width="100%"
-                                            height="12">
-                                            &#160;
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <p class="text-gray-700"
-                                style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;"
-                                align="left">
+<div class="card-body mt-5">
+    <div class="space-y-3 ">
+        <p class="text-gray-700 text-align-justify">
+            Prezado <code class="text-danger" style="color: #dc3545;"><%=data.username%></code>,
+        </p>
+        <p class="text-gray-700">
+            Bem-vindo ao Nova RH! Estamos muito felizes em tê-lo como parte da nossa comunidade. Sua conta foi criada com sucesso e estamos ansiosos para lhe proporcionar uma experiência excepcional.
+        </p>
+        <p class="text-gray-700">Aqui estão alguns detalhes importantes sobre sua conta:</p>
 
-                                <p>
-                                    Para
-                                    teres
-                                    acesso a
-                                    sua
-                                    conta,
-                                    precisas
-                                    definir
-                                    a
-                                    palavra-passe
-                                    clicando
-                                    no link
-                                    abaixo:
-                                </p>
-                            </p>
-                        </div>
-                        <table
-                            class="s-5 w-full"
-                            role="presentation"
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            style="width: 100%;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;"
-                                        align="left"
-                                        width="100%"
-                                        height="20">
-                                        &#160;
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="hr"
-                            role="presentation"
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            style="width: 100%;">
-                            <tbody>
-                                <tr>
-                                    <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; height: 1px; width: 100%; margin: 0;"
-                                        align="left">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table
-                            class="s-5 w-full"
-                            role="presentation"
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            style="width: 100%;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;"
-                                        align="left"
-                                        width="100%"
-                                        height="20">
-                                        &#160;
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="text-center"
-                            style=""
-                            align="center">
-                            <table
-                                class="btn btn-sm btn-primary"
-                                role="presentation"
-                                border="0"
-                                cellpadding="0"
-                                cellspacing="0"
-                                style="border-radius: 6px; border-collapse: separate !important;">
-                                <tbody>
-                                    <tr>
-                                        <td style="line-height: 24px; font-size: 16px; border-radius: 6px; margin: 0;"
-                                            align="center"
-                                            bgcolor="#0d6efd">
-                                            <a href="<%=app.WEB_CLIENT_URL%>/authentication/reset-password/<%=data.verificationCode%>/<%=data.id%>"
-                                                target="_blank"
-                                                style="color: #ffffff; font-size: 14px; font-family: Helvetica, Arial, sans-serif; text-decoration: none; border-radius: 3px; line-height: 17.5px; display: block; font-weight: normal; white-space: nowrap; background-color: #0d6efd; padding: 4px 8px; border: 1px solid #0d6efd;">Acessar
-                                                o
-                                                sistema</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <table
-                            class="s-5 w-full"
-                            role="presentation"
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            style="width: 100%;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;"
-                                        align="left"
-                                        width="100%"
-                                        height="20">
-                                        &#160;
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="hr"
-                            role="presentation"
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            style="width: 100%;">
-                            <tbody>
-                                <tr>
-                                    <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; height: 1px; width: 100%; margin: 0;"
-                                        align="left">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table
-                            class="s-5 w-full"
-                            role="presentation"
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            style="width: 100%;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;"
-                                        align="left"
-                                        width="100%"
-                                        height="20">
-                                        &#160;
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="text-gray-700 "
-                            style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;"
-                            align="left">
-                            Melhores
-                            comprimentos
-                            <br>
-                            <br>
-                            A Nova RH
-                        </p>
-                    </td>
-                </tr>
-            </tbody>
-    </table>    
-</table>
+        <p>
+            <span class="text-bold">
+                          Nome de Usuário:
+                        </span> <code class="text-danger" style="color: #dc3545;"><%=data.username%></code> <br /> E-mail Registrado: <code class="text-danger" style="color: #dc3545;"><%=data.email%></code>
+        </p>
+
+        <p class="text-gray-700">
+            Lembre-se de que você pode acessar sua conta a qualquer momento em <a class="text-decoration-none" 
+            href="<%=app.WEB_CLIENT_URL%>authentication/reset-password/<%=data.verificationCode%>/<%=data.id%>"
+             target="_blank">link</a> usando seu nome de usuário e senha escolhidos durante o registro.
+        </p>
+
+        <p class="text-gray-700">
+            Se tiver alguma dúvida, enfrentar algum problema ou precisar de assistência, nossa equipe de suporte está à disposição para ajudar. Basta responder a este e-mail ou entrar em contato através da seção de suporte em nosso site.
+        </p>
+
+        <p class="text-gray-700">
+            Mais uma vez, obrigado por se juntar a nós. Estamos empolgados para acompanhá-lo nesta jornada e ajudá-lo a aproveitar ao máximo nossos serviços.
+        </p>
+    </div>
+
+    <hr>
+
+    <p class="text-gray-700 ">
+        Cumprimentos <br /> <br/> Equipa Nova RH <br />
+        <a class="text-decoration-none" href="https://www.nova.ao" target="_blank">
+                www.nova.ao
+              </a>
+    </p>
+        <br />
+
+</div>

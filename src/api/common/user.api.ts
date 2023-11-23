@@ -64,7 +64,7 @@ export async function forgotPasswordHandler(
   res: Response
 ) {
   const message =
-    "If a user with that email is registered you will receive a password reset email";
+    "Você receberá um e-mail de redefinição de senha no seu email.";
 
   const { email } = req.body;
 
@@ -72,11 +72,11 @@ export async function forgotPasswordHandler(
 
   if (!user) {
     log.debug(`User with email ${email} does not exists`);
-    return res.send(message);
+    return res.send('Usuário com este email não está registado');
   }
 
   if (!user.verified) {
-    return res.send("User is not verified");
+    return res.send("Usuário");
   }
 
   const passwordResetCode = uuid().substring(0, 8).toUpperCase();

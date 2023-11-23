@@ -1,3 +1,4 @@
+import { includes } from "lodash";
 import {
     Table,
     Column,
@@ -6,14 +7,14 @@ import {
     BelongsTo,
     ForeignKey,
     HasMany,
+    DefaultScope,
 } from "sequelize-typescript";
 
-import { Address, Model } from "../index";
+import { Address, Bank, Business, Model } from "../index";
+
 
 @Scopes(() => ({
-    default: {
-        include: []
-    }
+    simple: {   }
 }))
 @Table({
     timestamps: true,
@@ -43,7 +44,14 @@ export default class Country extends Model {
         type: DataType.STRING,
         allowNull: false,
     })
-    nationality!: string;
+    get nationality() {
+        const str = this.getDataValue('nationality');
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+    };
+
+    @HasMany(() => Bank)
+    banks?: Bank[]
 
     @HasMany(() => Address)
     address?: Address[]

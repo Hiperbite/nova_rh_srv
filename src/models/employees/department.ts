@@ -1,3 +1,4 @@
+import { DepartmentApp } from "../../application/company/department.app";
 import {
   Table,
   Column,
@@ -9,19 +10,23 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model,/*  RoleLevel as Level, */ Department as Dep } from "../index";
+import { Model, Department as Dep, Contract, Employee, Person } from "../index";
+import moment from "moment";
 
 /*
 @DefaultScope(() => ({
-  include: [{ as: 'department', model: Dep }]
+  include: [{ as: 'childs', model: Dep }]
 }))
 */
 @Scopes(() => ({
+  simple:{
+    include: [{ model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
+  },
   default: {
-    include: [{ as: 'department', model: Dep }, { as: 'childs', model: Dep }]
+    include: [{ model: Contract, include: [Employee] }, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },
   full: {
-    include: [{ as: 'department', model: Dep }, { as: 'childs', model: Dep, include: [{ as: 'department', model: Dep }, { as: 'childs', model: Dep }] }]
+    include: [{ model: Contract, include: [{ model: Employee, include: [Person] }] }, { model: Dep, as: 'childs' }]
   }
 }))
 @Table({
@@ -53,13 +58,40 @@ export default class Department extends Model {
   })
   no?: number;
 
-  @HasMany(() => Dep)
+  @HasMany(() => Dep, 'departmentId')
   childs?: Dep[];
 
-  @BelongsTo(() => Dep)
-  depart?: Dep;
+  @BelongsTo(() => Dep, 'departmentId')
+  department?: Dep;
 
   @ForeignKey(() => Dep)
-  departId?: string;
-}
+  departmentId?: string;
 
+
+  @HasMany(() => Contract)
+  contracts?: Contract[];
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get leaders() {
+    let y: any = this.contracts
+    y = y?.filter((c: Contract) => c?.isActive);
+    y = y?.filter((c: Contract) => c?.role?.no !== undefined);
+    y = y?.sort((p: Contract, n: Contract) => Number(p.role?.no) > Number(n.role?.no) ? -1 : 1);
+    y = y?.sort((p: Contract, n: Contract) => moment(p.startDate).isBefore(n.startDate) ? -1 : 1);
+    y = y?.map((c: Contract) => c?.employee);
+    y = y?.find(() => true);
+    return y
+  }
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get employees() {
+    return this.contracts
+      ?.filter((c: Contract) => c?.isActive)
+      ?.map((c: Contract) => c?.employee)
+
+  }
+  static filter = DepartmentApp.filter
+}

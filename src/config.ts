@@ -10,7 +10,6 @@ import {
 import { createServer } from "http";
 import session, { MemoryStore } from "express-session";
 import bodyParser from "body-parser";
-import "reflect-metadata";
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
@@ -44,6 +43,7 @@ const {
   refreshTokenPrivateKey,
   refreshTokenPublicKey,
   TOKEN_EXPIRE_IN,
+  IP_INFO_TOKEN
 } = process.env;
 
 const app: Application = express();
@@ -57,7 +57,7 @@ const config = () => {
   app.set("port", PORT);
 
   app.use(errorHandler);
- 
+
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
@@ -89,7 +89,7 @@ const config = () => {
     windowMs: 10 * 1000, // 15 minutes
     max: 100, // 1000 requests
     standardHeaders: true,
-    message: "You can only make {0} requests every minutes.",
+    message: "You can only make {0} requests every minutes.{1}.",
     keyGenerator: (req: any, res: any) => req.ip,
     //store: new MemoryStore(),
     handler: (req: any, res: any, next: any, opt: any) =>
@@ -101,21 +101,21 @@ const config = () => {
   app.use(limiter);
 
   const allowedOrigins: string[] = [
-    "https://www.yoursite.com",
-    "http://127.0.0.1:5500",
-    "http://localhost:3500",
-    "http://localhost:3000",
-    "https://academic.app.hiperbite.com",
+    //"http://localhost:3000",
+    //"http://localhost:3001",
+    //"http://localhost:3002",
+    "https://rh.demo.nova.ao",
+    "https://rh.hiperbite.nova.ao",
     "*",
   ];
 
   const corsOptions = {
     credentials: true, // This is important.
     origin: (origin: any, callback: any) => {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      if (true || allowedOrigins.indexOf(origin) !== -1 || !origin) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error("DUde,u r not allowed by CORS"));
       }
     },
     optionsSuccessStatus: 200,
@@ -143,7 +143,7 @@ const config = () => {
   };
 
   const server = start();
-
+  //startOrm();
   return { server, app, httpServer };
 };
 export default config;
@@ -190,6 +190,7 @@ export {
   accessTokenPublicKey,
   refreshTokenPrivateKey,
   refreshTokenPublicKey,
+  IP_INFO_TOKEN,
   smtp,
   logLevel,
   logger,

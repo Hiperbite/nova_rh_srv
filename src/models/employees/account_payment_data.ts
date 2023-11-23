@@ -1,19 +1,20 @@
-import {Column, Table, Scopes, DataType, ForeignKey, BelongsTo} from "sequelize-typescript";
+import { Column, Table, Scopes, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 
-import { Model, Employee } from "../index";
+import { Model, Employee, Country, Bank } from "../index";
+
 
 @Scopes(() => ({
     default: {
-        include: []
+        include: [{ model: Bank, include: [Country] }, Country]
     }
 }))
 
 @Table({
     timestamps: true,
-    tableName: "AccountPaymentData",
+    tableName: "AccountPaymentDatas",
 })
 
-export default class AccountPaymentData extends Model{
+export default class AccountPaymentData extends Model {
     @Column({
         type: DataType.STRING,
         allowNull: false
@@ -24,29 +25,35 @@ export default class AccountPaymentData extends Model{
         type: DataType.STRING,
         allowNull: false
     })
-    account_number!: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false
-    })
-    bank_name!: string;
+    number!: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: true
     })
-    currency_counts?: string;
+    currency?: string;
 
     @Column({
         type: DataType.STRING,
         allowNull: true
     })
-    bank_agency?: string;
+    swift?: string
 
     @BelongsTo(() => Employee)
     employee?: Employee;
 
     @ForeignKey(() => Employee)
     employeeId?: Employee;
+
+    @BelongsTo(() => Bank)
+    bank?: Bank;
+
+    @ForeignKey(() => Bank)
+    bankId?: Bank;
+
+    @BelongsTo(() => Country)
+    country?: Country;
+
+    @ForeignKey(() => Country)
+    countryId?: Country;
 }

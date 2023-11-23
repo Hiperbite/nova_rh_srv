@@ -38,7 +38,7 @@ class PdfService {
 
         const contacts = _.chain(student?.person?.contacts)
             .groupBy("type")
-            .map((value, key) => ({ type: key, contacts: value }))
+            .map((value:any, key:any) => ({ type: key, contacts: value }))
             .value()
         //const template ='student/record'
 

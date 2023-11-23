@@ -1,10 +1,6 @@
-import express from "express";
-import Api from "../../api/Api";
 
-import {
-  Contact,
-  Employee,
-} from "../../models/index";
+import { EmployeeApi } from "../../api/employees/employee.api";
+import express from "express";
 
 /**
  * TODO: Find best place to put this stash
@@ -14,7 +10,7 @@ import {
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
-const api = new Api(Employee);
+const api = new EmployeeApi();
 // asyncHandler(
 const router = express.Router();
 
@@ -25,12 +21,18 @@ router
     asyncHandler(api.create)
   )
 
+
+
   .put(
     "/:id",
-    // validateResource(updateStudentSchema),
     asyncHandler(api.update)
   )
 
+  .put(
+    "/close-contract/:id",
+    // validateResource(updateStudentSchema),
+    asyncHandler(api.closeContract)
+  )
   .delete(
     "/:id",
     // validateResource(updateStudentSchema),

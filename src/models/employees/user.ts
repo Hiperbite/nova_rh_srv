@@ -15,11 +15,13 @@ import {
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import { Model, Address, Employee } from "../index";
+import { Model, Address, Employee, Person } from "../index";
 
 import bcrypt from "bcrypt";
 import { UserApp } from "../../application/common/user.app";
 import sendEmail, { mailServices } from "../../application/mailler/index";
+import { uniqueId } from "lodash";
+import { randomUUID } from "crypto";
 
 const UniqIndex = createIndexDecorator({
   name: 'Email-index',
@@ -69,18 +71,20 @@ export type PermissionsType =
 
 @Scopes(() => ({
   main: {
-    include: [{
-    }]
+    include: []
   },
   auth: {
-    include: [{}]
+    include: []
   },
   full: {
     include: [{
-      include: [
-        { model: Address, as: 'livingAddress' },
-        { model: Address, as: 'birthPlaceAddress' },
-      ]
+      model: Employee,
+      include: [{
+        model: Person, include: [
+          { model: Address, as: 'livingAddress' },
+          { model: Address, as: 'birthPlaceAddress' },
+        ]
+      }]
     }]
   }
 }))
@@ -89,12 +93,12 @@ export type PermissionsType =
   tableName: "Users",
 })
 export default class User extends Model {
-  
+
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  username!: string;
+  username?: string;
 
   // @UniqIndex
   @Column({
@@ -118,7 +122,8 @@ export default class User extends Model {
       ?? []
   }
   set permissions(roles: string[]) {
-    this.setDataValue('permissions', Object.entries(roles).map((p: any) => p.join('_')).join(','))
+    if (roles)
+      this.setDataValue('permissions', Object.entries(roles).map((p: any) => p.join('_')).join(','))
   }
 
   @Column({
@@ -177,6 +182,7 @@ export default class User extends Model {
   @BeforeCreate
   static sendMail = UserApp.sendMail;
 
+
   @BeforeSave
   static hashPassword = UserApp.hashPassword;
 
@@ -189,23 +195,20 @@ export default class User extends Model {
 
   @AfterCreate
   static notifyUser = (user: User) =>
-    sendEmail({
-      service: mailServices["createUser"],
-      data: user,
-    });
+    User.scope('full').findByPk(user?.id).then((data: User | null) =>
+      sendEmail({
+        service: mailServices["createUser"],
+        data
+      })
+    )
+  @BeforeCreate
+  static setUserName = (user: User) => user.username ||= randomUUID()
 
   @AfterUpdate
   @AfterCreate
   @AfterSave
   static async refreshPersons(user: User) {
-    // const person = await Person.findByPk(user.personId);
-    /*
-        if (person && person.userId === null) {
-          person.userId = user.id;
-          person?.save();
-        } else {
-          if (person) user.person = person;
-        }*/
+
   }
 
   //TODO: fix password compare

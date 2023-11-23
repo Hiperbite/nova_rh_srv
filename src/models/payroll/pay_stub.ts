@@ -9,16 +9,22 @@ import {
     BeforeSave,
     HasMany,
     DefaultScope,
+    AfterFind,
+    AfterCreate,
 } from "sequelize-typescript";
 import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage, Payroll } from "../index";
+import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person, Department, Role } from "../index";
+import { payrollState } from "./payroll";
 
 @DefaultScope(() => ({
-    include: [PayrollLine, { model: Contract, include: [SalaryPackage] }]
+    include: [{ model: Payroll, include: [] },]
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Contract, include: [SalaryPackage] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine]
+    },
+    full: {
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, Department, Role, { model: Employee, include: [Person] }] }]
     }
 }))
 @Table({
@@ -92,9 +98,7 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get netValue() {
-        const g = (this.lines?.filter(({ debit }: any) => debit).map(({ value }: any) => Number(value)).reduce((a: number, b: number) => a + b, 0)) ?? 0
-        const d = (this.lines?.filter(({ debit }: any) => !debit).map(({ value }: any) => Number(value)).reduce((a: number, b: number) => a + b, 0)) ?? 0
-        return g - d;
+        return (this.grossValue ?? 0) - (this.deductionValue ?? 0);
     }
 
     @Column({
@@ -102,9 +106,9 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get proposal() {
-        this.lines = this.contract?.payStubState?.lines?.map((line: any) => new PayrollLine(line));
+        //  this.lines = this.contract?.payStubState.lines?.map((line: any) => new PayrollLine(line));
 
-        return this.contract?.payStubState
+        return;// this.contract?.payStubState
     }
 
     @Column({
@@ -112,12 +116,39 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get proposalLines() {
-        //return this.contract?.payStubState;
+        //return [];
 
-        const salaryPackage: any = this?.contract?.salaryPackage
+
+        return;// this.lines = [];
+    }
+
+    @AfterCreate
+    static afterCreatePayStub = async (payStub: PayStub, { transaction }: any = { transaction: null }) => {
+
+        const salaryPackage: any = await SalaryPackage.findOne({ where: { contractId: payStub?.contractId } })// payStub?.contract?.salaryPackage
         const additionalPayments: any = salaryPackage?.additionalPayments
 
-        let lines: any[] = []
+        let lines: any[] =
+
+            additionalPayments?.
+                filter(({ isActive }: any) => isActive).
+                filter(({ startDate }: any) => moment(payStub?.date).isAfter(moment(startDate))).
+                map(({ code, descriptions, startDate, isActive, baseValue, baseValuePeriod, type }: any) => (
+                    {
+                        isActive,
+                        code: type?.code,
+                        date: new Date(),
+                        descriptions: type?.name,
+                        startDate,
+                        value: Number(baseValue),
+                        property: 1,
+                        debit: true,
+                        baseValuePeriod,
+                        typeId: type?.id
+                    }
+                )
+                );
+
         lines.push({
             isActive: true,
             code: '1000',
@@ -126,30 +157,9 @@ export default class PayStub extends Model {
             debit: true,
             quantity: 1,
             baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: '',
-            typeId: 'Base',
+            descriptions: 'Base',
 
         })
-        additionalPayments?.
-            filter(({ isActive }: any) => isActive).
-            filter(({ startDate }: any) => moment(this.date).isAfter(moment(startDate))).
-            map(({ code, descriptions, startDate, isActive, baseValue, baseValuePeriod, type }: any) => (
-                {
-                    isActive,
-                    code: type?.code,
-                    date: new Date(),
-                    descriptions,
-                    startDate,
-                    value: Number(baseValue),
-                    property: 1,
-                    debit: true,
-                    baseValuePeriod,
-                    typeId: type.name
-                }
-            )
-            )?.forEach((x: any) => lines.push(x));
-
-
 
         const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
 
@@ -161,8 +171,7 @@ export default class PayStub extends Model {
             debit: false,
             quantity: 1,
             baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: '',
-            typeId: 'INSS [3%]'
+            descriptions: 'INSS [3%]'
         })
 
         const IRTTable = [
@@ -184,8 +193,8 @@ export default class PayStub extends Model {
                 debit: false,
                 quantity: 1,
                 baseValuePeriod: salaryPackage?.baseValuePeriod,
-                descriptions: '',
-                typeId: `IRT [${IRTpercent(grossValue)}%]`
+                descriptions: `IRT [${IRTpercent(grossValue)}%]`,
+
             })
         }
 
@@ -193,20 +202,21 @@ export default class PayStub extends Model {
         const deductionValue = lines.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((x: any, y: any) => Number(x) + Number(y));
         const netValue = grossValue - deductionValue;
 
-        return lines;
-    }
+        for (let line of lines)
+            await PayrollLine.create({ ...line, payStubId: payStub?.id }, { transaction })
 
+    }
     @BeforeCreate
     @BeforeSave
     static initModel = async (payStub: PayStub) => {
         if (!payStub.isNewRecord) return true;
         const { month, year, contractId } = payStub
-        const _payStub = await PayStub.findOne({ where: { month, year, contractId } });
+        const existPayStub = await PayStub.findOne({ where: { month, year, contractId } });
         /**
          * TODO: FIX THIS PEACE OF CODE
          */
-        if (_payStub)
-            throw '405'
+        if (existPayStub)
+            throw { existPayStub }
 
     }
 }

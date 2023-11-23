@@ -3,10 +3,8 @@ import {
   Column,
   DataType,
   BeforeCreate,
-  BeforeUpdate,
   AfterUpdate,
   AfterSave,
-  BelongsToMany,
   ForeignKey,
   BelongsTo,
   Scopes,
@@ -16,8 +14,7 @@ import {
 import _ from "lodash";
 import { v4 as uuids4 } from "uuid";
 import { Track, User } from "./index";
-import { NotificationApp } from "../application/common/notification.app";
-import { HasManyGetAssociationsMixin } from "sequelize";
+import { logger } from "../config";
 
 @Scopes(() => ({
   default: {
@@ -57,6 +54,7 @@ export default class Model extends Main {
 
   @AfterUpdate
   @AfterSave
+  //@AfterBulkUpdate
   static afterModelUpdate = (model: Model, { transaction }: any = { transaction: null }) => {
 
     if (model?.previous()) { } else return model;
@@ -66,17 +64,19 @@ export default class Model extends Main {
     const obj = Object.keys(before).map((k) => ({ [k]: model.dataValues[k] }));
 
     const after = Object.assign({}, ...obj);
-
+    const action = ['CREATED', 'UPDATED', 'DELETED', 'MODIFIED']
     Track.create({
       before,
       after,
       model: model.constructor.name,
       ref: model.id,
       userId: model.updatedById
-    }, { transaction }).catch(console.warn);
+    }).catch(logger.warn);
 
   };
 
+
+  //static filter = null;
   privateFields: string[] = [];
   dto = () => _.pick(this, this?.privateFields);
 }

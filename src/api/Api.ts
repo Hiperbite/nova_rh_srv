@@ -1,19 +1,17 @@
+import { includes } from 'lodash';
 
 import { Request, Response } from "express";
-import IRepository from "../repository/iRepository";
 import Repository, { Paginate } from "../repository/repository";
 import {
   ModelCtor,
   Model as M,
 } from "sequelize-typescript";
-import { Transaction } from "sequelize";
-import EmployeeRepository from "../repository/employees/employee.repository";
-//import {IApi } from "./IApi";
+
 
 
 class Api<T extends M> implements IApi {
   //protected repo: any
-  constructor(private Model: ModelCtor<M>, protected repo?: any) {
+  constructor(private Model: ModelCtor<M> | any, protected repo?: any) {
     this.repo ||= new Repository<M>(this.Model)
   };
 
@@ -89,11 +87,12 @@ class Api<T extends M> implements IApi {
    */
   findBy = async (req: Request, res: Response): Promise<Response> => {
 
+    const { include  } = req.query
     const models: Paginate<M> | undefined =
       await this.repo
         .paginate({
 
-          include: { all: true },
+          include,
           ...req.query,
         });
 

@@ -13,7 +13,7 @@ export default class Repository<T extends M>  {
   }
 
   protected start = async () => this.transaction = await sequelize.transaction();
-  protected commit = async () => this.transaction?.commit();
+  protected commit = async () => await this.transaction?.commit();
   protected rollback = async () => this.transaction?.rollback().catch(console.warn);
 
   private refactorOptions = async ({
@@ -37,7 +37,7 @@ export default class Repository<T extends M>  {
 
   public findOne = async (id: string, opts: any = {}): Promise<T | null> => {
     const options = await this.refactorOptions(opts);
-    const data = await this.repo.findByPk(id, options);
+    const data = await (opts?.scope ? this.repo.scope(opts?.scope) : this.repo).findByPk(id, options);
 
     return data;
   };
@@ -47,11 +47,10 @@ export default class Repository<T extends M>  {
     let final;
 
     try {
-      this.start();
+      await this.start();
       final = await this.Model.create(data, { ...options, transaction: this.transaction });
-      this.commit();
+      await this.commit();
     } catch (err: any) {
-     // this.rollback();
       throw err;
     }
 
@@ -61,10 +60,28 @@ export default class Repository<T extends M>  {
   public updateOne = async (data: any, options?: any): Promise<T | any> => {
     const { ["id"]: _, ...d } = data;
     const { id } = data;
-    let model = await this.Model.update(d, { where: { id }, returning: true });
-    let nmodel = model ? await this.findOne(id) : model;
-    nmodel?.save();
-    return nmodel
+
+    try {
+      await this.start();
+      let model = await this.findOne(id)
+      let done = await model?.update(d, { transaction: this.transaction })
+
+
+      if (done) {
+        await this.commit();
+
+        return done
+      }
+      else {
+        this.rollback();
+        return null
+      }
+    } catch (err: any) {
+
+      this.rollback();
+      throw err;
+    }
+
   };
 
   public deleteBy = async (id: any | string): Promise<boolean> => {
@@ -110,7 +127,7 @@ export default class Repository<T extends M>  {
   public paginate = async (
     options: any
   ): Promise<Paginate<T> | undefined> => {
-    const {
+    let {
       where,
       attributes,
       include,
@@ -120,7 +137,7 @@ export default class Repository<T extends M>  {
       page = 1,
       order = [["createdAt", "DESC"]],
     } = options;
-
+    //where = this.repo?.?.filter(where);
     const limit = Number(pageSize);
 
     const offset =
@@ -130,25 +147,27 @@ export default class Repository<T extends M>  {
           ? limit
           : (Number(page) - 1) * limit;
 
-
     const fromScope = scope ?
       this.repo.scope(scope) : this.repo;
+
     return new Paginate(
-      await fromScope.findAll({
-        where,
-        attributes: attributes
-          ? attributes
-            ?.split(",")
-            .filter((x: string) => exclude.indexOf(x) === -1)
-          : { exclude },
-        include,
-        offset,
-        limit,
-        order,
-      }),
+      await fromScope.findAll(
+        {
+          subQuery: false,
+          where,
+          attributes: attributes
+            ? attributes
+              ?.split(",")
+              .filter((x: string) => exclude.indexOf(x) === -1)
+            : { exclude },
+          include,
+          offset,
+          limit,
+          order,
+        }),
       Number(page),
       limit,
-      await this.size({ include, where })
+      await this.size({ scope, where })
     );
   };
 
@@ -176,7 +195,7 @@ export default class Repository<T extends M>  {
 
   public size = async (options: any): Promise<number> => {
     const { where, include } = options;
-    return await this.repo.count({ where, });
+    return await this.repo.count({ where, include });
   };
 
   public classOf = (className: string) => eval(className);

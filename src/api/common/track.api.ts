@@ -5,12 +5,7 @@ import { DefaultRepository as Repository } from "../../repository/index";
 import IRepository from "../../repository/iRepository";
 import { Paginate } from "../../repository/repository";
 import Api from "../Api";
-interface IApi {
-  create(req: Request, res: Response): Response;
-  update(req: Request, res: Response): Response;
-  find(req: Request, res: Response): Response;
-  findBy(req: Request, res: Response): Response;
-}
+
 class TrackApi extends Api<Track>{
   constructor() { super(Track)};
 

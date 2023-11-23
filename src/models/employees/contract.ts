@@ -1,3 +1,4 @@
+import { words } from "lodash";
 import moment from "moment";
 import {
   Table,
@@ -9,23 +10,28 @@ import {
   HasOne,
   DefaultScope,
   HasMany,
-  BeforeUpdate,
+  BeforeCreate,
 } from "sequelize-typescript";
 
-import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User } from "../index";
-
+import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
+/*
 @DefaultScope(() => ({
-  include: [
-    Role,
-    AdditionalField,
-    { model: Employee, include: [Person, { model: User, as: 'user' }] },
-    { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
-    { model: Department, include: [{ as: 'department', model: Department }] }],
+  include: [Role, Department,SalaryPackage, WorkingHour,AdditionalField],
   orderBy: [['startDate', 'DESC']]
-}))
+}))*/
 @Scopes(() => ({
+  full: {
+    include: [
+      Role,
+      AdditionalField,
+      WorkingHour,
+      SalaryPackage,
+      { model: Employee, include: [Person, { model: User, as: 'user' }] },
+      { model: SalaryPackage, include: [{ model: AdditionalPayment, include: [AdditionalPaymentType] }] },
+      { model: Department, include: [{ as: 'department', model: Department }] }],
+  },
   default: {
-    include: []
+    include: [Role, Department]
   },
   coworkers: {
     attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
@@ -78,6 +84,12 @@ export default class Contract extends Model {
   @ForeignKey(() => Role)
   roleId?: string;
 
+  @BelongsTo(() => Category)
+  category?: Category;
+
+  @ForeignKey(() => Category)
+  categoryId?: string;
+
   @BelongsTo(() => Department)
   department!: Department;
 
@@ -90,11 +102,17 @@ export default class Contract extends Model {
   @HasMany(() => PayStub)
   payStubs?: PayStub[]
 
+  @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
+  salaryPackage?: SalaryPackage;
+
+  @HasOne(() => WorkingHour)
+  workingHour?: WorkingHour;
+
   @Column({
     type: DataType.VIRTUAL
   })
   get actualPayrollState() {
-
+/*
     let myPayrolls: any[] = [];
     const startDate = moment(this.startDate);
     let current = startDate.add(1, 'm');
@@ -105,9 +123,14 @@ export default class Contract extends Model {
       newPayroll.isActive = false;
 
       let currentPayrolls = (this?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+      const grossValue = 0, deductionValue = 0;
+      try {
+        const grossValue = currentPayrolls.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+        const deductionValue = currentPayrolls.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
 
-      const grossValue = currentPayrolls.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-      const deductionValue = currentPayrolls.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+      } catch (error) {
+
+      }
       myPayrolls.push({
         date: current.format('Y-M'),
         fromDate: current.format('Y-M'),
@@ -120,14 +143,15 @@ export default class Contract extends Model {
       })
       current = current.add(1, 'M');
     }
-    return myPayrolls;
+    */
+    return ;//myPayrolls;
 
   }
   @Column({
     type: DataType.VIRTUAL
   })
   get payStubState() {
-
+/*
     const salaryPackage: any = this?.salaryPackage
     const additionalPayments: any = salaryPackage?.additionalPayments
 
@@ -139,6 +163,7 @@ export default class Contract extends Model {
       value: Number(salaryPackage?.baseValue),
       debit: true,
       quantity: 1,
+      startDate: salaryPackage?.startDate,
       baseValuePeriod: salaryPackage?.baseValuePeriod,
       descriptions: 'Base',
 
@@ -207,24 +232,58 @@ export default class Contract extends Model {
       deductionValue,
       netValue
     }
-
-    return state;
+*/
+    return ;//state;
 
   }
 
-  @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
-  salaryPackage?: SalaryPackage;
-
-  @HasOne(() => WorkingHour)
-  workingHour?: WorkingHour;
-
-  @BeforeUpdate
+  @BeforeCreate
   static beforeDataUpdate = async (contract: Contract) => {
     const employee = await Employee.findByPk(contract?.employeeId, { include: [Contract] });
 
+    let kill: Contract[] | undefined = [];
+
+    const otherContract: Contract[] | undefined = employee?.contracts?.filter(({ id }: any) => id !== contract?.id)
+    if (otherContract?.length ?? 0 > 0) {
+      kill = otherContract?.filter((c: Contract) =>
+        moment(c.endDate).isAfter(contract?.startDate)
+      )
+
+      kill = kill?.filter(
+        (c: Contract) =>
+          moment(c.startDate).isSameOrBefore(contract?.startDate)
+      )
+
+      kill?.forEach((c: Contract) => {
+        if (!moment().isBetween(c.startDate, c.endDate))
+          c.isActive = false;
+
+        c.endDate = moment(contract?.startDate).add(-1, 'days').toDate();
+        c.save()
+      })
+
+      kill = otherContract?.filter((c: Contract) =>
+        moment(contract.endDate).isAfter(c?.startDate)
+      )
+
+      kill = kill?.filter((c: Contract) =>
+        moment(contract.startDate).isAfter(c?.startDate)
+      )
+
+      kill?.forEach((c: Contract) => {
+        if (!moment().isBetween(c.startDate, c.endDate))
+          c.isActive = false;
+
+        c.endDate = moment(contract?.startDate).add(-1, 'days').toDate();
+        c.save()
+      })
+
+    }
+
     if (employee?.contracts?.length === 1) {
-      contract.isActive = moment().
+      const isActive = moment().
         isBetween(contract?.startDate, contract?.endDate || moment().add(1, 'days'))
+      contract.isActive = isActive;
 
     }
   }
