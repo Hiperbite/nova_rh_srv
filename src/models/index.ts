@@ -59,7 +59,7 @@ import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 let referer = null;
@@ -161,7 +161,7 @@ const switchTo = (db: string, ref: string) => {
     logger.info({ message: 'request coming from: ' + ref })
     logger.info({ message: 'client key : ' + key })
     //hiperbit_hiperbite_rh
-    const database = sequelize.options.database = DB_NAME + '_' + key + '_rh';
+    const database = sequelize.options.database = DB_KEY + '_' + key;
     //sequelize.options.username = DB_USER + '_' + key;
     logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
     sequelize = new Sequelize({ ...sequelizeOptions, ...{ database } });
