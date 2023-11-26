@@ -164,7 +164,7 @@ const switchTo = (db: string, ref: string) => {
     const database = sequelize.options.database = DB_KEY + '_' + key;
     //sequelize.options.username = DB_USER + '_' + key;
     logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
-    sequelize = new Sequelize({ ...sequelizeOptions, ...{ database } });
+    sequelize = new Sequelize({ ...sequelizeOptions, ...{ database , username: database} });
   }
 
 
