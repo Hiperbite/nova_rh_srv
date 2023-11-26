@@ -140,9 +140,9 @@ const UniqIndex = createIndexDecorator({
   type: 'UNIQUE',
   unique: true,
 });
-
+const instances: any[] = []
 const switchTo = (db: string, ref: string) => {
-
+  let instance: any;
   if (NODE_ENV === 'development' || MY_NODE_ENV === 'development') {
     return;
   }
@@ -160,11 +160,21 @@ const switchTo = (db: string, ref: string) => {
     logger.info({ message: '......................................' })
     logger.info({ message: 'request coming from: ' + ref })
     logger.info({ message: 'client key : ' + key })
-    //hiperbit_hiperbite_rh
-    const database = sequelize.options.database = DB_KEY + '_' + key;
-    //sequelize.options.username = DB_USER + '_' + key;
-    logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
-    sequelize = new Sequelize({ ...sequelizeOptions, ...{ database , username: database} });
+
+    instance = instances.find((x: any) => x.key === key)
+
+    if (instance === undefined) {
+      //hiperbit_hiperbite_rh
+      const database = sequelize.options.database = DB_KEY + '_' + key;
+      //sequelize.options.username = DB_USER + '_' + key;
+      logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
+      instance = new Sequelize({ ...sequelizeOptions, ...{ database, username: database } });
+      instances.push({ key, instance })
+    } else {
+      instance = instance?.instance
+    }
+
+    sequelize = instance
   }
 
 
