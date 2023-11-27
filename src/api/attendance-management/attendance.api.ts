@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Attendance, Employee } from "../../models/index";
+import { Attendance, Employee, Procedure, SPs } from "../../models/index";
 import Api from "../Api";
 import Repository, { Paginate } from "../../repository/repository";
 import {
@@ -41,6 +41,15 @@ class AttendanceApi extends Api<Attendance> {
     const attendance = await Attendance.scope("withPerson").findAll({where: {typeId: id}});
     
     return res.json(attendance);
+
+  }
+
+  weekPresence = async (req: Request, res: Response): Promise<Response> => {
+
+    
+    const totalPresence = await Procedure(SPs.GetTotalWeekPresence, [req.body.startDate, req.body.endDate]);
+
+    return res.json(totalPresence);
 
   }
 }

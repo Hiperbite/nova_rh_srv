@@ -42,5 +42,8 @@ const router = express
     "/",
     asyncHandler(api.findBy)
   );
-
+  router.get(
+    "week-presences/",
+    asyncHandler(attendanceApi.weekPresence)
+  );
 export default router;

@@ -84,8 +84,8 @@ export async function lockAccessTokenHandler(req: Request, res: Response) {
 
     const token = get(req, "headers.authorization");
 
-    const decoded: any = verifyJwt<{ session: string }>(
-        String(token?.split(" ")[1]),
+    const decoded: any = verifyJwt(
+        String(token?.split(' ')[1]),
         "accessTokenPublicKey"
     );
 
