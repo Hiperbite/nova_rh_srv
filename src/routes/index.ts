@@ -2,7 +2,7 @@ import { Application } from "express";
 import deserializeUser from "../application/middleware/deserializeUser";
 import validateRequest, { routerRequest } from "../application/middleware/validateRequest";
 import routes from "./routes";
-import { MY_NODE_ENV } from "../config";
+import { MY_NODE_ENV, NODE_ENV } from "../config";
 import { initializer } from "../models/initializer";
 import { commonErrorHandler, genericErrorHendler, notFoundErrorHendler } from "../application/middleware/errorHendler";
 import requireAuthentication from "../application/middleware/requireAuthentication";
@@ -22,7 +22,7 @@ const router = (app: Application) => {
       "/",
       asyncHandler(async (req: any, res: any) => {
         const ip = req?.headers['x-forwarded-for'] || req?.connection?.remoteAddress;
-        res.status(200).send(`Hey ${req.ip} of ${ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()} env`)
+        res.status(200).send(`Hey ${ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()}/${NODE_ENV?.toUpperCase()} env`)
       })
     )
 
