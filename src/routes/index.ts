@@ -21,8 +21,8 @@ const router = (app: Application) => {
     .get(
       "/",
       asyncHandler(async (req: any, res: any) => {
-        req.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        res.status(200).send(`Hey ${req.ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()} env`)
+        const ip = req?.headers['x-forwarded-for'] || req?.connection?.remoteAddress;
+        res.status(200).send(`Hey ${req.ip} of ${ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()} env`)
       })
     )
 
