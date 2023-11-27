@@ -141,7 +141,7 @@ const UniqIndex = createIndexDecorator({
   unique: true,
 });
 const instances: any[] = []
-const switchTo = (db: string, ref: string) => {
+const switchTo = (db: any, ref: string) => {
   let instance: any;
   if (NODE_ENV === 'development' || MY_NODE_ENV === 'development') {
     return;

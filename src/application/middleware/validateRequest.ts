@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import sequelize, { switchTo } from "../../models/index";
-import { MY_NODE_ENV, NODE_ENV } from "../../config";
+import { logger, MY_NODE_ENV, NODE_ENV } from "../../config";
 const uuidPattern = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/
 
 const encode = (str: string) => {
@@ -22,13 +22,14 @@ export const routerRequest = (
 ) => {
   const { apikey }: any = req?.headers;
   if (apikey === undefined) {
-   // throw { code: 403 }
+    // throw { code: 403 }
   }
-  const currentKey = decode(apikey ?? '')
-  console.log(encode('demo'));
-  console.log(encode('hiperbite'));
-    switchTo(currentKey, req.headers?.referer??'')
 
+  logger.info('START: ---------------------------------------------------------');
+  logger.info(req);
+  const currentKey = null;//decode(apikey ?? '')
+
+  switchTo(currentKey, req.headers?.referer ?? '')
 
   next()
 }
