@@ -31,6 +31,11 @@ router.delete(
 );
 
 router.get(
+  "/week-presences",
+  asyncHandler(attendanceApi.weekPresence)
+);
+
+router.get(
   "/:id",
   asyncHandler(api.find)
 );
@@ -41,9 +46,5 @@ router.get(
 router.get(
   "/",
   asyncHandler(api.findBy)
-);
-router.get(
-  "/week-presences",
-  asyncHandler(attendanceApi.weekPresence)
 );
 export default router;
