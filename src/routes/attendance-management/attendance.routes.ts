@@ -44,6 +44,6 @@ router.get(
 );
 router.get(
   "/week-presences",
-  ((req, res) => res.json(20032))
+  asyncHandler(attendanceApi.weekPresence)
 );
 export default router;
