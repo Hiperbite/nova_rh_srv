@@ -19,6 +19,7 @@ router.post(
   "/",
   validateResource(attendanceCreateSchema),
   asyncHandler(api.create)
+
 )
 router.put(
   "/:id",
@@ -31,19 +32,23 @@ router.delete(
 );
 
 router.get(
+  "/week-presences",
+  asyncHandler(attendanceApi.weekPresence)
+);
+
+router.get(
   "/:id",
   asyncHandler(api.find)
 );
+
 router.get(
   "/type/:id",
   asyncHandler(attendanceApi.findByCode)
 );
+
 router.get(
   "/",
   asyncHandler(api.findBy)
 );
-router.get(
-  "/week-presences",
-  asyncHandler(attendanceApi.weekPresence)
-);
+
 export default router;
