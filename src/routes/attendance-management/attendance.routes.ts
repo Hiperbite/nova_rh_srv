@@ -19,6 +19,7 @@ router.post(
   "/",
   validateResource(attendanceCreateSchema),
   asyncHandler(api.create)
+
 )
 router.put(
   "/:id",
@@ -39,10 +40,12 @@ router.get(
   "/:id",
   asyncHandler(api.find)
 );
+
 router.get(
   "/type/:id",
   asyncHandler(attendanceApi.findByCode)
 );
+
 router.get(
   "/",
   asyncHandler(api.findBy)

@@ -7,8 +7,8 @@ import {
 } from "sequelize-typescript";
 
 class AttendanceApi extends Api<Attendance> {
-  constructor() { 
-    super(Attendance) 
+  constructor() {
+    super(Attendance)
     this.repo = new Repository<M>(Attendance);
   };
 
@@ -35,21 +35,34 @@ class AttendanceApi extends Api<Attendance> {
 
   };
 
-    findByCode = async (req: Request, res: Response): Promise<Response> => {
-    const {id} = req.params;
+  findByCode = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
 
-    const attendance = await Attendance.scope("withPerson").findAll({where: {typeId: id}});
-    
+    const attendance = await Attendance.scope("withPerson").findAll({ where: { typeId: id } });
+
     return res.json(attendance);
 
   }
 
   weekPresence = async (req: Request, res: Response): Promise<Response> => {
 
-    
-    const totalPresence = await Procedure(SPs.GetTotalWeekPresence, [req.body.startDate, req.body.endDate]);
+    const { startDate, endDate } = req.query;
 
-    return res.json(totalPresence);
+    const totalPresences: any = await Procedure(SPs.GetTotalWeekPresence, [startDate, endDate]);
+
+    const totalFaults: any = await Procedure(SPs.GetWeekPresenceFaults, [startDate, endDate]);
+
+    let presences = {
+      monday: totalPresences[0]?.mondayCount - totalFaults[0]?.mondayCount,
+      tuesday: totalPresences[0]?.tuesdayCount - totalFaults[0]?.tuesdayCount,
+      wednesday: totalPresences[0]?.wednesdayCount - totalFaults[0]?.wednesdayCount,
+      thursday: totalPresences[0]?.thursdayCount - totalFaults[0]?.thursdayCount,
+      friday: totalPresences[0]?.fridayCount - totalFaults[0]?.fridayCount,
+      saturday: totalPresences[0]?.saturdayCount - totalFaults[0]?.saturdayCount,
+      sunday: totalPresences[0]?.sundayCount - totalFaults[0]?.sundayCount
+    }
+
+    return res.json({presences, totalPresences, totalFaults});
 
   }
 }

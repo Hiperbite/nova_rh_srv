@@ -191,7 +191,7 @@ enum SPs {
   GetStudentHonorRoll = 'GetStudentHonorRoll',
   GetStudentCount = 'GetStudentCount',
   GetTotalWeekPresence = 'GetTotalWeekPresence(?,?)',
-  GetWeekPresence = 'GetWeekPresence(?,?)',
+  GetWeekPresenceFaults = 'GetWeekPresenceFaults(?,?)',
 }
 const Procedure = async (procedure: SPs, opts: any = []) =>
   await sequelize

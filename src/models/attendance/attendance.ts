@@ -19,10 +19,12 @@ import { AttendanceJustification, AttendanceType, Employee, Person, Model, Contr
             {
                 model: Employee,
                 as: "employee",
-                include: [Contract, {
-                    model: Person,
-                    attributes: ['id', 'fullName', 'firstName', 'lastName']
-                }]
+                include: [Contract,
+                    { model: Attendance, include: [AttendanceType] },
+                    {
+                        model: Person,
+                        attributes: ['id', 'fullName', 'firstName', 'lastName']
+                    }]
             }
         ]
     }
