@@ -13,4 +13,3 @@ export const attendanceCreateSchema = object({
 })
 
 export type attendanceCreateInput = TypeOf<typeof attendanceCreateSchema>["body"];
-

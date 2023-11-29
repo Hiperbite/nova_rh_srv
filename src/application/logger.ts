@@ -1,6 +1,7 @@
 import { ipInfoApi } from "../providers/IpInfo.api";
-import { NODE_ENV } from "../config";
+import { MY_NODE_ENV, NODE_ENV } from "../config";
 import winston from "winston";
+import moment from "moment";
 //const { NODE_ENV } = process.env;
 
 
@@ -29,20 +30,15 @@ export const errorLoggerOptions = {
 };
 export const loggerOptions = {
   transports: [
-    new winston.transports.File({
-      filename: `./logs/${NODE_ENV}-${((d = new Date()) =>
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0"))()}.log.json`,
+   new winston.transports.File({
+      filename: `./logs/${MY_NODE_ENV}-${moment().format('YYYY-MM-DD')}.log.json`,
     }),
   
   new(require('winston-daily-rotate-file'))({
-      filename: `logs/apimodules.log`,
+      filename: `logs/nova.api.log`,
       timestamp: new Date(),
       datePattern: 'yyyy-M-D',
-      prepend: false,
+      prepend: true,
       json: true,
   }),
     new winston.transports.Console(),
