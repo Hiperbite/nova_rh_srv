@@ -143,7 +143,7 @@ const UniqIndex = createIndexDecorator({
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
   let instance: any;
-  if (NODE_ENV === 'development' || MY_NODE_ENV === 'development') {
+  if (NODE_ENV === 'development') {
     return;
   }
   if (sequelize.options.dialect === 'sqlite')
@@ -157,8 +157,6 @@ const switchTo = (db: any, ref: string) => {
       .replace('.', '_')
       .replace('/', '')
 
-    logger.info({ message: '......................................' })
-    logger.info({ message: 'request coming from: ' + ref })
     logger.info({ message: 'client key : ' + key })
 
     instance = instances.find((x: any) => x.key === key)
