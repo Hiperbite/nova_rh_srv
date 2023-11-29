@@ -1,3 +1,4 @@
+
 DROP PROCEDURE GETTOTALWEEKPRESENCE;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GETTOTALWEEKPRESENCE`(IN STARTDATE DATE
 , IN ENDDATE DATE)
@@ -5,57 +6,57 @@ BEGIN
 	SELECT
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%Mo%',
+	            `WorkingHours`.`weekDays` LIKE '%Mo%',
 	            1,
 	            NULL
 	        )
 	    ) as mondayCount,
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%Tu%',
+	            `WorkingHours`.`weekDays` LIKE '%Tu%',
 	            1,
 	            NULL
 	        )
 	    ) as tuesdayCount,
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%We%',
+	            `WorkingHours`.`weekDays` LIKE '%We%',
 	            1,
 	            NULL
 	        )
 	    ) as wednesdayCount,
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%Th%',
+	            `WorkingHours`.`weekDays` LIKE '%Th%',
 	            1,
 	            NULL
 	        )
 	    ) as thursdayCount,
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%Fr%',
+	            `WorkingHours`.`weekDays` LIKE '%Fr%',
 	            1,
 	            NULL
 	        )
 	    ) as fridayCount,
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%Sa%',
+	            `WorkingHours`.`weekDays` LIKE '%Sa%',
 	            1,
 	            NULL
 	        )
 	    ) as saturdayCount,
 	    COUNT(
 	        IF(
-	            `workinghours`.`weekDays` LIKE '%Su%',
+	            `WorkingHours`.`weekDays` LIKE '%Su%',
 	            1,
 	            NULL
 	        )
 	    ) as sundayCount
-	FROM employees
-	    LEFT JOIN attendances on `employees`.`id` = `attendances`.`employeeId`, contracts, workinghours
+	FROM Employees
+	    LEFT JOIN Attendances on `Employees`.`id` = `Attendances`.`employeeId`, Contracts, WorkingHours
 	where
-	    `employees`.`id` = `contracts`.`employeeId`
-		and employees.`isActive` = 1
-	    and `contracts`.`id` = `workinghours`.`contractId`;
+	    `Employees`.`id` = `Contracts`.`employeeId`
+		and Employees.`isActive` = 1
+	    and `Contracts`.`id` = `WorkingHours`.`contractId`;
 	END
