@@ -50,5 +50,4 @@ router.get(
   "/",
   asyncHandler(api.findBy)
 );
-
 export default router;
