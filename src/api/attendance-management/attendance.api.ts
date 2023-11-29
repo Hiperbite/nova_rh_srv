@@ -62,7 +62,7 @@ class AttendanceApi extends Api<Attendance> {
       sunday: totalPresences[0]?.sundayCount - totalFaults[0]?.sundayCount
     }
 
-    return res.json({presences, totalPresences, totalFaults});
+    return res.json({presences, totalPresences: totalPresences[0], totalFaults: totalFaults[0]});
 
   }
 }
