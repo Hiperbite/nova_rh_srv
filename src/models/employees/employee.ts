@@ -187,7 +187,8 @@ export default class Employee extends Model {
     if (oldest === undefined)
       return;
 
-    const balance = moment(oldest?.startDate).diff(moment().startOf('year'), 'months') * 2 * (-1)
+    const startDate =  moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
+    const balance = startDate.diff(moment().startOf('year'), 'months') * 2 * (-1)
 
     return balance > 22 ? 22 : balance;
   }
