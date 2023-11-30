@@ -24,10 +24,10 @@ const initialData: InitializerType[] = [
 
   {
     model: 'AttendanceType', data: [
-      { name: 'Atrasos', code: 'AR' },
-      { name: 'Ausências', code: 'AS' },
-      { name: 'Férias', code: 'FE' },
-      { name: 'Horas Extras', code: 'HE' },
+      { name: 'Atrasos', code: 'LATENESS' },
+      { name: 'Ausências', code: 'ABSENT' },
+      { name: 'Férias', code: 'VACATION' },
+      { name: 'Horas Extras', code: 'OVERTIME' },
     ]
   },
   {

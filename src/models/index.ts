@@ -59,7 +59,7 @@ import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 let referer = null;
@@ -140,31 +140,41 @@ const UniqIndex = createIndexDecorator({
   type: 'UNIQUE',
   unique: true,
 });
+const instances: any[] = []
+const switchTo = (db: any, ref: string) => {
+  let instance: any;
+  if (NODE_ENV === 'development') {
+    return;
+  }
+  if (sequelize.options.dialect === 'sqlite')
+    sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+  else {
+    const key = db ?? ref
+      .replace('https://', '')
+      .replace('http://', '')
+      .replace('wwww.', '')
+      .replace('.nova.ao', '')
+      .replace('.', '_')
+      .replace('/', '')
 
-const switchTo = (db: string, ref: string) => {
-//return;
-  if (false || NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
-    if (sequelize.options.dialect === 'sqlite')
-      sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
-    else {
-      const key = db ?? ref
-        .replace('https://', '')
-        .replace('http://', '')
-        .replace('wwww.', '')
-        .replace('.nova.ao', '')
-        .replace('.', '_')
-        .replace('/', '')
+    logger.info({ message: 'client key : ' + key })
 
-      logger.info({ message: '......................................' })
-      logger.info({ message: 'request coming from: ' + ref })
-      logger.info({ message: 'client key : ' + key })
+    instance = instances.find((x: any) => x.key === key)
+
+    if (instance === undefined) {
       //hiperbit_hiperbite_rh
-     const database = sequelize.options.database = DB_NAME + '_' + key + '_rh';
+      const database = sequelize.options.database = DB_KEY + '_' + key;
       //sequelize.options.username = DB_USER + '_' + key;
       logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
-      sequelize = new Sequelize({ ...sequelizeOptions, ...{ database } });
+      instance = new Sequelize({ ...sequelizeOptions, ...{ database, username: database } });
+      instances.push({ key, instance })
+    } else {
+      instance = instance?.instance
     }
+
+    sequelize = instance
   }
+
 
   sequelize.options.storage = ref
 }

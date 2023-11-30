@@ -8,7 +8,8 @@
         "build": "tsc",
         "start": "node --stack-size=65500 dist/app.js ",
         "dev": "nodemon --trace-warnings  --inspect --stack-size=65500 src/app.ts --host 192.168.0.101",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "ntest": "newman run test/collections/Auth.json && newman run test/collections/Attendance.json && newman run test/collections/Common.json && newman run test/collections/Company.json && newman run test/collections/Employee.json && newman run test/collections/Payroll.json && newman run test/collections/User.json"
     },
     "author": "Sebastião Lutonda",
     "license": "ISC",
