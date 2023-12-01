@@ -52,6 +52,12 @@ class AttendanceApi extends Api<Attendance> {
 
     const totalFaults: any = await Procedure(SPs.GetWeekPresenceFaults, [startDate, endDate]);
 
+    const totalEmployees: any = await Employee.count({
+      where: {
+        isActive: true
+      }
+    });
+
     let presences = {
       monday: totalPresences[0]?.mondayCount - totalFaults[0]?.mondayCount,
       tuesday: totalPresences[0]?.tuesdayCount - totalFaults[0]?.tuesdayCount,
@@ -62,7 +68,7 @@ class AttendanceApi extends Api<Attendance> {
       sunday: totalPresences[0]?.sundayCount - totalFaults[0]?.sundayCount
     }
 
-    return res.json({presences, totalPresences: totalPresences[0], totalFaults: totalFaults[0]});
+    return res.json({ presences, totalPresences: totalPresences[0], totalFaults: totalFaults[0], totalEmployees });
 
   }
 }
