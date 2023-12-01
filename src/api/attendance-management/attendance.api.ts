@@ -50,7 +50,7 @@ class AttendanceApi extends Api<Attendance> {
 
     const totalPresences: any = await Procedure(SPs.GetTotalWeekPresence, [startDate, endDate]);
 
-    const totalFaults: any = await Procedure(SPs.GetWeekPresenceFaults, [startDate, endDate]);
+    const totalFaults: any = await Procedure(SPs.GetWeekPresence, [startDate, endDate]);
 
     let presences = {
       monday: totalPresences[0]?.mondayCount - totalFaults[0]?.mondayCount,
