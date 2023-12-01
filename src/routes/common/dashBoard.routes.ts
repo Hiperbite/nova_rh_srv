@@ -51,6 +51,11 @@ const router = express.Router()
     "/roles-employees-count",
     asyncHandler(api.rolesEmployeesCount)
   )
+
+  .get(
+    "/get-events",
+    asyncHandler(api.getEvents)
+  )
   ;
 
 export default router;

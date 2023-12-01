@@ -176,49 +176,65 @@ export default class Employee extends Model {
         .filter((doc: Document) => doc.type == "PASSPORT")[0] ?? {}
     );
   }
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get holidayBalance() {
+
+    const oldest: Contract | undefined =
+      this.contracts?.sort((a: Contract, b: Contract) => moment(a.startDate).isBefore(b.startDate) ? -1 : 1)[0]
+    if (oldest === undefined)
+      return;
+
+    const startDate =  moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
+    const balance = startDate.diff(moment().startOf('year'), 'months') * 2 * (-1)
+
+    return balance > 22 ? 22 : balance;
+  }
   @Column({
     type: DataType.VIRTUAL
   })
   get payStub() {
-/*
-    let myPayrolls: any[] = [];
-
-    this.contracts?.forEach((contact: Contract) => {
-
-      const startDate = moment(contact.startDate);
-      let current = startDate.add(1, 'm');
-      const newPayroll = new PayStub()
-      newPayroll.contract = contact;
-      while (current.isBetween(contact.startDate, contact.endDate)) {
-
-
-        let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
-
-        const grossValue = 0, deductionValue = 0;
-
-        try {
-          const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-          const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-
-        } catch (err: any) {
-          let u = err;
-        }
-        myPayrolls.push({
-          date: current.format('Y-M'),
-          fromDate: current.format('Y-M'),
-          toDate: current.format('Y-M'),
-          grossValue,
-          deductionValue,
-          netValue: grossValue - deductionValue,
-          payStubs: currentPayrolls,
-          state: 0,
+    /*
+        let myPayrolls: any[] = [];
+    
+        this.contracts?.forEach((contact: Contract) => {
+    
+          const startDate = moment(contact.startDate);
+          let current = startDate.add(1, 'm');
+          const newPayroll = new PayStub()
+          newPayroll.contract = contact;
+          while (current.isBetween(contact.startDate, contact.endDate)) {
+    
+    
+            let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+    
+            const grossValue = 0, deductionValue = 0;
+    
+            try {
+              const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+              const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+    
+            } catch (err: any) {
+              let u = err;
+            }
+            myPayrolls.push({
+              date: current.format('Y-M'),
+              fromDate: current.format('Y-M'),
+              toDate: current.format('Y-M'),
+              grossValue,
+              deductionValue,
+              netValue: grossValue - deductionValue,
+              payStubs: currentPayrolls,
+              state: 0,
+            })
+            current = current.add(1, 'M');
+          }
+    
         })
-        current = current.add(1, 'M');
-      }
-
-    })
-    */
-    return ;//myPayrolls;
+        */
+    return;//myPayrolls;
 
   }
 

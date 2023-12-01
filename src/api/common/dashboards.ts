@@ -81,6 +81,11 @@ class DashBoardApi {
     
     return res.json(rolesEmployeesCount);
   }
+
+  getEvents = async(req: Request, res: Response): Promise<Response> => {
+    const events = await Procedure(SPs.GetEvents);
+    return res.json(events);
+  }
 }
 
 export default new DashBoardApi(new Repository(Track));

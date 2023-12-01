@@ -8,39 +8,46 @@ import { attendanceCreateSchema } from "../../application/schema/attendance/atte
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
-  const api = new Api(Attendance);
+const api = new Api(Attendance);
 // asyncHandler(
-  const attendanceApi = new AttendanceApi();
+const attendanceApi = new AttendanceApi();
 
 const router = express
   .Router()
 
-  router.post(
-    "/",
-    validateResource(attendanceCreateSchema),
-    asyncHandler(api.create)
-  )
-  router.put(
-    "/:id",
-    asyncHandler(api.update)
-  );
+router.post(
+  "/",
+  validateResource(attendanceCreateSchema),
+  asyncHandler(api.create)
 
-  router.delete(
-    "/:id",
-    asyncHandler(api.delete)
-  );
+)
+router.put(
+  "/:id",
+  asyncHandler(api.update)
+);
 
-  router.get(
-    "/:id",
-    asyncHandler(api.find)
-  );
-  router.get(
-    "/type/:id",
-    asyncHandler(attendanceApi.findByCode)
-  );
-  router.get(
-    "/",
-    asyncHandler(api.findBy)
-  );
+router.delete(
+  "/:id",
+  asyncHandler(api.delete)
+);
 
+router.get(
+  "/week-presences",
+  asyncHandler(attendanceApi.weekPresence)
+);
+
+router.get(
+  "/:id",
+  asyncHandler(api.find)
+);
+
+router.get(
+  "/type/:id",
+  asyncHandler(attendanceApi.findByCode)
+);
+
+router.get(
+  "/",
+  asyncHandler(api.findBy)
+);
 export default router;

@@ -143,7 +143,7 @@ const UniqIndex = createIndexDecorator({
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
   let instance: any;
-  if (NODE_ENV === 'development' || MY_NODE_ENV === 'development') {
+  if (NODE_ENV === 'development') {
     return;
   }
   if (sequelize.options.dialect === 'sqlite')
@@ -157,8 +157,6 @@ const switchTo = (db: any, ref: string) => {
       .replace('.', '_')
       .replace('/', '')
 
-    logger.info({ message: '......................................' })
-    logger.info({ message: 'request coming from: ' + ref })
     logger.info({ message: 'client key : ' + key })
 
     instance = instances.find((x: any) => x.key === key)
@@ -183,8 +181,8 @@ const switchTo = (db: any, ref: string) => {
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: true, force: true })
-    .then(initializer)
+    .sync({ alter: true, force: false})
+    //.then(initializer)
     .catch(console.error)
 )
 
@@ -201,7 +199,10 @@ enum SPs {
   GetStudentsCountGender = 'GetStudentsCountGender',
   GetStudentsRegistered = 'GetStudentsRegistered',
   GetStudentHonorRoll = 'GetStudentHonorRoll',
-  GetStudentCount = 'GetStudentCount'
+  GetStudentCount = 'GetStudentCount',
+  GetTotalWeekPresence = 'GetTotalWeekPresence(?,?)',
+  GetWeekPresence = 'GetWeekPresence(?,?)',
+  GetEvents = 'GetEvents'
 }
 const Procedure = async (procedure: SPs, opts: any = []) =>
   await sequelize
