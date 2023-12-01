@@ -254,9 +254,15 @@ export default class Employee extends Model {
     const planned = nextDays?.
       reduce((a: number, b: number) => a + b, 0)
 
-    const startDate = moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
-    const balance = startDate.diff(moment().startOf('year'), 'months') * 2 * (-1)
-    const annualBalance = balance > 22 ? 22 : balance;
+    const lastYear = moment().add(-1, 'year').endOf('year');
+    let months: number = 0;
+    if (moment(oldest?.startDate).year() === moment().add(-1, 'years').year()) {
+      months = lastYear.diff(moment(oldest?.startDate), 'months')
+    } else if (moment(oldest?.startDate).year() < moment().year()) {
+      months = 12
+    }
+    
+    const annualBalance = months * 2 ;
 
     return {
 
