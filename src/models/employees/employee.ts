@@ -154,6 +154,11 @@ export default class Employee extends Model {
   @Column({
     type: DataType.VIRTUAL,
   })
+  level: number = 0;
+
+  @Column({
+    type: DataType.VIRTUAL,
+  })
   get idCard() {
     return (
       this?.documents
@@ -187,7 +192,7 @@ export default class Employee extends Model {
     if (oldest === undefined)
       return;
 
-    const startDate =  moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
+    const startDate = moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
     const balance = startDate.diff(moment().startOf('year'), 'months') * 2 * (-1)
 
     return balance > 22 ? 22 : balance;

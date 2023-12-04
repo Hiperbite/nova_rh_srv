@@ -32,6 +32,7 @@ import {
   Track,
   PayStub,
   Bank,
+  Category,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -52,6 +53,7 @@ const models: modelsType[] = [
   { key: "address", model: Address },
   { key: "contact-types", model: ContactType },
   { key: "roles", model: Role },
+  { key: "categories", model: Category },
   { key: "salary-packages", model: SalaryPackage },
   { key: "additional-payments", model: AdditionalPayment },
   { key: "additional-fields", model: AdditionalField },
