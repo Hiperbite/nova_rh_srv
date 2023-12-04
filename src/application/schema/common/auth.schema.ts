@@ -2,7 +2,7 @@ import { object, string, TypeOf } from "zod";
 
 export const createSessionSchema = object({
   body: object({
-    email: string().min(4).max(30),
+    email: string().min(4).max(100),
     password: string({
       required_error: "Password is required",
     }).min(4, "Invalid email or password"),
