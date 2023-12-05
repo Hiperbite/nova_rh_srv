@@ -201,7 +201,7 @@ enum SPs {
   GetStudentHonorRoll = 'GetStudentHonorRoll',
   GetStudentCount = 'GetStudentCount',
   GetTotalWeekPresence = 'GetTotalWeekPresence(?,?)',
-  GetWeekPresence = 'GetWeekPresence(?,?)',
+  GetWeekPresence = 'GetWeekPresenceFaults(?,?)',
   GetEvents = 'GetEvents'
 }
 const Procedure = async (procedure: SPs, opts: any = []) =>
