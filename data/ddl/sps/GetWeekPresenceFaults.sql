@@ -1,5 +1,8 @@
 -- Active: 1693908954484@@127.0.0.1@3306@nova_rh
+
+DELIMITER //
 DROP PROCEDURE GETWEEKPRESENCEFAULTS;
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GETWEEKPRESENCEFAULTS`(IN STARTDATE DATE
 , IN ENDDATE DATE)
 BEGIN 
@@ -100,3 +103,6 @@ BEGIN
 	    (attendances.`typeId` = 'f6bcaa60-ee5d-490d-ba0c-d8ca55afa5ca'
 	    OR attendances.`typeId` = '68987a50-8f96-4735-af13-def233140b30');
 	END
+
+
+	//

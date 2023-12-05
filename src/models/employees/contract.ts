@@ -23,6 +23,7 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
   full: {
     include: [
       Role,
+      Category,
       AdditionalField,
       WorkingHour,
       SalaryPackage,
