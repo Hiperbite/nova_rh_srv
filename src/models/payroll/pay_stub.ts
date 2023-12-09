@@ -147,20 +147,24 @@ export default class PayStub extends Model {
                         typeId: type?.id
                     }
                 )
-                );
+                ) ?? [];
 
-        lines.push({
-            isActive: true,
-            code: '1000',
-            date: new Date(),
-            value: Number(salaryPackage?.baseValue),
-            debit: true,
-            quantity: 1,
-            baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: 'Base',
+        try {
+            lines.push({
+                isActive: true,
+                code: '1000',
+                date: new Date(),
+                value: Number(salaryPackage?.baseValue),
+                debit: true,
+                quantity: 1,
+                baseValuePeriod: salaryPackage?.baseValuePeriod,
+                descriptions: 'Base',
 
-        })
+            })
+        } catch (e: any) {
 
+            let u = e;
+        }
         const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
 
         lines.push({

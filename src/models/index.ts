@@ -142,8 +142,9 @@ const UniqIndex = createIndexDecorator({
 });
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
+  return;
   let instance: any;
-  if (ref.indexOf('localhost') > -1) {
+  if (ref === '' || ref.indexOf('localhost') > -1) {
     return;
   }
   if (sequelize.options.dialect === 'sqlite')

@@ -30,7 +30,7 @@ import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollSta
 export enum payrollState {
     Opened,
     Validated,
-    Confirmed,
+    //Confirmed,
     Approved,
     Executed,
     //Stuck=90,
@@ -38,13 +38,11 @@ export enum payrollState {
 
 
 
-const stateButton = [
-    { id: 0, icon: '', text: "Aberto", actions: ['Iniciar'], color: "secondary" },
-    { id: 1, icon: '', text: "Analise", actions: ['Confirmar'], color: "info" },
-    { id: 2, icon: '', text: "Confirmação", actions: ['Confirmar'], color: "primary" },
-    { id: 3, icon: '', text: "Aprovado", actions: ['Executar'], color: "warning" },
-    { id: 4, icon: 'check', text: "Exacutado", color: "success" },
-    { id: 90, icon: '', text: "Pendente", actions: [], color: "secondary" },
+const states = [
+    { id: 0, text: "Aberto", actions: ['Confirmar'], color: "secondary" },
+    { id: 1, text: "Analise", actions: ['Aprovar'], color: "info" },
+    { id: 2, text: "Aprovado", actions: ['Executar'], color: "warning" },
+    { id: 3, text: "Exacutado", color: "success", actions: [] },
 ]
 
 @Scopes(() => ({
@@ -92,6 +90,17 @@ export default class Payroll extends Model {
     state?: number;
 
     @Column({
+        type: DataType.VIRTUAL,
+    })
+    get currentState() {
+
+        return {
+            state: states?.find(({ id }: any) => id === this.state ?? 0),
+            states
+        }
+    }
+
+    @Column({
         type: DataType.TEXT,
         allowNull: true,
     })
@@ -116,7 +125,7 @@ export default class Payroll extends Model {
         type: DataType.VIRTUAL
     })
     get status() {
-        return stateButton[this.state ?? 0]
+        return states[this.state ?? 0]
     }
 
     @Column({
@@ -151,8 +160,7 @@ export default class Payroll extends Model {
     static afterPayloadSave = async (payroll: Payroll) => {
 
 
-        if (payroll.state === payrollState.Confirmed
-        ) {
+        if (payroll.state === payrollState.Approved) {
 
 
         } else
