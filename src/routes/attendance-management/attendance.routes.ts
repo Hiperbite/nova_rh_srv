@@ -37,6 +37,16 @@ router.get(
 );
 
 router.get(
+  "/vaccations/last",
+  asyncHandler(attendanceApi.lastVaccation)
+);
+
+router.get(
+  "/vaccations/next",
+  asyncHandler(attendanceApi.NextVaccations)
+);
+
+router.get(
   "/:id",
   asyncHandler(api.find)
 );

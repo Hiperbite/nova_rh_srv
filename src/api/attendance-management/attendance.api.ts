@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { Attendance, Employee, Procedure, SPs } from "../../models/index";
+import { Attendance, AttendanceType, Employee, Procedure, SPs } from "../../models/index";
 import Api from "../Api";
 import Repository, { Paginate } from "../../repository/repository";
 import {
   Model as M,
 } from "sequelize-typescript";
+import { Op } from "sequelize";
 
 class AttendanceApi extends Api<Attendance> {
   constructor() {
@@ -71,6 +72,46 @@ class AttendanceApi extends Api<Attendance> {
     return res.json({ presences, totalPresences: totalPresences[0], totalFaults: totalFaults[0], totalEmployees });
 
   }
+
+  lastVaccation = async (req: Request, res: Response): Promise<Response> => {
+
+
+    const type = await AttendanceType.findOne({
+      where: {
+        name:
+          { [Op.substring]: 'férias' }
+      }
+    });
+
+    const lastVaccation = await Attendance.scope("full").findOne({
+      where: {
+        employeeId: req.query?.employeeId,
+        typeId: type?.id
+      }, order:
+        [['createdAt', 'DESC']]
+
+    })
+
+    return res.json(lastVaccation);
+
+  }
+
+  NextVaccations = async (req: Request, res: Response): Promise<Response> => {
+
+
+    const type = await AttendanceType.findOne({
+      where: {
+        name:
+          { [Op.substring]: 'férias' }
+      }
+    });
+
+    return res.json(type);
+
+  }
+
+
+
 }
 
 export default new AttendanceApi();
