@@ -100,14 +100,24 @@ class AttendanceApi extends Api<Attendance> {
 
   NextVaccations = async (req: Request, res: Response): Promise<Response> => {
 
-
     const type = await AttendanceType.findOne({
       where: {
         code: 'VACATION' 
       }
     });
 
-    return res.json(type);
+    const nextVaccations = await Attendance.scope("full").findAll({
+      where: {
+        employeeId: req.query?.employeeId,
+        typeId: type?.id,
+        endDate: {
+          [Op.gte]: Date.now(), 
+        }
+      }, order:
+        [['endDate', 'DESC']]
+    })
+
+    return res.json(nextVaccations);
 
   }
 
