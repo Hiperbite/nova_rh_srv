@@ -78,18 +78,20 @@ class AttendanceApi extends Api<Attendance> {
 
     const type = await AttendanceType.findOne({
       where: {
-        name:
-          { [Op.substring]: 'férias' }
+        code: 'VACATION' 
       }
     });
 
-    const lastVaccation = await Attendance.scope("full").findOne({
+    const lastVaccation = await Attendance.scope("full").findAll({
       where: {
         employeeId: req.query?.employeeId,
-        typeId: type?.id
+        typeId: type?.id,
+        endDate: {
+          [Op.lte]: Date.now(), 
+        }
       }, order:
-        [['createdAt', 'DESC']]
-
+        [['endDate', 'DESC']],
+        limit: 1
     })
 
     return res.json(lastVaccation);
@@ -101,8 +103,7 @@ class AttendanceApi extends Api<Attendance> {
 
     const type = await AttendanceType.findOne({
       where: {
-        name:
-          { [Op.substring]: 'férias' }
+        code: 'VACATION' 
       }
     });
 
