@@ -6,6 +6,7 @@ import {
   Model as M,
 } from "sequelize-typescript";
 import { Op } from "sequelize";
+import moment from "moment";
 
 class AttendanceApi extends Api<Attendance> {
   constructor() {
@@ -25,7 +26,7 @@ class AttendanceApi extends Api<Attendance> {
     if (employee)
       body = { ...body, ...employee.id }
 
-    const attendance: Attendance | void = await this.repo.create(body, { include: { all: true } });
+    const attendance = await Attendance.create(body);
 
     return res.json(attendance);
   };
@@ -86,8 +87,11 @@ class AttendanceApi extends Api<Attendance> {
       where: {
         employeeId: req.query?.employeeId,
         typeId: type?.id,
-        endDate: {
+        startDate: {
           [Op.lte]: Date.now(), 
+        },
+        endDate: {
+          [Op.gte]: Date.now(), 
         }
       }, order:
         [['endDate', 'DESC']],
@@ -110,8 +114,8 @@ class AttendanceApi extends Api<Attendance> {
       where: {
         employeeId: req.query?.employeeId,
         typeId: type?.id,
-        endDate: {
-          [Op.gte]: Date.now(), 
+        startDate: {
+          [Op.gt]: Date.now(), 
         }
       }, order:
         [['endDate', 'DESC']]
