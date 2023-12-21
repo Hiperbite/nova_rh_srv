@@ -91,7 +91,7 @@ class AttendanceApi extends Api<Attendance> {
           [Op.lte]: Date.now(), 
         },
         endDate: {
-          [Op.gte]: Date.now(), 
+          [Op.lte]: Date.now(), 
         }
       }, order:
         [['endDate', 'DESC']],
