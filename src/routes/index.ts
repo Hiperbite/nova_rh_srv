@@ -7,6 +7,9 @@ import { initializer } from "../models/initializer";
 import { commonErrorHandler, genericErrorHendler, notFoundErrorHendler } from "../application/middleware/errorHendler";
 import requireAuthentication from "../application/middleware/requireAuthentication";
 
+import { PayStub } from "../models/index";
+import WITaxApp from "../application/payrolls/wi_tax.app";
+
 export const asyncHandler = (fn: any, model?: any) => (req: any, res: any, next: any) => {
   req.model = model
   Promise.resolve(fn(req, res, next)).catch((err: any) => {
@@ -21,6 +24,7 @@ const router = (app: Application) => {
     .get(
       "/",
       asyncHandler(async (req: any, res: any) => {
+        const ps=WITaxApp.calculator(new PayStub());
         const ip = req?.headers['x-forwarded-for'] || req?.connection?.remoteAddress;
         res.status(200).send(`Hey ${ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()}/${NODE_ENV?.toUpperCase()} env`)
       })

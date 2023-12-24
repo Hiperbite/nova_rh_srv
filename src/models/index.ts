@@ -57,6 +57,7 @@ import Category from "./employees/category";
 import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
+import WITaxTable from "./payroll/wi_tax_tables";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
@@ -113,6 +114,7 @@ const sequelizeOptions: SequelizeOptions = {
     SalaryPackage,
     PayStub,
     Payroll,
+    WITaxTable,
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
@@ -241,6 +243,7 @@ export {
   SalaryPackage,
   PayStub,
   Payroll,
+  WITaxTable,
   PayrollLine,
   PayrollLineType,
   PayrollStatus,

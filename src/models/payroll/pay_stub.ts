@@ -15,16 +15,20 @@ import {
 import moment from "moment";
 import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person, Department, Role } from "../index";
 import { payrollState } from "./payroll";
+import WITaxApp from "../../application/payrolls/wi_tax.app";
 
 @DefaultScope(() => ({
-    include: [{ model: Payroll, include: [] },]
+    //include: [{ model: Payroll, include: [] },]
 }))
 @Scopes(() => ({
     default: {
         include: [{ model: Payroll, include: [] }, PayrollLine]
     },
+    'mine-default': {
+        include: [{ model: Payroll, include: [] }, PayrollLine],
+    },
     full: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, Department, Role, { model: Employee, include: [Person] }] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, ]
     }
 }))
 @Table({
@@ -165,18 +169,10 @@ export default class PayStub extends Model {
 
             let u = e;
         }
+        if (payStub.contractId === '22ad6154-2eb2-455f-884e-463d72e34792') {
+            let u = 0;
+        }
         const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
-
-        lines.push({
-            isActive: true,
-            code: '350',
-            date: new Date(),
-            value: grossValue * 3 / 100,
-            debit: false,
-            quantity: 1,
-            baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: 'INSS [3%]'
-        })
 
         const IRTTable = [
             { a: 0, b: 70000, v: 0 },
@@ -188,20 +184,31 @@ export default class PayStub extends Model {
         ]
         const IRTpercent = (r: number): number => IRTTable.find(({ a, b }: any) => r > a && r <= b)?.v ?? 0
 
+        const { excess, rate, fixedInstallment, witValue, ssValue } = await WITaxApp.calculator(lines)
         if (grossValue > 70000) {
             lines.push({
                 isActive: true,
                 code: '401',
                 date: new Date(),
-                value: grossValue * IRTpercent(grossValue) / 100,
+                value: witValue,
                 debit: false,
                 quantity: 1,
                 baseValuePeriod: salaryPackage?.baseValuePeriod,
-                descriptions: `IRT [${IRTpercent(grossValue)}%]`,
+                descriptions: `IRT [${rate}%]`,
 
             })
         }
 
+        lines.push({
+            isActive: true,
+            code: '350',
+            date: new Date(),
+            value: ssValue,
+            debit: false,
+            quantity: 1,
+            baseValuePeriod: salaryPackage?.baseValuePeriod,
+            descriptions: 'INSS [3%]'
+        })
 
         const deductionValue = lines.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((x: any, y: any) => Number(x) + Number(y));
         const netValue = grossValue - deductionValue;

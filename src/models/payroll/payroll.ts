@@ -193,7 +193,7 @@ export default class Payroll extends Model {
     static validateEligibility = async (payroll: Payroll) => {
 
         const year = payroll?.date?.getFullYear()
-        const month = (payroll?.date?.getMonth() ?? 1) - 1
+        const month = (payroll?.date?.getMonth() ?? 1) 
         const existPayroll: any = await Payroll.findOne({ where: { year, month } })
 
         if (existPayroll === null || existPayroll?.state < payrollState.Approved) {

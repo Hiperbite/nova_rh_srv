@@ -16,7 +16,8 @@ import SequenceApp, { CODES } from "../../application/common/sequence.app";
 
 @Scopes(() => ({
     default: {
-        include: []
+        include: [],
+        order: ['code']
     }
 }))
 @Table({

@@ -37,9 +37,26 @@ import {
 }))
 @Scopes(() => ({
   all: {
-    include: {
-      all: true
+    include: [{
+      all: true,
+    },
+    {
+      model: Contract, include: [
+        Role, Department,
+        PayStub,
+        {
+          model: SalaryPackage,
+          include: [
+            {
+              model: AdditionalPayment,
+              include: [AdditionalPaymentType]
+            }
+          ]
+        },
+      ]
     }
+
+    ]
   },
   payStub: {
     include: [
