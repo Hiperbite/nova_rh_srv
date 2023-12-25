@@ -144,7 +144,7 @@ const UniqIndex = createIndexDecorator({
 });
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
-  return;
+  //return;
   let instance: any;
   if (ref === '' || ref.indexOf('localhost') > -1) {
     return;
@@ -157,6 +157,7 @@ const switchTo = (db: any, ref: string) => {
       .replace('http://', '')
       .replace('wwww.', '')
       .replace('.nova.ao', '')
+      .replace('rh.', '')
       .replace('.', '_')
       .replace('/', '')
 
