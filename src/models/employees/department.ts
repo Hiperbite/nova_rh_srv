@@ -10,7 +10,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { Model, Department as Dep, Contract, Employee, Person, Role, Category } from "../index";
+import { Model, Department as Dep, Contract, Employee, Person, EmployeeRole, Category } from "../index";
 import moment from "moment";
 
 /*
@@ -26,7 +26,7 @@ import moment from "moment";
     include: [{ model: Contract, include: [Employee] }, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
   },
   full: {
-    include: [{ model: Contract, include: [{ model: Employee, include: [Person] }, Role, Category] }, { model: Dep, as: 'childs' }]
+    include: [{ model: Contract, include: [{ model: Employee, include: [Person] }, EmployeeRole, Category] }, { model: Dep, as: 'childs' }]
   }
 }))
 @Table({

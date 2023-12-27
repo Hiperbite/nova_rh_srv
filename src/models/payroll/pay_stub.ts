@@ -13,7 +13,7 @@ import {
     AfterCreate,
 } from "sequelize-typescript";
 import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person, Department, Role } from "../index";
+import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person, Department, EmployeeRole } from "../index";
 import { payrollState } from "./payroll";
 
 @DefaultScope(() => ({
@@ -24,7 +24,7 @@ import { payrollState } from "./payroll";
         include: [{ model: Payroll, include: [] }, PayrollLine]
     },
     full: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, Department, Role, { model: Employee, include: [Person] }] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, Department, EmployeeRole, { model: Employee, include: [Person] }] }]
     }
 }))
 @Table({

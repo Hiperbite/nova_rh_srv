@@ -10,7 +10,7 @@ import {
   Document,
   Employee,
   Person,
-  Role,
+  EmployeeRole,
   SalaryPackage,
   sequelize,
   WorkingHour,
@@ -289,7 +289,7 @@ const initialData: InitializerType[] = [
     ]
   },
   {
-    model: 'Role', data: [
+    model: 'EmployeeRole', data: [
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Project manager' },
       { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '2', name: 'Software Architect' },
       { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '3', name: 'Data science' },
@@ -315,26 +315,35 @@ const initialData: InitializerType[] = [
   {
     model: 'RoleLevel', data: [
 
-      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1 ,code: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2 ,code: 2 },
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3 ,code: 3 },
-      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4 ,code: 4 },
-      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5 ,code: 5 },
-      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6 ,code: 6 },
-      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7 ,code: 7 },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8 ,code: 8 },
-      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9 ,code: 9 },
-      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10,code: 10 },
-      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11,code: 11 },
-      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12,code: 12 },
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13,code: 13 },
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14,code: 14 },
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15,code: 15 },
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16,code: 16 },
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17,code: 17 },
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18,code: 18 },
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19,code: 19 },
-      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20,code: 20 },
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1, code: 1 },
+      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2, code: 2 },
+      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3, code: 3 },
+      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4, code: 4 },
+      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5, code: 5 },
+      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6, code: 6 },
+      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7, code: 7 },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8, code: 8 },
+      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9, code: 9 },
+      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10, code: 10 },
+      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11, code: 11 },
+      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12, code: 12 },
+      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13, code: 13 },
+      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14, code: 14 },
+      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15, code: 15 },
+      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16, code: 16 },
+      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17, code: 17 },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18, code: 18 },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19, code: 19 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20, code: 20 },
+    ]
+  },
+  {
+    model: 'Role', data: [
+
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", name: "EMPLOYEE", code: 12 },
+      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", name: "USER", code: 21 },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", name: "ADMIN", code: 31 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", name: "MANAGER", code: 13 },
     ]
   },
   {
@@ -2022,7 +2031,7 @@ function createRandomEmployees(): any {
   departments.push(flatten(y[2]))
   departments = departments.flat(1)
 
-  const roles: any[] = initialData?.find(({ model }: any) => model === 'Role')?.data ?? []
+  const roles: any[] = initialData?.find(({ model }: any) => model === 'EmployeeRole')?.data ?? []
   const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
   const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
   const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data.filter(({ id }: any) => id) ?? []
@@ -2124,7 +2133,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 300;
+  let i = 10;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:

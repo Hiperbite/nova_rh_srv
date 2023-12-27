@@ -27,7 +27,7 @@ import {
   AdditionalPayment,
   AdditionalPaymentType,
   AccountPaymentData,
-  Role,
+  EmployeeRole,
   Department,
   Attendance
 } from "../index";
@@ -45,7 +45,7 @@ import {
     include: [
       {
         model: Contract, include: [
-          Role, Department,
+          EmployeeRole, Department,
           PayStub,
           {
             model: SalaryPackage,
@@ -65,7 +65,7 @@ import {
       Person,
       {
         model: Contract,
-        include: [Role, Department],
+        include: [EmployeeRole, Department],
       }
     ]
   }

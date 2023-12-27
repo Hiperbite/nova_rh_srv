@@ -19,7 +19,7 @@ import {
     ForeignKey,
     AfterCreate,
 } from "sequelize-typescript";
-import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, Role, SalaryPackage } from "../index";
+import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, EmployeeRole, SalaryPackage } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -47,7 +47,7 @@ const states = [
 
 @Scopes(() => ({
     default: {
-        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage, Role, Department, { model: Employee, include: [Person] }] }] }]
+        include: [{ model: PayStub, include: [PayrollLine, { model: Contract, include: [SalaryPackage, EmployeeRole, Department, { model: Employee, include: [Person] }] }] }]
     },
     simple: {
         include: [PayStub]

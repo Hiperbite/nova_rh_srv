@@ -14,60 +14,22 @@ import {
   Scopes,
   BelongsTo,
   ForeignKey,
+  BelongsToMany,
 } from "sequelize-typescript";
-import { Model, Address, Employee, Person } from "../index";
+import { Model, Address, Employee, Person, Role } from "../../index";
 
 import bcrypt from "bcrypt";
-import { UserApp } from "../../application/common/user.app";
-import sendEmail, { mailServices } from "../../application/mailler/index";
+import { UserApp } from "../../../application/common/user.app";
+import sendEmail, { mailServices } from "../../../application/mailler/index";
 import { uniqueId } from "lodash";
 import { randomUUID } from "crypto";
+import Level from "./level";
 
 const UniqIndex = createIndexDecorator({
   name: 'Email-index',
   type: 'UNIQUE',
   unique: true,
 });
-export type ROLES =
-  | 'ROLES_STUDENT'
-  | 'ROLES_PROFESSOR'
-  | 'ROLES_TECHNICAL'
-  | 'ROLES_MANAGER'
-  | 'ROLES_OFFICE_CHEF'
-
-export type PermissionsType =
-  | "STUDENTS_1"
-  | "STUDENTS_2"
-  | "STUDENTS_3"
-  | "STUDENTS_4"
-  | "CANDIDATES_1"
-  | "CANDIDATES_2"
-  | "CANDIDATES_3"
-  | "CANDIDATES_4"
-  | "CLASS_1"
-  | "CLASS_2"
-  | "CLASS_3"
-  | "CLASS_4"
-  | "CLASSIFICATION_1"
-  | "CLASSIFICATION_2"
-  | "CLASSIFICATION_3"
-  | "CLASSIFICATION_4"
-  | "STAFF_1"
-  | "STAFF_2"
-  | "STAFF_3"
-  | "STAFF_4"
-  | "TABLES_1"
-  | "TABLES_2"
-  | "TABLES_3"
-  | "TABLES_4"
-  | "ADMIN_1"
-  | "ADMIN_2"
-  | "ADMIN_3"
-  | "ADMIN_4"
-  | "ACADEMIC_1"
-  | "ACADEMIC_2"
-  | "ACADEMIC_3"
-  | "ACADEMIC_4"
 
 @Scopes(() => ({
   main: {
@@ -132,12 +94,6 @@ export default class User extends Model {
   })
   password?: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  role!: ROLES;
-
   @Default(true)
   @Column({
     type: DataType.BOOLEAN,
@@ -175,6 +131,15 @@ export default class User extends Model {
   })
   verified?: boolean;
 
+  @BelongsToMany(() => Role, () => Level)
+  roles!: Role[]
+
+  @BelongsTo(() => Employee)
+  employee!: Employee
+
+  @ForeignKey(() => Employee)
+  employeeId!: string;
+  
   @BeforeSave
   @BeforeCreate
   static initVer = UserApp.initVer;
@@ -187,11 +152,7 @@ export default class User extends Model {
   static hashPassword = UserApp.hashPassword;
 
 
-  @BelongsTo(() => Employee)
-  employee!: Employee
-
-  @ForeignKey(() => Employee)
-  employeeId!: string;
+  
 
   @AfterCreate
   static notifyUser = (user: User) =>
