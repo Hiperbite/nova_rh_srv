@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import sequelize, { switchTo } from "../../models/index";
 import { logger, MY_NODE_ENV, NODE_ENV } from "../../config";
+import { Op } from "sequelize";
 const uuidPattern = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/
 
 const encode = (str: string) => {
@@ -46,7 +47,7 @@ const validateRequest = (
           where[key] = JSON.parse(where[key]);
       } catch (error) { }
       if (where[key] && where[key].indexOf(',') > -1)
-        where[key] = where[key].split(',');
+        where[key] = { [Op.in]: where[key].split(',') };
       if (where[key] === 'true' || where[key] === 'false')
         where[key] = where[key] === 'true' ? true : false;
       if (where[key] === 'null')

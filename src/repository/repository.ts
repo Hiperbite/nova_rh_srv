@@ -1,3 +1,4 @@
+import { includes } from 'lodash';
 import { Transaction } from "sequelize";
 import {
   Model as M,
@@ -46,8 +47,16 @@ export default class Repository<T extends M>  {
 
     let final;
 
+
+    let { include }: any = this?.Model?.options?.scopes?.all ?? {};
+    let includes = include ?? options?.include;
     await this.start();
-    final = await this.Model.create(data, { ...options, transaction: this.transaction });
+    final = await this.Model.create(data, {
+      ... {
+        ...options,
+        include: includes
+      }, transaction: this.transaction
+    });
     await this.commit();
 
     return final;

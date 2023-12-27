@@ -58,6 +58,7 @@ import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 import Role from "./employees/user/role";
 import Level from "./employees/user/level";
+import WITaxTable from "./payroll/wi_tax_tables";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
@@ -114,6 +115,7 @@ const sequelizeOptions: SequelizeOptions = {
     SalaryPackage,
     PayStub,
     Payroll,
+    WITaxTable,
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
@@ -144,7 +146,7 @@ const UniqIndex = createIndexDecorator({
 });
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
-  return;
+  //return;
   let instance: any;
   if (ref === '' || ref.indexOf('localhost') > -1) {
     return;
@@ -157,6 +159,7 @@ const switchTo = (db: any, ref: string) => {
       .replace('http://', '')
       .replace('wwww.', '')
       .replace('.nova.ao', '')
+      .replace('rh.', '')
       .replace('.', '_')
       .replace('/', '')
 
@@ -242,6 +245,7 @@ export {
   SalaryPackage,
   PayStub,
   Payroll,
+  WITaxTable,
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
