@@ -42,7 +42,7 @@ import {
     },
     {
       model: Contract, include: [
-        Role, Department,
+        EmployeeRole, Department,
         PayStub,
         {
           model: SalaryPackage,

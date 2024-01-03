@@ -15,15 +15,14 @@ import {
   BelongsTo,
   ForeignKey,
   BelongsToMany,
+  HasMany,
 } from "sequelize-typescript";
 import { Model, Address, Employee, Person, Role } from "../../index";
 
 import bcrypt from "bcrypt";
 import { UserApp } from "../../../application/common/user.app";
 import sendEmail, { mailServices } from "../../../application/mailler/index";
-import { uniqueId } from "lodash";
 import { randomUUID } from "crypto";
-import Level from "./level";
 
 const UniqIndex = createIndexDecorator({
   name: 'Email-index',
@@ -94,6 +93,12 @@ export default class User extends Model {
   })
   password?: string;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  role!: string;
+
   @Default(true)
   @Column({
     type: DataType.BOOLEAN,
@@ -131,8 +136,7 @@ export default class User extends Model {
   })
   verified?: boolean;
 
-  @BelongsToMany(() => Role, () => Level)
-  roles!: Role[]
+  
 
   @BelongsTo(() => Employee)
   employee!: Employee
@@ -140,6 +144,9 @@ export default class User extends Model {
   @ForeignKey(() => Employee)
   employeeId!: string;
   
+  @HasMany(() => Role)
+  roles!: Role[]
+
   @BeforeSave
   @BeforeCreate
   static initVer = UserApp.initVer;

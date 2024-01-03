@@ -57,8 +57,8 @@ import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 import Role from "./employees/user/role";
-import Level from "./employees/user/level";
 import WITaxTable from "./payroll/wi_tax_tables";
+import RoleModule from "./employees/user/RoleModule";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
@@ -135,7 +135,7 @@ const sequelizeOptions: SequelizeOptions = {
     Bank,
     EmployeeRole,
     Role,
-    Level
+    RoleModule
   ],
 }
 let sequelize = new Sequelize(sequelizeOptions);
@@ -278,5 +278,5 @@ export {
   Department,
   WorkingHour,
   Role,
-  Level
+  RoleModule
 };

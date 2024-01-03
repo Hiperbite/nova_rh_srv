@@ -24,7 +24,6 @@ import attendance from "./attendance-management/attendance.routes";
 import attendanceType from "./attendance-management/attendance-type.routes";
 import attendanceJustification from "./attendance-management/attendance-justification.routes";
 import roleRoutes from "./employees/role.routes";
-import levelRoutes from "./employees/level.routes";
 
 const routes = Router();
 
@@ -35,7 +34,6 @@ routes.use('/attendances/types', attendanceType)
 
 routes.use('/users', userRoutes)
 routes.use('/roles', roleRoutes)
-routes.use('/levels', levelRoutes)
 
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)

@@ -12,10 +12,10 @@ import { v4 as uuids4 } from "uuid";
 import { User, Role } from "../../index";
 @Table({
     timestamps: true,
-    tableName: "levels",
+    tableName: "RoleModules",
 })
 
-export default class Level extends Main {
+export default class RoleModule extends Main {
     @Column({
         type: DataType.UUID,
         primaryKey: true,
@@ -27,21 +27,23 @@ export default class Level extends Main {
     })
     isActive!: boolean;
 
-
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING,
         allowNull: true,
     })
-    type?: number;
+    code!: string;
 
-    @ForeignKey(() => User)
-    userId!: string;
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+    name!: string;
 
     @ForeignKey(() => Role)
     roleId!: string;
 
     @BeforeCreate
-    static prepare = (model: Level) => {
+    static prepare = (model: RoleModule) => {
         model.isActive ||= true;
         model.id = model.id ?? uuids4();
     };

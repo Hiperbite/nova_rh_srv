@@ -11,7 +11,7 @@ import {
 } from "../../service/auth.service";
 
 import { verifyJwt } from "../../application/jwt";
-import { User, Employee } from "../../models/index";
+import { User, Employee, Role, RoleModule } from "../../models/index";
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -40,13 +40,25 @@ export async function createSessionHandler(
 
     const employeeId = user.employeeId;
 
+    const roles = await Role.findAll({
+        where: {
+            userId: user?.id
+        },
+        attributes: ['level'],
+        include: {
+            model: RoleModule,
+            attributes: ['name']
+        }
+    })
+
     // sign a access token
-    const accessToken = signAccessToken(user, employeeId);
+    const accessToken = signAccessToken(user, employeeId, roles);
 
     // sign a refresh token
     const refreshToken = await signRefreshToken({ userId: String(user.id) });
 
     // send the tokens
+
     return res.status(status).send({ accessToken, refreshToken });
 }
 
