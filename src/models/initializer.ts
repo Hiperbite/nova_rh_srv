@@ -440,6 +440,7 @@ const initialData: InitializerType[] = [
       { id: "86f8b609-21f2-4f53-99df-4db73100a52e", name: "payroll", code: 21 },
       { id: "87f8b609-21f2-4f53-99df-4db73100a52e", name: "attendances", code: 31 },
       { id: "89f0b609-21f2-4f53-99df-4db73100a52e", name: "settings", code: 13 },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", name: 'general', code: 19 },
     ]
   },
   {
