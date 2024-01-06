@@ -23,7 +23,10 @@ import PayStubApp from "../../application/payrolls/pay_stub.app";
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Payroll, include: [] }, PayrollLine]
+        include: [Payroll, PayrollLine]
+    },
+    rebuild: {
+        include: [Payroll]
     },
     'mine-default': {
         include: [{ model: Payroll, include: [] }, PayrollLine],
@@ -127,9 +130,18 @@ export default class PayStub extends Model {
         return;// this.lines = [];
     }
 
+    @AfterFind
+    static rebuildPayStubs = async (payStubs: any, opts: any) => {
+
+        if (opts?.topModel?._scopeNames?.indexOf('rebuild')>-1) {
+            for (let payStub of payStubs) {
+                payStub.lines = await PayrollLine.findAll({ where: { payStubId: payStub.id } })
+            }
+        }
+        return payStubs;
+    }
     @AfterCreate
     static afterCreatePayStub = PayStubApp.afterCreatePayStub
-    
     @BeforeCreate
     @BeforeSave
     static initModel = async (payStub: PayStub) => {

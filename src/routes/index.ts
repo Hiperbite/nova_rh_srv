@@ -9,6 +9,7 @@ import requireAuthentication from "../application/middleware/requireAuthenticati
 
 import { PayStub } from "../models/index";
 import WITaxApp from "../application/payrolls/wi_tax.app";
+import PayRollApp from "../application/payrolls/pay_roll.app";
 
 export const asyncHandler = (fn: any, model?: any) => (req: any, res: any, next: any) => {
   req.model = model
@@ -24,7 +25,10 @@ const router = (app: Application) => {
     .get(
       "/",
       asyncHandler(async (req: any, res: any) => {
-        const ps=WITaxApp.calculator(new PayStub());
+        const xml=await PayRollApp.generateWiTaxReportXML(2023,10)
+        res.header("Content-Type", "application/xml");
+        return res.send(xml);
+
         const ip = req?.headers['x-forwarded-for'] || req?.connection?.remoteAddress;
         res.status(200).send(`Hey ${ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()}/${NODE_ENV?.toUpperCase()} env`)
       })

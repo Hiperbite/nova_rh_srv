@@ -185,7 +185,7 @@ const switchTo = (db: any, ref: string) => {
 }
 
 const Repo = sequelize.getRepository;
-(true &&
+(false &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)
@@ -208,6 +208,7 @@ enum SPs {
   GetStudentCount = 'GetStudentCount',
   GetTotalWeekPresence = 'GetTotalWeekPresence(?,?)',
   GetWeekPresence = 'GetWeekPresenceFaults(?,?)',
+  GetWiTAX = 'GETWITAX(?,?)',
   GetEvents = 'GetEvents'
 }
 const Procedure = async (procedure: SPs, opts: any = []) =>

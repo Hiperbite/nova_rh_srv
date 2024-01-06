@@ -58,6 +58,9 @@ const config = () => {
 
   app.use(errorHandler);
 
+  var xmlparser = require('express-xml-bodyparser');
+
+  app.use(xmlparser());
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
