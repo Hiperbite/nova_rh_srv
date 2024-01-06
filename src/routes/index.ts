@@ -25,10 +25,6 @@ const router = (app: Application) => {
     .get(
       "/",
       asyncHandler(async (req: any, res: any) => {
-        const xml=await PayRollApp.generateWiTaxReportXML(2023,10)
-        res.header("Content-Type", "application/xml");
-        return res.send(xml);
-
         const ip = req?.headers['x-forwarded-for'] || req?.connection?.remoteAddress;
         res.status(200).send(`Hey ${ip}, I'm alive on ${MY_NODE_ENV?.toUpperCase()}/${NODE_ENV?.toUpperCase()} env`)
       })
