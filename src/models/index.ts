@@ -136,12 +136,13 @@ const sequelizeOptions: SequelizeOptions = {
     Role,
   ],
 }
-let sequelize = new Sequelize(sequelizeOptions);
 const UniqIndex = createIndexDecorator({
   name: uuid() + '-index',
   type: 'UNIQUE',
   unique: true,
 });
+
+let sequelize = new Sequelize(sequelizeOptions);
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
   //return;
@@ -182,8 +183,9 @@ const switchTo = (db: any, ref: string) => {
 
   sequelize.options.storage = ref
 }
+
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)

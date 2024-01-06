@@ -103,3 +103,4 @@ BEGIN
 		and Employees.`isActive` = 1
 		and Contracts.`isActive`  is true;
 	END
+	//

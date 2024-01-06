@@ -8,11 +8,13 @@ import {
     BeforeCreate,
     BeforeSave,
     HasMany,
+    BeforeUpdate,
 } from "sequelize-typescript";
 import moment from "moment";
 import { AdditionalPaymentType, Model, Payroll, PayStub } from "../index";
 
 import SequenceApp, { CODES } from "../../application/common/sequence.app";
+import PayStubLineApp from "../../application/payrolls/pay_stub_line.app";
 
 @Scopes(() => ({
     default: {
@@ -85,4 +87,7 @@ export default class PayrollLine extends Model {
     payStubId!: string;
 
 
+    @BeforeUpdate
+    @BeforeCreate
+    static updatePayStub = PayStubLineApp.updatePayStub
 }
