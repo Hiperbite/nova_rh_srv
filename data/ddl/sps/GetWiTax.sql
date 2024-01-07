@@ -27,7 +27,7 @@ CREATE PROCEDURE `GETWITAX`(IN YEAR INT, IN MONTH INT
 	    prl.code
 	FROM `PayrollLines` prl
 	    left join `PayStubs` ps ON ps.id = prl.`payStubId` 
-		left join `Payrolls` pr on pr.id=ps.`payrollId` and pr.state > 2
+		left join `Payrolls` pr on pr.id=ps.`payrollId` 
 	    left join `Contracts` c on c.id = ps.`contractId`
 	    left join `Employees` e on c.`employeeId` = e.id
 	    left join `SalaryPackages` s on s.`contractId` = c.id
@@ -35,5 +35,6 @@ CREATE PROCEDURE `GETWITAX`(IN YEAR INT, IN MONTH INT
 	    left join `Documents` d on d.`employeeId` = e.id and d.`isActive` and d.type = 'IDCARD'
 	where
 	    ps.year = YEAR
-	    and prl.code = '401';
-	END // 
+	    and prl.code = '401'
+		and pr.state > 2;
+	END; // 

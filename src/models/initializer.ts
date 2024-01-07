@@ -113,8 +113,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b600-21f2-4f53-99df-4db73100a52e",
         code: 1, leve: 1,
-        from: 0.0000,
-        to: 70000.00,
+        fromValue: 0.0000,
+        toValue: 70000.00,
         fixedInstallment: 0,
         rate: 0,
         excess: 0
@@ -122,8 +122,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b601-21f2-4f53-99df-4db73100a52e",
         code: 2, leve: 2,
-        from: 70001.00,
-        to: 100000.00,
+        fromValue: 70001.00,
+        toValue: 100000.00,
         fixedInstallment: 3000,
         rate: 10,
         excess: 70000.00
@@ -131,8 +131,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b602-21f2-4f53-99df-4db73100a52e",
         code: 3, leve: 3,
-        from: 100001.00,
-        to: 150000.00,
+        fromValue: 100001.00,
+        toValue: 150000.00,
         fixedInstallment: 6000,
         rate: 13,
         excess: 100000.00
@@ -140,8 +140,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b603-21f2-4f53-99df-4db73100a52e",
         code: 4, leve: 4,
-        from: 150001.00,
-        to: 200000.00,
+        fromValue: 150001.00,
+        toValue: 200000.00,
         fixedInstallment: 12500,
         rate: 16,
         excess: 150000.00
@@ -149,8 +149,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b615-21f2-4f53-99df-4db73100a52e",
         code: 5, leve: 5,
-        from: 200001.00,
-        to: 300000.00,
+        fromValue: 200001.00,
+        toValue: 300000.00,
         fixedInstallment: 31250,
         rate: 18,
         excess: 200000.00
@@ -158,8 +158,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b614-21f2-4f53-99df-4db73100a52e",
         code: 6, leve: 6,
-        from: 300001.00,
-        to: 500000.00,
+        fromValue: 300001.00,
+        toValue: 500000.00,
         fixedInstallment: 49250,
         rate: 19,
         excess: 300000.00
@@ -167,8 +167,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b604-21f2-4f53-99df-4db73100a52e",
         code: 7, leve: 7,
-        from: 500001.00,
-        to: 1000000.00,
+        fromValue: 500001.00,
+        toValue: 1000000.00,
         fixedInstallment: 87250,
         rate: 20,
         excess: 500000.00
@@ -176,8 +176,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b605-21f2-4f53-99df-4db73100a52e",
         code: 8, leve: 8,
-        from: 1000001.00,
-        to: 1500000.00,
+        fromValue: 1000001.00,
+        toValue: 1500000.00,
         fixedInstallment: 187250,
         rate: 21,
         excess: 1000000.00
@@ -185,8 +185,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b606-21f2-4f53-99df-4db73100a52e",
         code: 9, leve: 9,
-        from: 1500001.00,
-        to: 2000000.00,
+        fromValue: 1500001.00,
+        toValue: 2000000.00,
         fixedInstallment: 292000,
         rate: 22,
         excess: 1500000.00
@@ -194,8 +194,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b607-21f2-4f53-99df-4db73100a52e",
         code: 10, leve: 10,
-        from: 2000001.00,
-        to: 2500000.00,
+        fromValue: 2000001.00,
+        toValue: 2500000.00,
         fixedInstallment: 402250,
         rate: 23,
         excess: 2000000.00
@@ -203,8 +203,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b608-21f2-4f53-99df-4db73100a52e",
         code: 11, leve: 11,
-        from: 2500001.00,
-        to: 5000000.00,
+        fromValue: 2500001.00,
+        toValue: 5000000.00,
         fixedInstallment: 517250,
         rate: 24,
         excess: 2500000.00
@@ -212,8 +212,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b609-21f2-4f53-99df-4db73100a52e",
         code: 12, leve: 12,
-        from: 5000001.00,
-        to: 10000000.00,
+        fromValue: 5000001.00,
+        toValue: 10000000.00,
         fixedInstallment: 1117250,
         rate: 24.5,
         excess: 5000000.00
@@ -221,8 +221,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b610-21f2-4f53-99df-4db73100a52e",
         code: 13, leve: 13,
-        from: 10000001.00,
-        to: null,
+        fromValue: 10000001.00,
+        toValue: null,
         fixedInstallment: 2342250,
         rate: 25,
         excess: 10000000.00
@@ -2066,7 +2066,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 300;
+  let i = 100;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:

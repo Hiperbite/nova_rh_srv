@@ -102,5 +102,5 @@ BEGIN
 		(Attendances.`startDate` BETWEEN STARTDATE and ENDDATE) 
 		and Employees.`isActive` = 1
 		and Contracts.`isActive`  is true;
-	END
+	END;
 	//

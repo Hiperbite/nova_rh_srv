@@ -145,7 +145,7 @@ const UniqIndex = createIndexDecorator({
 let sequelize = new Sequelize(sequelizeOptions);
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
-  //return;
+  return;
   let instance: any;
   if (ref === '' || ref.indexOf('localhost') > -1) {
     return;
@@ -187,8 +187,8 @@ const switchTo = (db: any, ref: string) => {
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: true, force: false })
-    //.then(initializer)
+    .sync({ alter: true, force: true })
+    .then(initializer)
     .catch(console.error)
 )
 
