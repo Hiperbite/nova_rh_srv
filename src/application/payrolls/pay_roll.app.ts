@@ -35,7 +35,7 @@ export default class PayRollApp {
                     strProvincia: address?.province,
                     strMunicipio: address?.city,
                     rendimentoAnual: baseValue * 12,
-                    totalDoImpostoPago:  x?.map((r: any) => r.totalDoImpostoPago)?.reduce((r: number, s: number) => r + s, 0)
+                    totalDoImpostoPago: x?.map((r: any) => r.totalDoImpostoPago)?.reduce((r: number, s: number) => r + s, 0)
                 }
             }).value()
         const wiTaxData = {
@@ -78,7 +78,8 @@ export default class PayRollApp {
                         property: 1,
                         debit: true,
                         baseValuePeriod,
-                        typeId: type?.id
+                        typeId: type?.id,
+                        category: type?.category
                     }
                 )
                 ) ?? [];
@@ -93,6 +94,7 @@ export default class PayRollApp {
                 quantity: 1,
                 baseValuePeriod: salaryPackage?.baseValuePeriod,
                 descriptions: 'Base',
+                
 
             })
         } catch (e: any) {
@@ -104,18 +106,8 @@ export default class PayRollApp {
         }
         const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
 
-        const IRTTable = [
-            { a: 0, b: 70000, v: 0 },
-            { a: 70001, b: 150000, v: 10 },
-            { a: 150001, b: 300000, v: 16 },
-            { a: 300001, b: 500000, v: 19 },
-            { a: 500001, b: 1500000, v: 20 },
-            { a: 1500001, b: 3000000, v: 24 },
-        ]
-        const IRTpercent = (r: number): number => IRTTable.find(({ a, b }: any) => r > a && r <= b)?.v ?? 0
-
         const { excess, rate, fixedInstallment, witValue, ssValue } = await WITaxApp.calculator(lines)
-        if (grossValue > 70000) {
+        if (witValue > 0) {
             lines.push({
                 isActive: true,
                 code: '401',

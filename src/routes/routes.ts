@@ -19,6 +19,7 @@ import personal from "./employees/person.routes";
 import accountpaymentdata from "./employees/account_payment_data.routes"
 
 import payroll from "./payrolls/payroll.routes";
+import settings from "./settings";
 
 import attendance from "./attendance-management/attendance.routes";
 import attendanceType from "./attendance-management/attendance-type.routes";
@@ -51,6 +52,7 @@ routes.use('/employees/contracts', contracts)
 routes.use('/employees/personal', personal)
 
 routes.use('/payrolls/payroll', payroll)
+routes.use('/settings', settings)
 
 routes.use(commonRoutes)
 

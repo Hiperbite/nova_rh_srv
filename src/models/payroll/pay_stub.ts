@@ -13,7 +13,7 @@ import {
     AfterCreate,
 } from "sequelize-typescript";
 import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person, Department, Role } from "../index";
+import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category } from "../index";
 import { payrollState } from "./payroll";
 import WITaxApp from "../../application/payrolls/wi_tax.app";
 import PayStubApp from "../../application/payrolls/pay_stub.app";
@@ -33,6 +33,9 @@ import PayStubApp from "../../application/payrolls/pay_stub.app";
     },
     full: {
         include: [{ model: Payroll, include: [] }, PayrollLine,]
+    },
+    xfull: {
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, Role, Category, { model: Employee, include: [Person, AccountPaymentData] }] }]
     }
 }))
 @Table({
@@ -133,7 +136,7 @@ export default class PayStub extends Model {
     @AfterFind
     static rebuildPayStubs = async (payStubs: any, opts: any) => {
 
-        if (opts?.topModel?._scopeNames?.indexOf('rebuild')>-1) {
+        if (opts?.topModel?._scopeNames?.indexOf('rebuild') > -1) {
             for (let payStub of payStubs) {
                 payStub.lines = await PayrollLine.findAll({ where: { payStubId: payStub.id } })
             }
@@ -142,6 +145,7 @@ export default class PayStub extends Model {
     }
     @AfterCreate
     static afterCreatePayStub = PayStubApp.afterCreatePayStub
+    
     @BeforeCreate
     @BeforeSave
     static initModel = async (payStub: PayStub) => {

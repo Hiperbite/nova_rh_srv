@@ -1,4 +1,4 @@
-DROP PROCEDURE GetEmployeeSearch -- Active: 1667157413070@@127.0.0.1@3306@nova_rh
+-- Active: 1667157413070@@127.0.0.1@3306@nova_ri
 DELIMITER //
 CREATE PROCEDURE GetEmployeeSearch(IN NAME VARCHAR(100))
 

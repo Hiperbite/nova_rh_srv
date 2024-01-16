@@ -1,3 +1,4 @@
+import  PayrollSetting  from './Settings/payroll.settings';
 
 import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
@@ -58,6 +59,7 @@ import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 import WITaxTable from "./payroll/wi_tax_tables";
+import { tr } from "@faker-js/faker";
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
@@ -134,6 +136,9 @@ const sequelizeOptions: SequelizeOptions = {
     RoleLevel,
     Bank,
     Role,
+
+
+    PayrollSetting
   ],
 }
 const UniqIndex = createIndexDecorator({
@@ -185,7 +190,7 @@ const switchTo = (db: any, ref: string) => {
 }
 
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
     .sync({ alter: true, force: true })
     .then(initializer)
@@ -278,5 +283,7 @@ export {
   LicenseSetting,
   Setting,
   Department,
-  WorkingHour
+  WorkingHour,
+
+  PayrollSetting
 };

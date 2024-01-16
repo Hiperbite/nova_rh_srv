@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-  getGeneratedDocument, getGeneratePayStub, getGenerateWiTaxFile
+  getGeneratedDocument, getGeneratePayRollExtractFile, getGeneratePayStub, getGenerateWiTaxFile
 } from "../../api/common/document-generate.api";
 
 
@@ -15,8 +15,12 @@ router.get(
 )
 
   .get(
-    '/get-witax-File',
-    getGenerateWiTaxFile
+    '/get-witax-File/:id',
+    asyncHandler(getGenerateWiTaxFile)
+  )
+  .get(
+    '/get-pay-roll-extract-file/:id',
+    asyncHandler(getGeneratePayRollExtractFile)
   );
 router.get(
   "/:id", asyncHandler(getGeneratedDocument)

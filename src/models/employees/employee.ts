@@ -135,6 +135,7 @@ export default class Employee extends Model {
     type: DataType.VIRTUAL
   })
   get contract() {
+    let l;
     let c: any = this.contracts
     c = c?.filter(({ isActive }: any) => isActive)
     c = c?.filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate ?? moment().add(1, 'years').format('YYYY-MM-DD')) || moment().isBefore(startDate))
@@ -142,9 +143,16 @@ export default class Employee extends Model {
       sort((n: Contract, p: Contract) =>
         moment(n.startDate).isBefore(moment(p.startDate)) ? -1 : 1)[0];
 
-    return c;
+    return c ?? this.contracts?.sort((n: Contract, p: Contract) =>
+      moment(n.startDate).isBefore(moment(p.startDate)) ? -1 : 1)[0];;
   }
 
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get disabled() {
+    return !this.contract?.isActive || moment().isAfter(moment(this.contract?.endDate))
+  }
   @Column({
     type: DataType.VIRTUAL
   })

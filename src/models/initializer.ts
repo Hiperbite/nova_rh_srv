@@ -17,6 +17,7 @@ import {
 } from "./index";
 
 import { faker } from '@faker-js/faker';
+import PayrollSetting from './Settings/payroll.settings';
 
 
 type InitializerType = { model: any, data: any[], include?: any }
@@ -89,14 +90,14 @@ const initialData: InitializerType[] = [
         code: "DTI",
         name: "Direcção de Tecnologia da Informação",
         departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
-        
+
       },
       {
         id: "c3764843-27f4-47c9-a6a7-5c7917814f72",
         code: "DOP",
         departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
         name: "Direcção de Operações",
-        
+
       }]
   },
   {
@@ -114,7 +115,7 @@ const initialData: InitializerType[] = [
         id: "00f8b600-21f2-4f53-99df-4db73100a52e",
         code: 1, leve: 1,
         fromValue: 0.0000,
-        toValue: 70000.00,
+        toValue: 100000.00,
         fixedInstallment: 0,
         rate: 0,
         excess: 0
@@ -122,110 +123,101 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b601-21f2-4f53-99df-4db73100a52e",
         code: 2, leve: 2,
-        fromValue: 70001.00,
-        toValue: 100000.00,
-        fixedInstallment: 3000,
-        rate: 10,
-        excess: 70000.00
+        fromValue: 100001.00,
+        toValue: 150000.00,
+        fixedInstallment: 0,
+        rate: 13,
+        excess: 100001.00
       },
       {
         id: "00f8b602-21f2-4f53-99df-4db73100a52e",
         code: 3, leve: 3,
-        fromValue: 100001.00,
-        toValue: 150000.00,
-        fixedInstallment: 6000,
-        rate: 13,
-        excess: 100000.00
-      },
-      {
-        id: "00f8b603-21f2-4f53-99df-4db73100a52e",
-        code: 4, leve: 4,
         fromValue: 150001.00,
         toValue: 200000.00,
         fixedInstallment: 12500,
         rate: 16,
-        excess: 150000.00
+        excess: 150001.00
       },
       {
-        id: "00f8b615-21f2-4f53-99df-4db73100a52e",
-        code: 5, leve: 5,
+        id: "00f8b603-21f2-4f53-99df-4db73100a52e",
+        code: 4, leve: 4,
         fromValue: 200001.00,
         toValue: 300000.00,
         fixedInstallment: 31250,
         rate: 18,
-        excess: 200000.00
+        excess: 200001.00
       },
       {
-        id: "00f8b614-21f2-4f53-99df-4db73100a52e",
-        code: 6, leve: 6,
+        id: "00f8b615-21f2-4f53-99df-4db73100a52e",
+        code: 5, leve: 5,
         fromValue: 300001.00,
         toValue: 500000.00,
         fixedInstallment: 49250,
         rate: 19,
-        excess: 300000.00
+        excess: 300001.00
       },
       {
-        id: "00f8b604-21f2-4f53-99df-4db73100a52e",
-        code: 7, leve: 7,
+        id: "00f8b614-21f2-4f53-99df-4db73100a52e",
+        code: 6, leve: 6,
         fromValue: 500001.00,
         toValue: 1000000.00,
         fixedInstallment: 87250,
         rate: 20,
-        excess: 500000.00
+        excess: 500001.00
+      },
+      {
+        id: "00f8b604-21f2-4f53-99df-4db73100a52e",
+        code: 7, leve: 7,
+        fromValue: 1000001.00,
+        toValue: 1000000.00,
+        fixedInstallment: 147249,
+        rate: 21,
+        excess: 1000001.00
       },
       {
         id: "00f8b605-21f2-4f53-99df-4db73100a52e",
         code: 8, leve: 8,
-        fromValue: 1000001.00,
-        toValue: 1500000.00,
-        fixedInstallment: 187250,
-        rate: 21,
-        excess: 1000000.00
+        fromValue: 1500001.00,
+        toValue: 2000000.00,
+        fixedInstallment: 292249,
+        rate: 22,
+        excess: 1500001.00
       },
       {
         id: "00f8b606-21f2-4f53-99df-4db73100a52e",
         code: 9, leve: 9,
-        fromValue: 1500001.00,
-        toValue: 2000000.00,
-        fixedInstallment: 292000,
-        rate: 22,
-        excess: 1500000.00
+        fromValue: 2000001.00,
+        toValue: 2500000.00,
+        fixedInstallment: 402249,
+        rate: 23,
+        excess: 2000001.00
       },
       {
         id: "00f8b607-21f2-4f53-99df-4db73100a52e",
         code: 10, leve: 10,
-        fromValue: 2000001.00,
-        toValue: 2500000.00,
-        fixedInstallment: 402250,
-        rate: 23,
-        excess: 2000000.00
+        fromValue: 2_500_001.00,
+        toValue: 5_000_000.00,
+        fixedInstallment: 517_249,
+        rate: 24,
+        excess: 2_500_001.00
       },
       {
         id: "00f8b608-21f2-4f53-99df-4db73100a52e",
         code: 11, leve: 11,
-        fromValue: 2500001.00,
-        toValue: 5000000.00,
-        fixedInstallment: 517250,
-        rate: 24,
-        excess: 2500000.00
+        fromValue: 5000001.00,
+        toValue: 10000000.00,
+        fixedInstallment: 1117249,
+        rate: 24.5,
+        excess: 5000001.00
       },
       {
         id: "00f8b609-21f2-4f53-99df-4db73100a52e",
         code: 12, leve: 12,
-        fromValue: 5000001.00,
-        toValue: 10000000.00,
-        fixedInstallment: 1117250,
-        rate: 24.5,
-        excess: 5000000.00
-      },
-      {
-        id: "00f8b610-21f2-4f53-99df-4db73100a52e",
-        code: 13, leve: 13,
         fromValue: 10000001.00,
-        toValue: null,
-        fixedInstallment: 2342250,
+        toValue: 0,
+        fixedInstallment: 2342248,
         rate: 25,
-        excess: 10000000.00
+        excess: 10000001.00
       }
     ]
   },
@@ -291,37 +283,47 @@ const initialData: InitializerType[] = [
     model: 'AdditionalPaymentType', data: [
 
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1000', name: 'Vencimento Base', level: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '1401', level: 0, name: 'Subsidio de Almoço' },
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Subsidio de Competitividade' },
+      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '1401', level: 0, name: 'Subsídio de Alimentação' },
+      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Subsídio de Competitividade' },
       { id: "33f8b609-21f2-4f53-99df-4db73100a52e", code: 'BN', level: 0, name: 'Bônus' },
       { id: "43f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
       { id: "53f8b609-21f2-4f53-99df-4db73100a52e", code: 'AS', level: 0, name: 'Adiantamento salarial' },
       { id: "63f8b609-21f2-4f53-99df-4db73100a52e", code: 'TF', level: 0, name: 'Trabalho em feriados' },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'VC', level: 0, name: 'Feriados' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'HD', level: 0, name: 'Feriados' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52a", code: '1630', level: 0, name: 'Subsídio de Férias' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52b", code: '1642', level: 0, name: 'Subsídio de Natal' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52c", code: 'STR', level: 0, name: 'Subsídio de Turno' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52d", code: 'SCE', level: 0, name: 'Subsídio de Condições Especiais de Trabalho' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'SEM', level: 0, name: 'Subsídio de Enfermidade ou Maternidade' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52f", code: 'SED', level: 0, name: 'Subsídio de Educação' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a50e", code: 'SAS', level: 0, name: 'Subsídio de Ação Social' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a59e", code: 'PDS', level: 0, name: 'Prémios de Desempenho' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a08e", code: 'SAF', level: 0, name: 'Subsídio de Apoio à Família' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a58e", code: '1603', level: 0, name: 'Subsídio de abono Famíliar' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a57e", code: 'SNT', level: 0, name: 'Subsídio Noturno' },
       { id: "89f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
       { id: "93f8b609-21f2-4f53-99df-4db73100a52e", code: 'VA', level: 0, name: 'Remuneração Variável' },
       { id: "03f8b609-21f2-4f53-99df-4db73100a52e", code: 'CM', level: 0, name: 'Comissões' },
       { id: "81f8b609-21f2-4f53-99df-4db73100a52e", code: 'CP', level: 0, name: 'Complemento' },
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", code: 'DS', level: 0, name: 'Subsidio de Disponibilidade' },
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", code: 'AC', level: 0, name: 'Subsidio de Acomodação' },
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", code: 'TR', level: 0, name: 'Subsidio de Transporte' },
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", code: 'ET', level: 0, name: 'Subsidio de Espaço de trabalho' },
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", code: 'RF', level: 0, name: 'SUbsidio de Refeição' },
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", code: 'AP', level: 0, name: 'Subsidio de Aprendizado' },
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", code: 'OU', level: 0, name: 'Outro SUbsidio' }
+      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", code: 'DS', level: 0, name: 'Subsídio de Disponibilidade' },
+      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", code: 'AC', level: 0, name: 'Subsídio de Acomodação' },
+      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", code: '1402', level: 0, name: 'Subsídio de Transporte' },
+      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", code: 'ET', level: 0, name: 'Subsídio de Espaço de trabalho' },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", code: 'AP', level: 0, name: 'Subsídio de Aprendizado' },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", code: 'OU', level: 0, name: 'Outro Subsídio' }
     ]
   },
   {
     model: 'Business', data: [
-      { code: '1', name:  'Lavandaria' },
-      { code: '2', name:  'Cinema' },
-      { code: '3', name:  'Hospital' },
-      { code: '4', name:  'Clínica' },
-      { code: '5', name:  'Cabeleireiro' },
-      { code: '6', name:  'Estética' },
-      { code: '7', name:  'Mecânica' },
-      { code: '8', name:  'Restaurante' },
-      { code: '9', name:  'Supermercado' },
+      { code: '1', name: 'Lavandaria' },
+      { code: '2', name: 'Cinema' },
+      { code: '3', name: 'Hospital' },
+      { code: '4', name: 'Clínica' },
+      { code: '5', name: 'Cabeleireiro' },
+      { code: '6', name: 'Estética' },
+      { code: '7', name: 'Mecânica' },
+      { code: '8', name: 'Restaurante' },
+      { code: '9', name: 'Supermercado' },
       { code: '10', name: 'Hotelaria' },
       { code: '11', name: 'Fábrica' },
       { code: '12', name: 'Armarinho' },
@@ -1888,7 +1890,7 @@ const initialData: InitializerType[] = [
           province: faker.location.state(),
           countryId: '13f8b609-21f2-4f53-99df-4db73100a52e',
         }],
-        isActive:false,
+        isActive: false,
         business: { code: '17', name: faker.commerce.department() }
       }]
   },
@@ -1936,7 +1938,19 @@ const initialData: InitializerType[] = [
       },*/
 
     ]
-  }]
+  },
+  {
+    model: 'PayrollSetting', data: [{
+      name: 'PST',
+      code: 'PST',
+      paymentDay: 30,
+      absenceCount: false,
+      absencePercent: 0,
+      overtimeCount: false,
+      overtimePercent: 0
+    }]
+  }
+]
 
 
 function createRandomEmployees(): any {
@@ -1971,18 +1985,22 @@ function createRandomEmployees(): any {
   const categories: any[] = initialData?.find(({ model }: any) => model === 'Category')?.data.filter(({ id }: any) => id) ?? []
   const banks: any[] = initialData?.find(({ model }: any) => model === 'Bank')?.data ?? []
 
+
+  const accountPaymentDatas = (i: number) =>
+    [...Array(i + 1).keys()].map(() => ({
+      iban: faker.finance.iban(),
+      number: faker.finance.accountNumber(),
+      bankId: faker.helpers.arrayElement(banks?.map(({ id }: any) => id)),
+      currency: faker.finance.currencyCode(),
+      swift: faker.finance.bic(),
+      countryId: faker.helpers.arrayElement(countries?.filter(({ id }) => id)?.map(({ id }: any) => id))
+    }))
+  //accountPaymentDatas((faker.number.int(2))).map((x: any) => AccountPaymentData.create(x))
+
   const generateEmployee = (key: number) => {
 
-    const accountPaymentDatas = (i: number) =>
-      [...Array(i + 1).keys()].map(() => ({
-        iban: faker.finance.iban(),
-        number: faker.finance.accountNumber(),
-        bankId: faker.helpers.arrayElement(banks?.map(({ id }: any) => id)),
-        currency: faker.finance.currencyCode(),
-        swift: faker.finance.bic(),
-        countryId: faker.helpers.arrayElement(countries?.filter(({ id }) => id)?.map(({ id }: any) => id))
-      }))
-
+    let weekDays = ["Mo", "Tu", "We", "Th", "Fr"];
+    (Math.floor(Math.random() * 10) > 2) && weekDays.push('Sa')
     return {
       code: 'A' + String(key).padStart(7, '0'),
       isActive: faker.datatype.boolean(0.8),
@@ -2060,13 +2078,13 @@ function createRandomEmployees(): any {
           workingHour: {
             period: faker.number.int(3),
             hours: faker.number.int({ min: 30, max: 60 }),
-            weekDays: ["Mo", "Tu", "Th", "Fr", "Sa"]
+            weekDays
           }
         }
       ]
     }
   }
-  let i = 100;
+  let i = 2;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:

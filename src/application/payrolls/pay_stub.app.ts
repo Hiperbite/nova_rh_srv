@@ -1,12 +1,17 @@
 import { PayrollLine, PayStub, SalaryPackage } from "../../models/index";
 import moment from "moment";
 import WITaxApp from "./wi_tax.app";
+import payrollApi from "api/payrolls/payroll.api";
 
 export default class PayStubApp {
 
 
     static afterCreatePayStub = async (payStub: PayStub, { transaction }: any = { transaction: null }) => {
-
+try {
+    if(payStub?.id==="28b3cfa2-f5a3-4bea-b3b5-b1356127ba93"){
+        let ui=0;
+    }
+    
         const salaryPackage: any = await SalaryPackage.findOne({ where: { contractId: payStub?.contractId } })// payStub?.contract?.salaryPackage
         const additionalPayments: any = salaryPackage?.additionalPayments
 
@@ -52,16 +57,6 @@ export default class PayStubApp {
         }
         const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
 
-        const IRTTable = [
-            { a: 0, b: 70000, v: 0 },
-            { a: 70001, b: 150000, v: 10 },
-            { a: 150001, b: 300000, v: 16 },
-            { a: 300001, b: 500000, v: 19 },
-            { a: 500001, b: 1500000, v: 20 },
-            { a: 1500001, b: 3000000, v: 24 },
-        ]
-        const IRTpercent = (r: number): number => IRTTable.find(({ a, b }: any) => r > a && r <= b)?.v ?? 0
-
         const { excess, rate, fixedInstallment, witValue, ssValue } = await WITaxApp.calculator(lines)
         if (grossValue > 70000) {
             lines.push({
@@ -94,5 +89,9 @@ export default class PayStubApp {
         for (let line of lines)
             await PayrollLine.create({ ...line, payStubId: payStub?.id }, { transaction })
 
+
+} catch (error:any) {
+ let u = error   
+}
     }
 }

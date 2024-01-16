@@ -18,7 +18,7 @@ import PayStubLineApp from "../../application/payrolls/pay_stub_line.app";
 
 @Scopes(() => ({
     default: {
-        include: [],
+        include: [AdditionalPaymentType],
         order: ['code']
     }
 }))
@@ -41,10 +41,12 @@ export default class PayrollLine extends Model {
     date?: Date;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.DECIMAL(32, 2),
         allowNull: true,
     })
-    value!: number;
+    get value() {
+        return parseFloat(this.getDataValue('value'))
+    };
 
     @Column({
         type: DataType.BOOLEAN,

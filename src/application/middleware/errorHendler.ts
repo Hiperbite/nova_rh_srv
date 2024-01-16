@@ -2,7 +2,7 @@ import { logger } from "../../config";
 
 export const genericErrorHendler = (err: any, req: any, res: any, next: any) =>{
     // All errors from async & non-async route above will be handled here
-    let errors = [];
+    let errors =    [];
 
     if (err?.original?.code === "ER_NO_REFERENCED_ROW_2") {
         errors = [{ message: `${err.table} not founds`, fields: err.fields }];

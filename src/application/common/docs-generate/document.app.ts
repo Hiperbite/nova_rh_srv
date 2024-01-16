@@ -398,7 +398,7 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumentDefinitions> {
 
 
-  const payStub = await PayStub.scope('full').findOne({ where: { id: payStubId }, include: { all: true } })
+  const payStub = await PayStub.scope('xfull').findOne({ where: { id: payStubId }, include: { all: true } })
 
   const banckAccount = await AccountPaymentData.findOne({ where: { employeeId: payStub?.contract?.employeeId }, include: { all: true } })
 
@@ -409,13 +409,14 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
     ? await toDataURL(company?.logos ?? '')
     : company?.logos
 
-  const template = await [template_0, template_1][0]({ payStubId, address, company, banckAccount, payStub, logo })
+  const template = await [template_0, template_0][0]({ payStubId, address, company, banckAccount, payStub, logo })
 
   return template;
-  
-}
-async function template_1({  address, company, banckAccount, payStub, logo }: any): Promise<TDocumentDefinitions> {
 
+}
+async function template_0({ address, company, banckAccount, payStub, logo }: any): Promise<TDocumentDefinitions> {
+
+  const month = moment().set('month', (payStub?.month-1??0)).format('MMMM').toUpperCase();
 
   return {
 
@@ -427,13 +428,13 @@ async function template_1({  address, company, banckAccount, payStub, logo }: an
 
         layout: {
           fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return '#FFF'//(rowIndex % 2 === 0) ? '#fafaff' : null;
+            return '#fefefe'//(rowIndex % 2 === 0) ? '#fafaff' : null;
           },
           hLineColor: function (i, node) {
-            return '#FFF'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+            return '#fefefe'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
           },
           vLineColor: function (i, node) {
-            return '#FFF'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+            return '#fefefe'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
           },
         },
         //layout: 'headerLineOnly', // optional
@@ -454,7 +455,7 @@ async function template_1({  address, company, banckAccount, payStub, logo }: an
               {
                 text: [{ text: 'RECIBO DE SALARIO\n', style: 'h1' },
 
-                moment().set('month', (payStub?.month ?? 0) - 1).format('MMMM').toUpperCase,
+                  month,
                   ' DE ',
                 payStub?.year
                 ],
@@ -484,13 +485,13 @@ async function template_1({  address, company, banckAccount, payStub, logo }: an
 
         layout: {
           fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return (rowIndex % 2 === 0) ? '#fafaff' : "#fafaff";
+            return (rowIndex % 2 === 0) ? '#fefefe' : "#fdfdfd";
           },
           hLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+            return '#fdfdfd'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
           },
           vLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+            return '#fdfdfd'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
           },
         },
         style: {
@@ -519,7 +520,7 @@ async function template_1({  address, company, banckAccount, payStub, logo }: an
               { text: 'Segurança Social:', style: 'd3' },
               { text: payStub?.contract?.employee?.person?.socialSecurityNumber, style: 'd2' },
               { text: 'Categoria:', style: 'd3' },
-              { text: payStub?.contract?.role?.name?.includes('-') ? payStub?.contract?.role?.name?.split('-')[1] : '...', style: 'd2' }
+              { text: payStub?.contract?.category?.name, style: 'd2' }
             ],
             [
               { text: 'NIF:', style: 'd3' },
@@ -589,7 +590,7 @@ async function template_1({  address, company, banckAccount, payStub, logo }: an
               },
               {
                 fillColor: '#FFF',
-                text: 'Valor Bruto',
+                text: 'Total',
                 style: ['th', { alignment: 'right' }],
               },
               {
@@ -732,441 +733,12 @@ async function template_1({  address, company, banckAccount, payStub, logo }: an
     footer: {
       columnGap: 50,
       columns: [
-        [
-          {
-            text: company?.name + '',
-            style: ['lowFooter', 'd2', { margin: [0, 0, 0, 10] }],
-          }, {
-            text:
-              company?.contacts?.map(({ descriptions }: any) => descriptions ?? '').join(' | ') + '\n'
-              + address?.fullAddress,
-            style: ['lowFooter', { margin: [0, 0, 0, 10] }],
-          },]
-        , {
-          text: '\n\nwww.nova.ao',
-          style: ['lowFooter', { alignment: 'right' }]
-        },
-      ]
-    }
-
-    ,
-    defaultStyle: {
-      font: "Helvetica",
-      lineHeight: 1.5,
-      fontSize: 10,
-      alignment: 'justify',
-    },
-    styles: {
-      header: {
-        fontSize: 16,
-        bold: true,
-        alignment: 'center',
-        marginTop: 35,
-        marginBottom: 15,
-        decoration: "underline",
-      },
-      d3: {
-        alignment: 'right',
-        color: '#333'
-      },
-      d2: {
-        bold: true,
-      },
-      headers: {
-        fontSize: 18,
-        bold: true,
-        margin: [0, 0, 0, 10]
-      },
-      subheader: {
-        fontSize: 16,
-        bold: true,
-        margin: [0, 10, 0, 5]
-      },
-      tableExample: {
-        margin: [0, 5, 0, 15]
-      },
-      tableHeader: {
-      },
-      th: {
-        bold: true,
-        fontSize: 12,
-        color: '#333',
-        fillColor: '#fafaff',
-        alignment: 'left',
-      },
-      tf: {
-        bold: true,
-        fontSize: 13,
-        color: 'black',
-        alignment: 'left',
-        fillColor: '#fafaff'
-      },
-      h1: {
-        fontSize: 14,
-        bold: true,
-        marginTop: 25,
-        marginBottom: 5,
-      },
-      body: {
-        fontSize: 12,
-        bold: false,
-        alignment: 'justify',
-        marginLeft: 50,
-        marginRight: 50,
-        lineHeight: 2,
-      },
-      footer: {
-        fontSize: 12,
-        bold: true,
-        alignment: 'center',
-      },
-      lowFooter: {
-        fontSize: 9,
-
-        marginLeft: 50,
-        marginRight: 50,
-      },
-      textRight: {
-
-        alignment: 'right',
-      }
-    },
-
-  }
-
-}
-
-async function template_0({  address, company, banckAccount, payStub , logo}: any): Promise<TDocumentDefinitions> {
-
-
-  return {
-
-
-    content: [
-      // header
-      ' ',
-      {
-
-        layout: {
-          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return '#FFF'//(rowIndex % 2 === 0) ? '#fafaff' : null;
-          },
-          hLineColor: function (i, node) {
-            return '#FFF'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
-          },
-          vLineColor: function (i, node) {
-            return '#FFF'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
-          },
-        },
-        //layout: 'headerLineOnly', // optional
-        table: {
-          // headers are automatically repeated if the table spans over multiple pages
-          // you can declare how many rows should be treated as headers
-          headerRows: 1,
-          widths: [300, '*', 300],
-
-          body: [
-            [
-              {
-                image: logo ?? novaIcon,
-                width: 100,
-
-              },
-              '',
-              {
-                text: [{ text: 'RECIBO DE SALARIO\n', style: 'h1' },
-
-                moment().set('month', (payStub?.month ?? 0) - 1).format('MMMM').toUpperCase,
-                  ' DE ',
-                payStub?.year
-                ],
-              }
-            ],
-            [
-              {
-                text: {
-                  text: [
-                    company?.name + '\n',
-                    'NIF: ' + company?.nif + '\n',
-                    address?.province + ' - ' + address?.country?.name,
-                  ], fontSize: 9
-                },
-              },
-              '',
-              ''
-            ],
-            ['', '', '']
-
-          ]
-        }
-      },
-      ' ',
-      ' ',
-      {
-
-        layout: {
-          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return (rowIndex % 2 === 0) ? '#fafaff' : "#fafaff";
-          },
-          hLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
-          },
-          vLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
-          },
-        },
-        style: {
-          margin: [-10, 0, 0, -10]
-        },
-        //layout: 'headerLineOnly', // optional
-        table: {
-          // headers are automatically repeated if the table spans over multiple pages
-          // you can declare how many rows should be treated as headers
-          headerRows: 1,
-          widths: [95, '*', 95, '*'],
-          body: [
-            [
-              { text: 'Nome:', style: 'd3' },
-              { text: payStub?.contract?.employee?.person?.fullName, style: 'd2' },
-              { text: 'Departamento:', style: 'd3' },
-              { text: payStub?.contract?.department?.name, style: 'd2' }
-            ],
-            [
-              { text: 'Numero:', style: 'd3' },
-              { text: payStub?.contract?.employee?.code, style: 'd2' },
-              { text: 'Função:', style: 'd3' },
-              { text: payStub?.contract?.role?.name?.split('-')[0], style: 'd2' }
-            ],
-            [
-              { text: 'Segurança Social:', style: 'd3' },
-              { text: payStub?.contract?.employee?.person?.socialSecurityNumber, style: 'd2' },
-              { text: 'Categoria:', style: 'd3' },
-              { text: payStub?.contract?.role?.name?.includes('-') ? payStub?.contract?.role?.name?.split('-')[1] : '...', style: 'd2' }
-            ],
-            [
-              { text: 'NIF:', style: 'd3' },
-              { text: payStub?.contract?.employee?.idCard, style: 'd2' },
-              { text: 'Nivel:', style: 'd3' }, ''],
-
-          ]
-        }
-      },
-      ' ',
-      {
-
-        layout: {
-          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return null//(rowIndex % 2 === 0) ? '#fafaff' : null;
-          },
-          hLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
-          },
-          vLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
-          },
-        },
-        //layout: 'headerLineOnly', // optional
-        table: {
-          // headers are automatically repeated if the table spans over multiple pages
-          // you can declare how many rows should be treated as headers
-          headerRows: 1,
-          widths: [10, '*', 100, 100],
-
-          body: [
-            [
-
-              {
-                text: '#',
-                style: 'th',
-              },
-              {
-                text: 'ABONO',
-                style: 'th',
-              },
-              {
-                text: 'QUANTIDADE',
-                style: 'th',
-              },
-              {
-                text: 'VALOR',
-                style: 'th',
-              }
-            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, '',
-            {
-              text: currency(line?.value).split('AOA')[0],
-              style: 'textRight',
-            }])) ?? []),
-
-            [
-
-              {
-                border: [true, true, true, true],
-                fillColor: '#FFF',
-                text: '',
-
-              },
-              {
-                fillColor: '#FFF',
-                text: '',
-              },
-              {
-                fillColor: '#FFF',
-                text: 'Valor Bruto',
-                style: ['th', { alignment: 'right' }],
-              },
-              {
-                text: currency(payStub?.grossValue ?? 0)?.split('AOA')[0],
-                style: ['th', { alignment: 'right' }],
-              }
-            ]
-
-          ]
-        }
-      }, ' ',
-      {
-
-        layout: {
-          fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return null//(rowIndex % 2 === 0) ? '#fafaff' : null;
-          },
-          hLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
-          },
-          vLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
-          },
-        },
-        //layout: 'headerLineOnly', // optional
-        table: {
-          // headers are automatically repeated if the table spans over multiple pages
-          // you can declare how many rows should be treated as headers
-          headerRows: 1,
-          widths: [10, '*', 100, 100],
-
-          body: [
-            [
-
-              {
-                text: '#',
-                style: 'th',
-              },
-              {
-                text: 'DEDUÇÂO',
-                style: 'th',
-              },
-              {
-                text: 'QUANTIDADE',
-                style: 'th',
-              },
-              {
-                text: 'VALOR',
-                style: 'th',
-              }
-            ], ...(payStub?.lines?.filter(({ debit }: any) => !debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
-            {
-              text: currency(line?.value).split('AOA')[0],
-              style: 'textRight',
-            }])) ?? []),
-            [
-
-              {
-                border: [true, true, true, true],
-                fillColor: '#FFF',
-                text: '',
-
-              },
-              {
-                fillColor: '#FFF',
-                text: '',
-              },
-              {
-                fillColor: '#FFF',
-                text: 'Total',
-                style: ['th', { alignment: 'right' }],
-              },
-              {
-                text: currency(payStub?.deductionValue ?? 0)?.split('AOA')[0],
-                style: ['th', { alignment: 'right' }],
-              }
-            ]
-
-          ]
-        }
-      },
-      {
-        columnGap: 50,
-        columns: [
-
-          {
-
-            margin: [0, 0, 0, 0],
-            layout: 'lightHorizontalLines', // optional
-            table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              headerRows: 3,
-
-              widths: [40, 150],
-
-              body: [
-                ['Banco:', banckAccount?.bank?.code ?? ''],
-                ['Conta:', banckAccount?.number ?? ''],
-                ['IBAN:', banckAccount?.iban ?? ''],
-
-              ]
-            }
-          },
-
-          {
-
-            margin: [0, 0, 0, 0],
-            layout: 'lightHorizontalLines', // optional
-            table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              headerRows: 3,
-
-              widths: ['*', '*'],
-
-              body: [
-                ['Resumo', ''],
-                ['Salario Bruto:',
-                  {
-                    text: currency(payStub?.grossValue ?? 0).split('AOA')[0],
-                    style: ['h2', { alignment: 'right' }],
-                  }],
-                ['Deduções:',
-                  {
-                    text: currency(payStub?.deductionValue ?? 0).split('AOA')[0],
-                    style: ['h2', { alignment: 'right', }],
-                  }],
-                ['Salario Líquido:', {
-                  text: currency(payStub?.netValue ?? 0).split('AOA')[0],
-                  style: ['h2', { alignment: 'right', fontSize: 18 }],
-                }],
-
-              ]
-            }
-          }
+        ['\n\n\n\n'
         ],
-      }
-    ],
-    footer: {
-      columnGap: 50,
-      columns: [
-        [
-          {
-            text: company?.name + '',
-            style: ['lowFooter', 'd2', { margin: [0, 0, 0, 10] }],
-          }, {
-            text:
-              company?.contacts?.map(({ descriptions }: any) => descriptions ?? '').join(' | ') + '\n'
-              + address?.fullAddress,
-            style: ['lowFooter', { margin: [0, 0, 0, 10] }],
-          },]
-        , {
-          text: '\n\nwww.nova.ao',
-          style: ['lowFooter', { alignment: 'right' }]
+        //  [{ image: writeRotatedText('I am rotated'), fit: [7, 53], alignment: 'center' }],
+        {
+          text: ['\n\n\n', 'Gerado com muito gosto por ', 'www.nova.ao'],
+          style: ['lowFooter', { alignment: 'right', fontSize: 8 }]
         },
       ]
     }
@@ -1192,7 +764,7 @@ async function template_0({  address, company, banckAccount, payStub , logo}: an
         color: '#333'
       },
       d2: {
-        bold: true,
+        fontSize: 10,
       },
       headers: {
         fontSize: 18,
@@ -1257,7 +829,23 @@ async function template_0({  address, company, banckAccount, payStub , logo}: an
   }
 
 }
-
+/*
+const writeRotatedText = function (text: string) {
+  var ctx, canvas: any = document?.createElement('canvas');
+  // I am using predefined dimensions so either make this part of the arguments or change at will 
+  canvas.width = 36;
+  canvas.height = 270;
+  ctx = canvas.getContext('2d');
+  ctx.font = '36pt Arial';
+  ctx.save();
+  ctx.translate(36, 270);
+  ctx.rotate(-0.5 * Math.PI);
+  ctx.fillStyle = '#000';
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+  return canvas.toDataURL();
+};
+*/
 export async function generateDocument({ employeeId, callBack, type, ...data }: any) {
 
   const printer = new PdfPrinter(fonts);

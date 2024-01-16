@@ -8,7 +8,6 @@ import {
   ForeignKey,
   BelongsTo,
   Scopes,
-  AfterBulkUpdate,
 } from "sequelize-typescript";
 
 import _ from "lodash";
@@ -74,7 +73,6 @@ export default class Model extends Main {
     }).catch(logger.warn);
 
   };
-
 
   //static filter = null;
   privateFields: string[] = [];

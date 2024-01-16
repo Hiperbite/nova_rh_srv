@@ -60,29 +60,30 @@ export default class WITaxTable extends Model {
     level?: number;
 
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(32,2),
         allowNull: true,
     })
     fromValue?: number;
+
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(32,2),
         allowNull: true,
     })
     toValue?: number;
 
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(32,2),
         allowNull: true,
     })
     fixedInstallment?: number;
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(32,2),
         allowNull: true,
     })
     rate?: number;
 
     @Column({
-        type: DataType.FLOAT,
+        type: DataType.DECIMAL(32,2),
         allowNull: true,
     })
     excess?: number;

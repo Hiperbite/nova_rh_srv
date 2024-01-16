@@ -6,6 +6,7 @@ import sendEmail, { mailServices } from "../mailler/index";
 import { Op } from "sequelize";
 import moment from 'moment';
 import { Payroll } from 'models/index';
+import { unknown } from 'zod';
 
 
 export type HistoryEventType =
@@ -25,7 +26,8 @@ export type HistoryEventState =
   "light" |
   "dark"
   ;
-export type HistoryType = {
+
+  export type HistoryType = {
   no: number,
   date: Date,
   type: HistoryEventType,
@@ -139,7 +141,21 @@ export default class WITaxApp {
       ?.filter((line: PayrollLine) => line?.debit)
       ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
 
-    const baseIncidenceSS = grossValue - vacationSupport;
+
+    const otherValues: number = lines
+      ?.filter((line: PayrollLine) => line?.debit)
+      ?.filter((line: PayrollLine) => !['1630', '1603', '1642', '1402', '1401', '1000'].includes(line?.code))
+      // ?.filter((line: PayrollLine) => !((line?.type?.code ?? '').indexOf('70') > -1))
+      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+
+
+    const unknowValues: number = lines
+      ?.filter((line: PayrollLine) => line?.debit)
+      //?.filter((line: PayrollLine) => !['1630', '1603', '1642', '1402', '1401', '1000'].includes(line?.code))
+      ?.filter((line: PayrollLine) => ((line?.type?.code ?? '').indexOf('70') > -1))
+      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+
+    const baseIncidenceSS = grossValue - (vacationSupport > 0 ? vacationSupport : 0) - unknowValues;
 
     let totalWITaxValue = 0;
 
@@ -162,8 +178,11 @@ export default class WITaxApp {
       totalWITaxValue += christmansSupport;
     }
 
+    if (otherValues > 0) {
+      totalWITaxValue += otherValues;
+    }
 
-    const collectableMaterial = totalWITaxValue - (baseIncidenceSS * 3 / 100);
+    const collectableMaterial = totalWITaxValue - (baseIncidenceSS * 3 / 100) - unknowValues;
 
     const myWITax = await WITaxTable.findOne({
       where: {
@@ -173,7 +192,11 @@ export default class WITaxApp {
 
       }
     })
-    const { excess, rate, fixedInstallment }: any = myWITax
+    let { excess, rate, fixedInstallment }: any = myWITax
+    excess = parseFloat(excess);
+    rate = parseFloat(rate);
+    fixedInstallment = parseFloat(fixedInstallment);
+
     const excessy = collectableMaterial - (excess ?? 0);
     const witValue = (excessy * (rate ?? 0) / 100) + (fixedInstallment ?? 0)
 
