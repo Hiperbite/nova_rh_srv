@@ -2084,7 +2084,7 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 2;
+  let i = 120;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:
