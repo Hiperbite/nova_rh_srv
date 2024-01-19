@@ -12,7 +12,12 @@ import { v4 as uuids4 } from "uuid";
 
 import { RoleModule, User } from "../../index";
 
-
+@Scopes(() => ({
+  full: {
+    include: [
+      { model: RoleModule }],
+  }
+}))
 @Table({
   timestamps: true,
   tableName: "Roles",
@@ -42,7 +47,7 @@ export default class Role extends Model {
     allowNull: true,
   })
   level!: string;
-  
+
   @BelongsTo(() => User)
   user!: User
 
