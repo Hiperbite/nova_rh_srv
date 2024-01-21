@@ -7,7 +7,7 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 
-import { Model , RoleLevel as Level  } from "../index";
+import { Model   } from "../index";
 
 
 @Scopes(() => ({
@@ -19,7 +19,7 @@ import { Model , RoleLevel as Level  } from "../index";
   timestamps: true,
   tableName: "EmployeeRoles",
 })
-export default class Role extends Model {
+export default class EmployeeRole extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: true,
@@ -44,10 +44,6 @@ export default class Role extends Model {
   })
   no?: number;
 
-  @BelongsTo(() => Level)
-  level?: Level;
-  
-  @ForeignKey(() => Level)
-  levelId?: Level;
+ 
 }
 

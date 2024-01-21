@@ -14,6 +14,7 @@ import {
 } from "sequelize-typescript";
 import moment from "moment";
 import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category } from "../index";
+
 import { payrollState } from "./payroll";
 import WITaxApp from "../../application/payrolls/wi_tax.app";
 import PayStubApp from "../../application/payrolls/pay_stub.app";
