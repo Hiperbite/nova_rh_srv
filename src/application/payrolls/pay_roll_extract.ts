@@ -5,7 +5,7 @@ import { AccountPaymentData, Company, Payroll, PayrollLine, PayStub } from "../.
 import XLSX from "xlsx";
 
 import XLSX2 from "xlsx-js-style";
-import { AccessDeniedError, Op } from "sequelize";
+import { AccessDeniedError, Op, UUID } from "sequelize";
 import { PayStubLineTypeConst } from "./pay_stub_line.app";
 
 type PayStubDataType = {
@@ -57,10 +57,10 @@ class PayRollExtract {
 
 
 
-        const blob = new Blob([data], { type: contentType });
+        const blob = new Blob([data], { type: contentType },);
         const fileName = [name, type.toUpperCase()].join('.')
 
-        return { blob, fileName };
+        return { blob, fileName , contentType };
     }
 
     static psx = (data: PayStubDataType[], payroll: Payroll, { bankAccount, company }: { bankAccount: AccountPaymentData, company: Company }) => {
@@ -368,7 +368,7 @@ class PayRollExtract {
             do {
 
                 worksheet[a.toUpperCase() + String(i++)].s = {
-                    font:{sz:8},
+                    font: { sz: 8 },
                     border: {
                         top: { style: 'thin' },
                         bottom: { style: 'thin' },
@@ -391,7 +391,7 @@ class PayRollExtract {
 
                 let styles = worksheet[a.toUpperCase() + String(i++)].s;
                 worksheet[a.toUpperCase() + String(i++)].s = {
-                    font:{sz:10},
+                    font: { sz: 10 },
                     ...styles,
                     border: {
                         top: { style: 'thin' },
@@ -447,8 +447,10 @@ class PayRollExtract {
 
         const wdata: any = XLSX2.write(workbook, wopts);
 
+        const fileName = UUID() + '.xlsx';
+        XLSX.writeFile(workbook, "tmp/" + fileName, wopts);
 
-        return [wdata, "application/octet-stream"]
+        return [wdata, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
     }
 
     static ps2 = (data: PayStubDataType[], payroll: Payroll, { bankAccount, company }: { bankAccount: AccountPaymentData, company: Company }) => {

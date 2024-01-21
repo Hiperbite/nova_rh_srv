@@ -16,28 +16,31 @@ export const getGeneratePayStub = async (req: Request, res: Response) =>
 
 export const getGenerateWiTaxFile = async (req: Request, res: Response) => {
   const xml = await PayRollApp.generateWiTaxReportXML(2023, 10)
-  res.header("Content-Type", "application/xml");
-  return res.send(xml);
+
+  
+  const blob = new Blob([xml], { type : 'application/xml' });
+  const arrayBuffer = await blob.arrayBuffer();
+  var fileContents = Buffer.from(arrayBuffer);
+
+  const fileContent = "data:" + blob.type + ';base64,' + fileContents.toString('base64');
+  res.send({ fileContent, fileName: 'wix.xml' });
 }
+
+
 export const getGeneratePayRollExtractFile = async (req: Request, res: Response) => {
 
-  const { id } = req.params;
+  const { id: uid } = req.params;
+  const [id, type] = uid.split('.')
   const payroll = await Payroll.findByPk(id);
   if (payroll === null) throw new Error();
-  let { blob, fileName }: any = await PayRollExtract.generate(String(req.query['type'] ?? 'ps2'), payroll)
-
+  let { blob, fileName, contentType }: any = await PayRollExtract.generate(String(req.query['type'] ?? 'ps2'), payroll)
 
   const arrayBuffer = await blob.arrayBuffer();
   var fileContents = Buffer.from(arrayBuffer);
 
-  var readStream = new stream.PassThrough();
-  readStream.end(fileContents);
-
-  res.header('Access-Control-Expose-Headers', 'Content-Disposition');
-  res.set('Content-disposition', 'attachment; filename=' + fileName);
-  res.set('Content-Type', 'text/plain');
-
-  readStream.pipe(res);
+  const fileContent = "data:" + blob.type + ';base64,' + fileContents.toString('base64');
+  res.send({ fileContent, fileName: fileName.toLowerCase() });
+  return;
 }
 
 
