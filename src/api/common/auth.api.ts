@@ -11,7 +11,9 @@ import {
 } from "../../service/auth.service";
 
 import { verifyJwt } from "../../application/jwt";
-import { User, Employee, Role, RoleModule } from "../../models/index";
+
+import { User, Employee, Role, RoleModule, Company } from "../../models/index";
+
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -57,9 +59,10 @@ export async function createSessionHandler(
     // sign a refresh token
     const refreshToken = await signRefreshToken({ userId: String(user.id) });
 
+    const [company]: any = await Company.findAll();
     // send the tokens
+    return res.status(status).send({ accessToken, refreshToken, company });
 
-    return res.status(status).send({ accessToken, refreshToken });
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
@@ -108,7 +111,7 @@ export async function lockAccessTokenHandler(req: Request, res: Response) {
     }
 
     user.role = "ROLE_LOCKED";
-    
+
     const accessToken = signAccessToken(user, decoded?.employeeId);
 
     return res.send({ accessToken });

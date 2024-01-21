@@ -192,20 +192,15 @@ export default class Payroll extends Model {
     @BeforeCreate
     static validateEligibility = async (payroll: Payroll) => {
 
-        const year = payroll?.date?.getFullYear()
-        const month = (payroll?.date?.getMonth() ?? 1) 
-        const existPayroll: any = await Payroll.findOne({ where: { year, month } })
-
-        if (existPayroll === null || existPayroll?.state < payrollState.Approved) {
-
-            if (existPayroll === null) {
-                const { count } = await Payroll.findAndCountAll()
-                if (count > 0)
-                    throw { message: 'Existe folhas anterior em andamento', code: 400 }
+        const existPendingPayroll = await Payroll.findOne({
+            where: {
+                state: { [Op.lt]: payrollState.Approved }
             }
-            if (existPayroll?.state < payrollState.Approved)
-                throw { message: 'Existe folhas anterior em andamento', code: 400 }
-        }
+        })
+        if (existPendingPayroll)
+            throw { message: 'Existe folhas anterior em andamento', code: 400 }
+
+
     }
 
     @AfterCreate
@@ -213,11 +208,14 @@ export default class Payroll extends Model {
 
         payroll.initialPayStubs = [];
         const contractIds = payroll?.payStubs?.map(({ contractId }: any) => contractId)
+
+        const endDate = moment().set('year', payroll?.year ?? 2000).set('month', (payroll?.month ?? 1) - 1).endOf('month').format('YYYY-MM-DD')
+        const startDate = moment().set('year', payroll?.year ?? 2000).set('month', (payroll?.month ?? 1) - 1).startOf('month').format('YYYY-MM-DD')
         const elegibleContracts = (await Contract.findAll({
             where: {
                 isActive: true,
-                startDate: { [Op.or]: { [Op.eq]: null, [Op.lt]: payroll?.year + '-' + payroll?.month + '-31' } },
-                endDate: { [Op.or]: { [Op.eq]: null, [Op.gt]: payroll?.year + '-' + payroll?.month + '-01' } }
+                startDate: { [Op.or]: { [Op.eq]: null, [Op.lt]: endDate } },
+                endDate: { [Op.or]: { [Op.eq]: null, [Op.gt]: startDate } }
             },
             order: [['endDate', 'ASC']]
         })).filter(({ contractId }: any) => !contractIds?.find((x: string) => x === contractId))

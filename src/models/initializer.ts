@@ -17,6 +17,7 @@ import {
 } from "./index";
 
 import { faker } from '@faker-js/faker';
+import PayrollSetting from './Settings/payroll.settings';
 
 
 type InitializerType = { model: any, data: any[], include?: any }
@@ -87,196 +88,16 @@ const initialData: InitializerType[] = [
       {
         id: "a34f8f58-0b7d-4ab6-837a-8428e149c7c0",
         code: "DTI",
-        name: "Diretoria de Tecnologia da Informação",
+        name: "Direcção de Tecnologia da Informação",
         departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
-        childs: [
-          {
-            id: "d1f8f162-0e9f-428e-9329-1448906056cf",
-            code: "DEV",
-            name: "Departamento de Desenvolvimento de Software",
-            childs: [
-              {
-                id: "b3a9e4c2-6891-44e3-a6b2-70c09d5438d0",
-                code: "DWE",
-                name: "Subdepartamento de Desenvolvimento Web",
-                childs: [
-                  { id: "8f5d59e6-9922-4ae0-87a1-15c7e4a22a4e", code: "FE", name: "Equipe de Frontend" },
-                  { id: "d42dbb4b-b70d-4e35-9279-07b0b947cd8a", code: "BE", name: "Equipe de Backend" }
-                ]
-              },
-              {
-                id: "83f8b609-21f2-4f53-99df-4db73100a52e",
-                code: "DMO",
-                name: "Subdepartamento de Desenvolvimento de Aplicativos Móveis",
-                childs: [
-                  { id: "c68511b9-bfeb-4f3f-9cfe-76b40f9b8d91", code: "iOS", name: "Equipe de iOS" },
-                  { id: "daebcfda-3e6b-4a61-91b7-0d42530ef3c9", code: "AND", name: "Equipe de Android" }
-                ]
-              },
-              {
-                id: "a87abeca-d35f-41f4-af36-57db93e7b7f2",
-                code: "ARS",
-                name: "Subdepartamento de Arquitetura de Software",
-                childs: [
-                  { id: "04f1f990-63f5-40a6-8371-0e74ab806500", code: "MIC", name: "Arquitetura de Microserviços" },
-                  { id: "3a7b1982-58be-4b27-bb61-1330c26bb68b", code: "NUV", name: "Arquitetura de Nuvem" }
-                ]
-              }
-            ]
-          },
-          {
-            id: "5d9536bb-3cb7-4d7b-ba96-19ac19f10b2c",
-            code: "INF",
-            name: "Departamento de Infraestrutura e Operações",
-            childs: [
-              {
-                id: "1d0d7db4-61b7-402d-9b12-944ec8184c75",
-                code: "RES",
-                name: "Subdepartamento de Redes e Segurança",
-                childs: [
-                  { id: "06b46b7c-9c23-4ad4-a4f0-49a0a063b6dd", code: "RED", name: "Equipe de Rede" },
-                  { id: "af2b33a0-dc14-45ed-9a7b-95f2e3f04f63", code: "SEC", name: "Equipe de Segurança Cibernética" }
-                ]
-              },
-              {
-                id: "1e09e388-12b9-475c-b57a-7c2d4d2e84d4",
-                code: "ADM",
-                name: "Subdepartamento de Administração de Sistemas",
-                childs: [
-                  { id: "8e460ba9-c9da-4774-8dd3-5db432c82177", code: "ADM", name: "Equipe de Administração de Servidores" },
-                  { id: "a0216076-abea-4c8c-8a24-5082be8c12a2", code: "DVO", name: "Equipe de DevOps" }
-                ]
-              },
-              {
-                id: "b549b112-b53b-4f14-aa11-3804064b0487",
-                code: "GER",
-                name: "Subdepartamento de Gerenciamento de Ativos",
-                childs: [
-                  { id: "1cf50a00-378f-472b-8c33-977c036572fe", code: "HRD", name: "Controle de Ativos de Hardware" },
-                  { id: "17e156f0-6a2e-4565-85b3-57b50590bbf7", code: "SFT", name: "Gerenciamento de Licenças de Software" }
-                ]
-              }
-            ]
-          },
-          {
-            id: "045e756c-0b81-4c84-875b-1a48458c9ef6",
-            code: "DIA",
-            name: "Departamento de Análise de Dados e Inteligência Artificial",
-            childs: [
-              {
-                id: "2b405b19-6166-4b5a-8b86-055632b01d6e",
-                code: "CID",
-                name: "Subdepartamento de Ciência de Dados",
-                childs: [
-                  { id: "f424819e-7d13-48c6-b6ef-30e7b902db8d", code: "AND", name: "Equipe de Análise de Dados" },
-                  { id: "bd90d0f6-4881-4c19-86de-01b5e32056d3", code: "APM", name: "Equipe de Aprendizado de Máquina" }
-                ]
-              },
-              {
-                id: "b663dc4f-6605-4d7f-bcbf-3eb35413c0d9",
-                code: "INT",
-                name: "Subdepartamento de Inteligência de Negócios",
-                childs: [
-                  { id: "021ab18d-9a3b-46c1-9ec3-9924c08f9cc4", code: "BI", name: "Equipe de Business Intelligence" },
-                  { id: "cd076d0d-d6fc-4c6d-9c91-cd62806ad3a5", code: "VIS", name: "Equipe de Visualização de Dados" }
-                ]
-              }
-            ]
-          },
-          {
-            id: "27f47214-8b20-434a-b6d2-8ed3981e2f29",
-            code: "UXD",
-            name: "Departamento de Experiência do Usuário e Design",
-            childs: [
-              {
-                id: "0c670eda-20e6-4c4c-b1b0-3c22e7d5ea1c",
-                code: "UXD",
-                name: "Subdepartamento de Experiência do Usuário",
-                childs: [
-                  { id: "a39d433d-094c-4657-b2f2-1d10d7abcb6e", code: "PES", name: "Equipe de Pesquisa de Usuário" },
-                  { id: "33f0e63a-4d53-4096-9f59-29eb43f2e5ca", code: "DIN", name: "Equipe de Design de Interação" }
-                ]
-              },
-              {
-                id: "af6a656d-40f3-4314-8b92-179e2c25ef2d",
-                code: "DSV",
-                name: "Subdepartamento de Design Visual",
-                childs: [
-                  { id: "b0c65b8f-d01e-4b7c-b0da-c6d620b7e2c6", code: "GRA", name: "Equipe de Design Gráfico" },
-                  { id: "0ee03ff3-cd4d-4596-b46b-4c659b7482a0", code: "INT", name: "Equipe de Design de Interface" }
-                ]
-              }
-            ]
-          }
-        ]
+
       },
       {
         id: "c3764843-27f4-47c9-a6a7-5c7917814f72",
         code: "DOP",
         departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
-        name: "Diretoria de Operações",
-        childs: [
-          {
-            id: "6a2ea521-4c9b-4fe0-a9f4-9c6b41670067",
-            code: "VEM",
-            name: "Departamento de Vendas e Marketing",
-            childs: [
-              {
-                id: "19a237b6-44e5-4160-b9aa-42c1530f0a3b",
-                code: "VEN",
-                name: "Subdepartamento de Vendas",
-                childs: [
-                  { id: "61c7b7e2-3f5b-4b7f-aa2b-e48eb7c3beab", code: "B2B", name: "Equipe de Vendas B2B" },
-                  { id: "5602ee8b-8de5-47a7-95a1-7e5e7e8c08a2", code: "B2C", name: "Equipe de Vendas B2C" }
-                ]
-              },
-              {
-                id: "7647f9ad-ea40-4e58-b849-6aa6bbd8aa4d",
-                code: "MKT",
-                name: "Subdepartamento de Marketing",
-                childs: [
-                  { id: "df0f189b-4eac-4e58-90c5-31dd4633fb48", code: "DIG", name: "Equipe de Marketing Digital" },
-                  { id: "b0d43e08-3637-4f6e-9b6e-07ac8b3a49cd", code: "CON", name: "Equipe de Marketing de Conteúdo" }
-                ]
-              }
-            ]
-          },
-          {
-            id: "bb55d617-3c4d-4a79-b4b0-e16b1d85a4d0",
-            code: "FAD",
-            name: "Departamento Financeiro e Administrativo",
-            childs: [
-              {
-                id: "e1a0e6b3-4d91-46ce-aacb-176d8a5d0ff1",
-                code: "CON",
-                name: "Subdepartamento de Contabilidade",
-                childs: [
-                  { id: "89b69fbf-cb65-4a9d-a02a-b33d91fdd24c", code: "CPG", name: "Equipe de Contas a Pagar e Receber" },
-                  { id: "33245f6b-eeb2-4564-9324-9479c2710b92", code: "CGE", name: "Equipe de Contabilidade Geral" }
-                ]
-              },
-              {
-                id: "b2d9f112-c3ac-4fa9-8895-90c9f29b5974",
-                code: "PLF",
-                name: "Subdepartamento de Planejamento Financeiro",
-                childs: [
-                  { id: "a9749796-cda4-409c-85e4-b967635ada73", code: "ORÇ", name: "Equipe de Orçamento" },
-                  { id: "54dd847e-020a-4e61-8a3e-0aa062012e5e", code: "AFN", name: "Equipe de Análise Financeira" }
-                ]
-              },
-              {
-                id: "8e0d8e15-0ff5-4d13-b363-688b9be13551",
-                code: "RHP",
-                name: "Subdepartamento de Recursos Humanos",
-                childs: [
-                  { id: "7c14f8af-0f92-4d09-b5d3-36b76d7f2c3b", code: "RCS", name: "Equipe de Recrutamento e Seleção" },
-                  { id: "8b322ff0-322e-4d19-92a0-6f632f67c5a3", code: "DPS", name: "Equipe de Desenvolvimento de Pessoas" },
-                  { id: "3df9e3c9-1e8b-4c9b-bf83-65ecd039f6db", code: "APE", name: "Equipe de Administração de Pessoal" }
-                ]
-              }
-            ]
-          }
-        ]
+        name: "Direcção de Operações",
+
       }]
   },
   {
@@ -293,8 +114,8 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b600-21f2-4f53-99df-4db73100a52e",
         code: 1, leve: 1,
-        from: 0.0000,
-        to: 70000.00,
+        fromValue: 0.0000,
+        toValue: 100000.00,
         fixedInstallment: 0,
         rate: 0,
         excess: 0
@@ -302,110 +123,101 @@ const initialData: InitializerType[] = [
       {
         id: "00f8b601-21f2-4f53-99df-4db73100a52e",
         code: 2, leve: 2,
-        from: 70001.00,
-        to: 100000.00,
-        fixedInstallment: 3000,
-        rate: 10,
-        excess: 70000.00
+        fromValue: 100001.00,
+        toValue: 150000.00,
+        fixedInstallment: 0,
+        rate: 13,
+        excess: 100001.00
       },
       {
         id: "00f8b602-21f2-4f53-99df-4db73100a52e",
         code: 3, leve: 3,
-        from: 100001.00,
-        to: 150000.00,
-        fixedInstallment: 6000,
-        rate: 13,
-        excess: 100000.00
+        fromValue: 150001.00,
+        toValue: 200000.00,
+        fixedInstallment: 12500,
+        rate: 16,
+        excess: 150001.00
       },
       {
         id: "00f8b603-21f2-4f53-99df-4db73100a52e",
         code: 4, leve: 4,
-        from: 150001.00,
-        to: 200000.00,
-        fixedInstallment: 12500,
-        rate: 16,
-        excess: 150000.00
+        fromValue: 200001.00,
+        toValue: 300000.00,
+        fixedInstallment: 31250,
+        rate: 18,
+        excess: 200001.00
       },
       {
         id: "00f8b615-21f2-4f53-99df-4db73100a52e",
         code: 5, leve: 5,
-        from: 200001.00,
-        to: 300000.00,
-        fixedInstallment: 31250,
-        rate: 18,
-        excess: 200000.00
+        fromValue: 300001.00,
+        toValue: 500000.00,
+        fixedInstallment: 49250,
+        rate: 19,
+        excess: 300001.00
       },
       {
         id: "00f8b614-21f2-4f53-99df-4db73100a52e",
         code: 6, leve: 6,
-        from: 300001.00,
-        to: 500000.00,
-        fixedInstallment: 49250,
-        rate: 19,
-        excess: 300000.00
+        fromValue: 500001.00,
+        toValue: 1000000.00,
+        fixedInstallment: 87250,
+        rate: 20,
+        excess: 500001.00
       },
       {
         id: "00f8b604-21f2-4f53-99df-4db73100a52e",
         code: 7, leve: 7,
-        from: 500001.00,
-        to: 1000000.00,
-        fixedInstallment: 87250,
-        rate: 20,
-        excess: 500000.00
+        fromValue: 1000001.00,
+        toValue: 1000000.00,
+        fixedInstallment: 147249,
+        rate: 21,
+        excess: 1000001.00
       },
       {
         id: "00f8b605-21f2-4f53-99df-4db73100a52e",
         code: 8, leve: 8,
-        from: 1000001.00,
-        to: 1500000.00,
-        fixedInstallment: 187250,
-        rate: 21,
-        excess: 1000000.00
+        fromValue: 1500001.00,
+        toValue: 2000000.00,
+        fixedInstallment: 292249,
+        rate: 22,
+        excess: 1500001.00
       },
       {
         id: "00f8b606-21f2-4f53-99df-4db73100a52e",
         code: 9, leve: 9,
-        from: 1500001.00,
-        to: 2000000.00,
-        fixedInstallment: 292000,
-        rate: 22,
-        excess: 1500000.00
+        fromValue: 2000001.00,
+        toValue: 2500000.00,
+        fixedInstallment: 402249,
+        rate: 23,
+        excess: 2000001.00
       },
       {
         id: "00f8b607-21f2-4f53-99df-4db73100a52e",
         code: 10, leve: 10,
-        from: 2000001.00,
-        to: 2500000.00,
-        fixedInstallment: 402250,
-        rate: 23,
-        excess: 2000000.00
+        fromValue: 2_500_001.00,
+        toValue: 5_000_000.00,
+        fixedInstallment: 517_249,
+        rate: 24,
+        excess: 2_500_001.00
       },
       {
         id: "00f8b608-21f2-4f53-99df-4db73100a52e",
         code: 11, leve: 11,
-        from: 2500001.00,
-        to: 5000000.00,
-        fixedInstallment: 517250,
-        rate: 24,
-        excess: 2500000.00
+        fromValue: 5000001.00,
+        toValue: 10000000.00,
+        fixedInstallment: 1117249,
+        rate: 24.5,
+        excess: 5000001.00
       },
       {
         id: "00f8b609-21f2-4f53-99df-4db73100a52e",
         code: 12, leve: 12,
-        from: 5000001.00,
-        to: 10000000.00,
-        fixedInstallment: 1117250,
-        rate: 24.5,
-        excess: 5000000.00
-      },
-      {
-        id: "00f8b610-21f2-4f53-99df-4db73100a52e",
-        code: 13, leve: 13,
-        from: 10000001.00,
-        to: null,
-        fixedInstallment: 2342250,
+        fromValue: 10000001.00,
+        toValue: 0,
+        fixedInstallment: 2342248,
         rate: 25,
-        excess: 10000000.00
+        excess: 10000001.00
       }
     ]
   },
@@ -454,24 +266,34 @@ const initialData: InitializerType[] = [
     model: 'AdditionalPaymentType', data: [
 
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1000', name: 'Vencimento Base', level: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '1401', level: 0, name: 'Almoço' },
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Competitividade' },
+      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '1401', level: 0, name: 'Subsídio de Alimentação' },
+      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Subsídio de Competitividade' },
       { id: "33f8b609-21f2-4f53-99df-4db73100a52e", code: 'BN', level: 0, name: 'Bônus' },
       { id: "43f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
       { id: "53f8b609-21f2-4f53-99df-4db73100a52e", code: 'AS', level: 0, name: 'Adiantamento salarial' },
       { id: "63f8b609-21f2-4f53-99df-4db73100a52e", code: 'TF', level: 0, name: 'Trabalho em feriados' },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'VC', level: 0, name: 'Feriados' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'HD', level: 0, name: 'Feriados' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52a", code: '1630', level: 0, name: 'Subsídio de Férias' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52b", code: '1642', level: 0, name: 'Subsídio de Natal' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52c", code: 'STR', level: 0, name: 'Subsídio de Turno' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52d", code: 'SCE', level: 0, name: 'Subsídio de Condições Especiais de Trabalho' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'SEM', level: 0, name: 'Subsídio de Enfermidade ou Maternidade' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52f", code: 'SED', level: 0, name: 'Subsídio de Educação' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a50e", code: 'SAS', level: 0, name: 'Subsídio de Ação Social' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a59e", code: 'PDS', level: 0, name: 'Prémios de Desempenho' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a08e", code: 'SAF', level: 0, name: 'Subsídio de Apoio à Família' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a58e", code: '1603', level: 0, name: 'Subsídio de abono Famíliar' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a57e", code: 'SNT', level: 0, name: 'Subsídio Noturno' },
       { id: "89f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
-      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", code: 'VA', level: 0, name: 'Variável' },
+      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", code: 'VA', level: 0, name: 'Remuneração Variável' },
       { id: "03f8b609-21f2-4f53-99df-4db73100a52e", code: 'CM', level: 0, name: 'Comissões' },
       { id: "81f8b609-21f2-4f53-99df-4db73100a52e", code: 'CP', level: 0, name: 'Complemento' },
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", code: 'DS', level: 0, name: 'Disponibilidade' },
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", code: 'AC', level: 0, name: 'Acomodação' },
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", code: 'TR', level: 0, name: 'Transporte' },
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", code: 'ET', level: 0, name: 'Espaço de trabalho' },
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", code: 'RF', level: 0, name: 'Refeição' },
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", code: 'AP', level: 0, name: 'Aprendizado' },
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", code: 'OU', level: 0, name: 'Outro' }
+      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", code: 'DS', level: 0, name: 'Subsídio de Disponibilidade' },
+      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", code: 'AC', level: 0, name: 'Subsídio de Acomodação' },
+      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", code: '1402', level: 0, name: 'Subsídio de Transporte' },
+      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", code: 'ET', level: 0, name: 'Subsídio de Espaço de trabalho' },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", code: 'AP', level: 0, name: 'Subsídio de Aprendizado' },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", code: 'OU', level: 0, name: 'Outro Subsídio' }
     ]
   },
   {
@@ -2051,6 +1873,7 @@ const initialData: InitializerType[] = [
           province: faker.location.state(),
           countryId: '13f8b609-21f2-4f53-99df-4db73100a52e',
         }],
+        isActive: false,
         business: { code: '17', name: faker.commerce.department() }
       }]
   },
@@ -2098,7 +1921,19 @@ const initialData: InitializerType[] = [
       },*/
 
     ]
-  }]
+  },
+  {
+    model: 'PayrollSetting', data: [{
+      name: 'PST',
+      code: 'PST',
+      paymentDay: 30,
+      absenceCount: false,
+      absencePercent: 0,
+      overtimeCount: false,
+      overtimePercent: 0
+    }]
+  }
+]
 
 
 function createRandomEmployees(): any {
@@ -2133,18 +1968,22 @@ function createRandomEmployees(): any {
   const categories: any[] = initialData?.find(({ model }: any) => model === 'Category')?.data.filter(({ id }: any) => id) ?? []
   const banks: any[] = initialData?.find(({ model }: any) => model === 'Bank')?.data ?? []
 
+
+  const accountPaymentDatas = (i: number) =>
+    [...Array(i + 1).keys()].map(() => ({
+      iban: faker.finance.iban(),
+      number: faker.finance.accountNumber(),
+      bankId: faker.helpers.arrayElement(banks?.map(({ id }: any) => id)),
+      currency: faker.finance.currencyCode(),
+      swift: faker.finance.bic(),
+      countryId: faker.helpers.arrayElement(countries?.filter(({ id }) => id)?.map(({ id }: any) => id))
+    }))
+  //accountPaymentDatas((faker.number.int(2))).map((x: any) => AccountPaymentData.create(x))
+
   const generateEmployee = (key: number) => {
 
-    const accountPaymentDatas = (i: number) =>
-      [...Array(i + 1).keys()].map(() => ({
-        iban: faker.finance.iban(),
-        number: faker.finance.accountNumber(),
-        bankId: faker.helpers.arrayElement(banks?.map(({ id }: any) => id)),
-        currency: faker.finance.currencyCode(),
-        swift: faker.finance.bic(),
-        countryId: faker.helpers.arrayElement(countries?.filter(({ id }) => id)?.map(({ id }: any) => id))
-      }))
-
+    let weekDays = ["Mo", "Tu", "We", "Th", "Fr"];
+    (Math.floor(Math.random() * 10) > 2) && weekDays.push('Sa')
     return {
       code: 'A' + String(key).padStart(7, '0'),
       isActive: faker.datatype.boolean(0.8),
@@ -2222,13 +2061,13 @@ function createRandomEmployees(): any {
           workingHour: {
             period: faker.number.int(3),
             hours: faker.number.int({ min: 30, max: 60 }),
-            weekDays: ["Mo", "Tu", "Th", "Fr", "Sa"]
+            weekDays
           }
         }
       ]
     }
   }
-  let i = 10;
+  let i = 120;
   while (--i >= 0 && employees.push(generateEmployee(i))) { }
   initialData.push({
     model: 'Employee', data: employees, include:

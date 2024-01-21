@@ -1,3 +1,4 @@
+import  PayrollSetting  from './Settings/payroll.settings';
 
 import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
@@ -58,7 +59,11 @@ import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
 import Role from "./employees/user/role";
 import WITaxTable from "./payroll/wi_tax_tables";
+
 import RoleModule from "./employees/user/RoleModule";
+
+import { tr } from "@faker-js/faker";
+
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
@@ -135,18 +140,20 @@ const sequelizeOptions: SequelizeOptions = {
     Bank,
     EmployeeRole,
     Role,
-    RoleModule
+    RoleModule,
+    PayrollSetting
   ],
 }
-let sequelize = new Sequelize(sequelizeOptions);
 const UniqIndex = createIndexDecorator({
   name: uuid() + '-index',
   type: 'UNIQUE',
   unique: true,
 });
+
+let sequelize = new Sequelize(sequelizeOptions);
 const instances: any[] = []
 const switchTo = (db: any, ref: string) => {
-  //return;
+  return;
   let instance: any;
   if (ref === '' || ref.indexOf('localhost') > -1) {
     return;
@@ -184,6 +191,7 @@ const switchTo = (db: any, ref: string) => {
 
   sequelize.options.storage = ref
 }
+
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
@@ -208,6 +216,7 @@ enum SPs {
   GetStudentCount = 'GetStudentCount',
   GetTotalWeekPresence = 'GetTotalWeekPresence(?,?)',
   GetWeekPresence = 'GetWeekPresenceFaults(?,?)',
+  GetWiTAX = 'GETWITAX(?,?)',
   GetEvents = 'GetEvents'
 }
 const Procedure = async (procedure: SPs, opts: any = []) =>
@@ -278,5 +287,6 @@ export {
   Department,
   WorkingHour,
   Role,
-  RoleModule
+  RoleModule,
+  PayrollSetting
 };

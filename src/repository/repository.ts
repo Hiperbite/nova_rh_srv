@@ -68,8 +68,8 @@ export default class Repository<T extends M>  {
 
     try {
       await this.start();
-      let model = await this.findOne(id)
-      let done = await model?.update(d, { transaction: this.transaction })
+      let model = await this.findOne(id, { include: { all: true }});
+      let done = await model?.update(d, { include: { all: true }, transaction: this.transaction })
 
 
       if (done) {

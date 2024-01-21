@@ -15,9 +15,9 @@ const printLog = (info: any) => {
 
   } catch (error) {
     //console.log(error);
+    return "error writing logs";
   }
-
-  return "error writing logs";
+  return info;
 }
 
 
@@ -25,28 +25,30 @@ export const errorLoggerOptions = {
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
     winston.format.colorize(),
-    winston.format.json()
+    winston.format.json(),
+    winston.format.timestamp(),
+    //winston.format.console(),
   ),
 };
 export const loggerOptions = {
   transports: [
-   new winston.transports.File({
-      filename: `./logs/${MY_NODE_ENV}-${moment().format('YYYY-MM-DD')}.log.json`,
+    new winston.transports.File({
+      filename: `./logs/${NODE_ENV}-${moment().format('YYYY-MM-DD')}.log.json`,
     }),
-  
-  new(require('winston-daily-rotate-file'))({
+
+    new (require('winston-daily-rotate-file'))({
       filename: `logs/nova.api.log`,
       timestamp: new Date(),
       datePattern: 'yyyy-M-D',
       prepend: true,
       json: true,
-  }),
+    }),
     new winston.transports.Console(),
   ],
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp(),
-    //winston.format.printf(printLog),
+   // winston.format.printf(printLog),
   ),
   meta: true, // optional: control whether you want to log the meta data about the request (default to true)
   msg: "HTTP > code: {{res.statusCode}}, METHOD: {{req.method}}, RESPONSE_TIME: {{res.responseTime}}ms, URL: {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"

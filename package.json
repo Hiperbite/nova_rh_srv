@@ -40,7 +40,7 @@
         "@types/nodemailer": "^6.4.8",
         "@types/pdfmake": "^0.2.2",
         "axios": "^1.5.0",
-        "bcrypt": "^5.1.0",
+        "bcrypt": "5.0.0",
         "body-parser": "^1.20.2",
         "cheerio": "1.0.0-rc.12",
         "cors": "^2.8.5",
@@ -51,6 +51,7 @@
         "express-rate-limit": "^6.7.1",
         "express-session": "^1.17.3",
         "express-winston": "^4.2.0",
+        "express-xml-bodyparser": "^0.3.0",
         "helmet": "^6.2.0",
         "html-to-pdfmake": "^2.4.25",
         "ip": "^1.1.8",
@@ -83,6 +84,9 @@
         "uuid": "^9.0.0",
         "winston": "^3.9.0",
         "winston-daily-rotate-file": "^4.7.1",
+        "xlsx": "^0.18.5",
+        "xlsx-js-style": "^1.2.0",
+        "xml-js": "^1.6.11",
         "zod": "^3.21.4"
     }
 }
