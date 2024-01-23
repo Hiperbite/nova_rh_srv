@@ -40,6 +40,8 @@ const validateRequest = (
   next: NextFunction
 ) => {
   const { where, order: o, include: i }: any = req.query
+
+  delete req.query.refresh
   if (where) {
     Object.keys(where).forEach((key: string) => {
       try {

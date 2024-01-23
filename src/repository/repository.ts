@@ -38,7 +38,11 @@ export default class Repository<T extends M>  {
 
   public findOne = async (id: string, opts: any = {}): Promise<T | null> => {
     const options = await this.refactorOptions(opts);
-    const data = await (opts?.scope ? this.repo.scope(opts?.scope) : this.repo).findByPk(id, options);
+    const data = await (
+      opts?.scope
+        ? this.repo.scope(opts?.scope)
+        : this.repo
+    ).findByPk(id, options);
 
     return data;
   };
@@ -68,7 +72,7 @@ export default class Repository<T extends M>  {
 
     try {
       await this.start();
-      let model = await this.findOne(id, { include: { all: true }});
+      let model = await this.findOne(id, { include: { all: true } });
       let done = await model?.update(d, { include: { all: true }, transaction: this.transaction })
 
 

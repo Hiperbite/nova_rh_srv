@@ -1,3 +1,4 @@
+import { includes } from 'lodash';
 import {
   Table,
   AllowNull,
@@ -35,7 +36,15 @@ const UniqIndex = createIndexDecorator({
     include: []
   },
   auth: {
-    include: []
+    include: [{
+      model: Employee,
+      attributes: ['avatar'],
+      include: [{
+        model: Person,
+        attributes: ['firstName','lastName','fullName'],
+        includes: [],
+      }]
+    }]
   },
   full: {
     include: [{
@@ -136,14 +145,14 @@ export default class User extends Model {
   })
   verified?: boolean;
 
-  
+
 
   @BelongsTo(() => Employee)
   employee!: Employee
 
   @ForeignKey(() => Employee)
   employeeId!: string;
-  
+
   @HasMany(() => Role)
   roles!: Role[]
 
@@ -159,7 +168,7 @@ export default class User extends Model {
   static hashPassword = UserApp.hashPassword;
 
 
-  
+
 
   @AfterCreate
   static notifyUser = (user: User) =>
@@ -192,8 +201,8 @@ export default class User extends Model {
     "email",
     "role",
     "verified",
-    "personId",
-    "person",
+    "employeeId",
+    "employee",
     "permissions",
     "isNew",
   ];

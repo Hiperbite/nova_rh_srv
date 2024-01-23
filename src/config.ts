@@ -43,7 +43,8 @@ const {
   refreshTokenPrivateKey,
   refreshTokenPublicKey,
   TOKEN_EXPIRE_IN,
-  IP_INFO_TOKEN
+  IP_INFO_TOKEN,
+  WEB_CLIENT_URL
 } = process.env;
 
 const app: Application = express();
@@ -163,12 +164,6 @@ const smtp = {
   secure: Number(MAILER_PORT || "") == 465,
 };
 
-const WEB_CLIENT_URL = {
-  development: "http://localhost:3000",
-  test: "http://localhost:3000",
-  quality: "https://academic.app.hiperbite.com",
-  production: "http://localhost:3000",
-}[MY_NODE_ENV ?? "development"];
 
 const socket = socketService;
 export {

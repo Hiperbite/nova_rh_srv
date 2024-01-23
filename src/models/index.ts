@@ -1,4 +1,4 @@
-import  PayrollSetting  from './Settings/payroll.settings';
+import PayrollSetting from './Settings/payroll.settings';
 
 import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
@@ -195,7 +195,7 @@ const switchTo = (db: any, ref: string) => {
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: false, force: false })
+    .sync({ alter: true, force: false })
     //.then(initializer)
     .catch(console.error)
 )

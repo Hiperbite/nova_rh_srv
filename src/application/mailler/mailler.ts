@@ -8,18 +8,6 @@ let transporter: any = {};
 try {
 
 
-  transporter.verify(function (err: any, success: any) {
-    try {
-      if (err) {
-        console.log(err);
-        logger.info(err)
-      } else {
-        logger.info('Server is ready to take our messages');
-      }
-    } catch (err: any) {
-      logger.error(err)
-    }
-  });
   transporter = nodemailer.createTransport({
     host: smtp.host,
     port: smtp.port,
@@ -33,9 +21,21 @@ try {
       rejectUnauthorized: false
     }
   });
+  transporter.verify(function (err: any, success: any) {
+    try {
+      if (err) {
+        console.log(err);
+        logger.info(err)
+      } else {
+        logger.info('Server is ready to take our messages');
+      }
+    } catch (err: any) {
+      logger.error(err)
+    }
+  });
 
 } catch (e: any) {
-
+let u=e;
 }
 /*
 const transporter = nodemailer.createTransport({

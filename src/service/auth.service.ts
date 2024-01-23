@@ -29,8 +29,8 @@ export async function signRefreshToken({ userId }: { userId: string }) {
   return refreshToken;
 }
 
-export function signAccessToken(user: User, employeeId?: string, roles?: {}) {
-  const payload = { ...user.dto(), employeeId, roles };
+export function signAccessToken(user: User, employeeId?: string, roles?: {}, otherFields: any={}) {
+  const payload = { ...user.dto(), employeeId, roles, ...otherFields };
 
   const accessToken = signJwt(
     payload,
