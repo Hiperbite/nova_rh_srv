@@ -12,11 +12,8 @@ import {
     AfterFind,
     AfterCreate,
 } from "sequelize-typescript";
-import moment from "moment";
-import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category } from "../index";
+import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole } from "../index";
 
-import { payrollState } from "./payroll";
-import WITaxApp from "../../application/payrolls/wi_tax.app";
 import PayStubApp from "../../application/payrolls/pay_stub.app";
 
 @DefaultScope(() => ({
@@ -36,7 +33,7 @@ import PayStubApp from "../../application/payrolls/pay_stub.app";
         include: [{ model: Payroll, include: [] }, PayrollLine,]
     },
     xfull: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, Role, Category, { model: Employee, include: [Person, AccountPaymentData] }] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Person, AccountPaymentData] }] }]
     }
 }))
 @Table({

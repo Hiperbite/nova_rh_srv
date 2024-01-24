@@ -1,4 +1,3 @@
-import { includes } from 'lodash';
 import {
   Table,
   AllowNull,
@@ -41,8 +40,8 @@ const UniqIndex = createIndexDecorator({
       attributes: ['avatar'],
       include: [{
         model: Person,
-        attributes: ['firstName','lastName','fullName'],
-        includes: [],
+        attributes: ['firstName', 'lastName', 'fullName'],
+        includes: ['firstName', 'lastName', 'fullName'],
       }]
     }]
   },
@@ -172,11 +171,14 @@ export default class User extends Model {
 
   @AfterCreate
   static notifyUser = (user: User) =>
-    User.scope('full').findByPk(user?.id).then((data: User | null) =>
-      sendEmail({
-        service: mailServices["createUser"],
-        data
-      })
+    User.scope('full').findByPk(user?.id).then((data: User | null) => {
+      if (data?.employee?.code && data?.employee?.code?.indexOf('A') < 0)
+        sendEmail({
+          service: mailServices["createUser"],
+          data
+        })
+    }
+
     )
   @BeforeCreate
   static setUserName = (user: User) => user.username ||= randomUUID()
@@ -202,6 +204,8 @@ export default class User extends Model {
     "role",
     "verified",
     "employeeId",
+    "person",
+    "personId",
     "employee",
     "permissions",
     "isNew",

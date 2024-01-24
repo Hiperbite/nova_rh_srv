@@ -14,6 +14,8 @@ import {
   SalaryPackage,
   sequelize,
   WorkingHour,
+  User,
+  Role,
 } from "./index";
 
 import { faker } from '@faker-js/faker';
@@ -88,16 +90,132 @@ const initialData: InitializerType[] = [
       {
         id: "a34f8f58-0b7d-4ab6-837a-8428e149c7c0",
         code: "DTI",
-        name: "Direcção de Tecnologia da Informação",
+        name: "Diretoria de Tecnologia da Informação",
         departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
+        childs: [
+          {
+            id: "d1f8f162-0e9f-428e-9329-1448906056cf",
+            code: "DEV",
+            name: "Departamento de Desenvolvimento de Software",
+            childs: [
+              {
+                id: "b3a9e4c2-6891-44e3-a6b2-70c09d5438d0",
+                code: "DWE",
+                name: "Subdepartamento de Desenvolvimento Web",
+                childs: [
+                  { id: "8f5d59e6-9922-4ae0-87a1-15c7e4a22a4e", code: "FE", name: "Equipe de Frontend" },
+                  { id: "d42dbb4b-b70d-4e35-9279-07b0b947cd8a", code: "BE", name: "Equipe de Backend" }
+                ]
+              },
+              {
+                id: "83f8b609-21f2-4f53-99df-4db73100a52e",
+                code: "DMO",
+                name: "Subdepartamento de Desenvolvimento de Aplicativos Móveis",
+                childs: [
+                  { id: "c68511b9-bfeb-4f3f-9cfe-76b40f9b8d91", code: "iOS", name: "Equipe de iOS" },
+                  { id: "daebcfda-3e6b-4a61-91b7-0d42530ef3c9", code: "AND", name: "Equipe de Android" }
+                ]
+              },
+              {
+                id: "a87abeca-d35f-41f4-af36-57db93e7b7f2",
+                code: "ARS",
+                name: "Subdepartamento de Arquitetura de Software"
+              }
+            ]
+          },
+          {
+            id: "5d9536bb-3cb7-4d7b-ba96-19ac19f10b2c",
+            code: "INF",
+            name: "Departamento de Infraestrutura e Operações",
+            childs: [
+              {
+                id: "1d0d7db4-61b7-402d-9b12-944ec8184c75",
+                code: "RES",
+                name: "Subdepartamento de Redes e Segurança",
+                childs: [
+                  { id: "06b46b7c-9c23-4ad4-a4f0-49a0a063b6dd", code: "RED", name: "Equipe de Rede" },
+                  { id: "af2b33a0-dc14-45ed-9a7b-95f2e3f04f63", code: "SEC", name: "Equipe de Segurança Cibernética" }
+                ]
+              },
+              {
+                id: "1e09e388-12b9-475c-b57a-7c2d4d2e84d4",
+                code: "ADM",
+                name: "Subdepartamento de Administração de Sistemas",
+                childs: [
+                  { id: "8e460ba9-c9da-4774-8dd3-5db432c82177", code: "ADM", name: "Equipe de Administração de Servidores" },
+                  { id: "a0216076-abea-4c8c-8a24-5082be8c12a2", code: "DVO", name: "Equipe de DevOps" }
+                ]
+              },
+              {
+                id: "b549b112-b53b-4f14-aa11-3804064b0487",
+                code: "GER",
+                name: "Subdepartamento de Gerenciamento de Ativos"
+              }
+            ]
+          },
 
+          {
+            id: "27f47214-8b20-434a-b6d2-8ed3981e2f29",
+            code: "UXD",
+            name: "Departamento de Experiência do Usuário e Design",
+          }
+        ]
       },
       {
         id: "c3764843-27f4-47c9-a6a7-5c7917814f72",
         code: "DOP",
         departmentId: "a04f8f58-0b7d-4ab6-837a-8428e149c7c0",
-        name: "Direcção de Operações",
-
+        name: "Diretoria de Operações",
+        childs: [
+          {
+            id: "6a2ea521-4c9b-4fe0-a9f4-9c6b41670067",
+            code: "VEM",
+            name: "Departamento de Vendas e Marketing",
+            childs: [
+              {
+                id: "19a237b6-44e5-4160-b9aa-42c1530f0a3b",
+                code: "VEN",
+                name: "Subdepartamento de Vendas",
+                childs: [
+                  { id: "61c7b7e2-3f5b-4b7f-aa2b-e48eb7c3beab", code: "B2B", name: "Equipe de Vendas B2B" },
+                  { id: "5602ee8b-8de5-47a7-95a1-7e5e7e8c08a2", code: "B2C", name: "Equipe de Vendas B2C" }
+                ]
+              },
+              {
+                id: "7647f9ad-ea40-4e58-b849-6aa6bbd8aa4d",
+                code: "MKT",
+                name: "Subdepartamento de Marketing",
+              }
+            ]
+          },
+          {
+            id: "bb55d617-3c4d-4a79-b4b0-e16b1d85a4d0",
+            code: "FAD",
+            name: "Departamento Financeiro e Administrativo",
+            childs: [
+              {
+                id: "e1a0e6b3-4d91-46ce-aacb-176d8a5d0ff1",
+                code: "CON",
+                name: "Subdepartamento de Contabilidade",
+              },
+              {
+                id: "b2d9f112-c3ac-4fa9-8895-90c9f29b5974",
+                code: "PLF",
+                name: "Subdepartamento de Planejamento Financeiro",
+              },
+              {
+                id: "8e0d8e15-0ff5-4d13-b363-688b9be13551",
+                code: "RHP",
+                name: "Subdepartamento de Recursos Humanos",
+                childs: [
+                  { id: "7c14f8af-0f92-4d09-b5d3-36b76d7f2c3b", code: "RCS", name: "Equipe de Recrutamento e Seleção" },
+                  { id: "8b322ff0-322e-4d19-92a0-6f632f67c5a3", code: "DPS", name: "Equipe de Desenvolvimento de Pessoas" },
+                  { id: "3df9e3c9-1e8b-4c9b-bf83-65ecd039f6db", code: "APE", name: "Equipe de Administração de Pessoal" }
+                ]
+              }
+            ]
+          }
+        ]
       }]
   },
   {
@@ -250,7 +368,8 @@ const initialData: InitializerType[] = [
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", name: "employee", code: 12 },
       { id: "86f8b609-21f2-4f53-99df-4db73100a52e", name: "payroll", code: 21 },
       { id: "87f8b609-21f2-4f53-99df-4db73100a52e", name: "attendance", code: 31 },
-      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", name: "settings", code: 13 }
+      { id: "89f0b609-21f2-4f53-99df-4db73100a521", name: "settings", code: 13 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", name: "company", code: 13 }
     ]
   },
   {
@@ -266,7 +385,9 @@ const initialData: InitializerType[] = [
     model: 'AdditionalPaymentType', data: [
 
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1000', name: 'Vencimento Base', level: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '1401', level: 0, name: 'Subsídio de Alimentação' },
+      { id: "13f8b609-21f2-4f53-99df-4db73190a52e", code: '1401', level: 0, name: 'Subsídio de Alimentação' },
+      { id: "13f8b609-21f2-4f53-99df-4db73180a52e", code: '1002', level: 0, name: 'Isenção de horário Total' },
+      { id: "13f8b609-21f2-4f53-99df-4db73170a52e", code: '1003', level: 0, name: 'Isenção de horário Parcial' },
       { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Subsídio de Competitividade' },
       { id: "33f8b609-21f2-4f53-99df-4db73100a52e", code: 'BN', level: 0, name: 'Bônus' },
       { id: "43f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
@@ -277,7 +398,7 @@ const initialData: InitializerType[] = [
       { id: "73f8b609-21f2-4f53-99df-4db73100a52b", code: '1642', level: 0, name: 'Subsídio de Natal' },
       { id: "73f8b609-21f2-4f53-99df-4db73100a52c", code: 'STR', level: 0, name: 'Subsídio de Turno' },
       { id: "73f8b609-21f2-4f53-99df-4db73100a52d", code: 'SCE', level: 0, name: 'Subsídio de Condições Especiais de Trabalho' },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'SEM', level: 0, name: 'Subsídio de Enfermidade ou Maternidade' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a534", code: 'SEM', level: 0, name: 'Subsídio de Enfermidade ou Maternidade' },
       { id: "73f8b609-21f2-4f53-99df-4db73100a52f", code: 'SED', level: 0, name: 'Subsídio de Educação' },
       { id: "73f8b609-21f2-4f53-99df-4db73100a50e", code: 'SAS', level: 0, name: 'Subsídio de Ação Social' },
       { id: "73f8b609-21f2-4f53-99df-4db73100a59e", code: 'PDS', level: 0, name: 'Prémios de Desempenho' },
@@ -298,22 +419,41 @@ const initialData: InitializerType[] = [
   },
   {
     model: 'Business', data: [
-      { code: '1', name: 'Lavandaria' },
-      { code: '2', name: 'Cinema' },
-      { code: '3', name: 'Hospital' },
-      { code: '4', name: 'Clínica' },
-      { code: '5', name: 'Cabeleireiro' },
-      { code: '6', name: 'Estética' },
-      { code: '7', name: 'Mecânica' },
-      { code: '8', name: 'Restaurante' },
-      { code: '9', name: 'Supermercado' },
-      { code: '10', name: 'Hotelaria' },
-      { code: '11', name: 'Fábrica' },
-      { code: '12', name: 'Armarinho' },
-      { code: '13', name: 'Loja' },
-      { code: '14', name: 'Saúde' },
-      { code: '15', name: 'Educação e Ensino' },
-      { code: '16', name: 'Outro' }
+      { code: "1", name: "Lojas físicas (roupas, eletrônicos, móveis, etc.)" },
+      { code: "2", name: "Comércio eletrônico (lojas online)" },
+      { code: "3", name: "Consultoria empresarial" },
+      { code: "4", name: "Serviços de contabilidade e financeiros" },
+      { code: "5", name: "Serviços jurídicos" },
+      { code: "6", name: "Restaurantes" },
+      { code: "7", name: "Cafeterias" },
+      { code: "8", name: "Serviços de catering" },
+      { code: "9", name: "Desenvolvimento de software" },
+      { code: "10", name: "Consultoria em TI" },
+      { code: "11", name: "Venda de hardware e dispositivos eletrônicos" },
+      { code: "12", name: "Clínicas médicas" },
+      { code: "13", name: "Academias e estúdios de fitness" },
+      { code: "14", name: "Spa e salões de beleza" },
+      { code: "15", name: "Escolas e creches" },
+      { code: "16", name: "Cursos online" },
+      { code: "17", name: "Serviços de tutoria" },
+      { code: "18", name: "Cinema e teatro" },
+      { code: "19", name: "Parques de diversões" },
+      { code: "20", name: "Eventos e produção de shows" },
+      { code: "21", name: "Hotéis e pousadas" },
+      { code: "22", name: "Agências de viagens" },
+      { code: "23", name: "Restaurantes turísticos" },
+      { code: "24", name: "Construção civil" },
+      { code: "25", name: "Corretagem imobiliária" },
+      { code: "26", name: "Serviços de reforma e manutenção" },
+      { code: "27", name: "Energias renováveis" },
+      { code: "28", name: "Consultoria ambiental" },
+      { code: "29", name: "Produtos sustentáveis" },
+      { code: "30", name: "Galerias de arte" },
+      { code: "31", name: "Estúdios de design" },
+      { code: "32", name: "Produção de eventos culturais" },
+      { code: "33", name: "Fazendas orgânicas" },
+      { code: "34", name: "Lojas de alimentos saudáveis" },
+      { code: "35", name: "Mercados de agricultores" }
     ]
   },
   {
@@ -1861,7 +2001,7 @@ const initialData: InitializerType[] = [
         code: 'A',
         name: faker.company.name(),
         description: faker.person.bio(),
-        nif: faker.finance.accountNumber(),
+        nif: '500' + faker.finance.accountNumber(),
         socialCapital: faker.finance.amount(),
         integrationToken: '',
         slogan: faker.company.buzzPhrase(),
@@ -1932,7 +2072,31 @@ const initialData: InitializerType[] = [
       overtimeCount: false,
       overtimePercent: 0
     }]
+  },
+  /*
+  {
+    model: "User", data: [
+      {
+        username: "admin",
+        email: "admin",
+        verificationCode: "107-A59",
+        permissions: null,
+        password: "$2b$10$J/bJiLD85NjnZ6DJie.guO30jSkEQurq46sc3sbplD0QDUU5V90C6",
+        role: "ROLE_ADMIN",
+        salt: "$2b$10$J/bJiLD85NjnZ6DJie.guO"
+      },
+      {
+        username: "demo",
+        email: "lutonda@gmail.com",
+        verificationCode: "440-8BC",
+        permissions: null,
+        password: "$2b$10$.eB9iq.Op5KycbdUVGtyBORMD2y93xj.rKvPwfp07.X2Hi09ebsZa",
+        role: "ROLE_ADMIN",
+        salt: "$2b$10$.eB9iq.Op5KycbdUVGtyBO"
+      }
+    ]
   }
+  */
 ]
 
 
@@ -2046,17 +2210,16 @@ function createRandomEmployees(): any {
           endDate: faker.date.future({ refDate: '2024-01-01T00:00:00.000Z' }),
           type: faker.helpers.arrayElement(["F", "H"]),
           salaryPackage: {
-            baseValue: faker.finance.amount({ min: 100000, max: 500000, dec: 2 }),
+            baseValue: faker.finance.amount({ min: 40000, max: 5000000, dec: 2 }),
             baseValuePeriod: 3,
             startDate: faker.date.past(),
-            additionalPayments: [
-              {
-                baseValue: faker.finance.amount({ min: 10000, max: 50000, dec: 2 }),
-                baseValuePeriod: faker.number.int(3),
-                startDate: faker.date.past({ refDate: '2023-01-01T00:00:00.000Z' }),
-                typeId: faker.helpers.arrayElement(types?.map(({ id }: any) => id))
-              }
-            ]
+            additionalPayments: [1, ...Array(Math.floor(Math.random() * 5)).keys()].map((i: any) => ({
+              baseValue: faker.finance.amount({ min: 10000, max: 500000, dec: 2 }),
+              baseValuePeriod: faker.number.int(3),
+              startDate: faker.date.past({ refDate: '2023-01-01T00:00:00.000Z' }),
+              typeId: faker.helpers.arrayElement(types?.map(({ id }: any) => id))
+            })
+            )
           },
           workingHour: {
             period: faker.number.int(3),
@@ -2067,24 +2230,63 @@ function createRandomEmployees(): any {
       ]
     }
   }
-  let i = 120;
-  while (--i >= 0 && employees.push(generateEmployee(i))) { }
+  let i = 110;
+  while (--i >= 0 && employees.push(generateEmployee(i + 2))) { }
+
+  employees.push({
+    ...generateEmployee(0), user: {
+      username: "demo",
+      email: "lutonda@gmail.com",
+      verificationCode: "440-8BC",
+      permissions: null,
+      passwordResetCode: 'demo',
+      password: "$2b$10$.eB9iq.Op5KycbdUVGtyBORMD2y93xj.rKvPwfp07.X2Hi09ebsZa",
+      role: "ROLE_ADMIN",
+      salt: "$2b$10$.eB9iq.Op5KycbdUVGtyBO",
+      roles: [
+        { level: 4, roleModuleId: "00f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "86f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "87f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a521" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a52e" },
+      ]
+    }
+  })
+  employees.push({
+    ...generateEmployee(1), user: {
+      username: "admin",
+      email: "admin",
+      verificationCode: "107-A59",
+      permissions: null,
+      passwordResetCode: 'admin',
+      password: "$2b$10$J/bJiLD85NjnZ6DJie.guO30jSkEQurq46sc3sbplD0QDUU5V90C6",
+      role: "ROLE_ADMIN",
+      salt: "$2b$10$J/bJiLD85NjnZ6DJie.guO",
+      roles: [
+        { level: 4, roleModuleId: "00f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "86f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "87f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a521" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a52e" },
+      ]
+    }
+  })
   initialData.push({
     model: 'Employee', data: employees, include:
-      [Contact, AccountPaymentData,
+      [{ model: User, as: 'user' ,includes:[Role]}, Contact, AccountPaymentData,
         Document,
-        {
-          model: Person, include: [
-            { model: Address, as: 'birthPlaceAddress' },
-            { model: Address, as: 'livingAddress' }]
-        },
-        {
-          model: Contract, include: [
-            AdditionalField,
-            WorkingHour,
-            { model: SalaryPackage, include: [AdditionalPayment] },
-          ]
-        }]
+      {
+        model: Person, include: [
+          { model: Address, as: 'birthPlaceAddress' },
+          { model: Address, as: 'livingAddress' }]
+      },
+      {
+        model: Contract, include: [
+          AdditionalField,
+          WorkingHour,
+          { model: SalaryPackage, include: [AdditionalPayment] },
+        ]
+      }]
   });
 }
 
@@ -2099,14 +2301,17 @@ const initializer = (_?: any) =>
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
         if (f === null) {
-          if (m === 'Employee') {
-            let y = 9
+          if (m === 'User') {
+            let u = 0;
           }
           model.create(d, { include: include ?? { all: true } }).catch((e: any) => {
             console.log(e)
           })
         }
-      }).catch(console.log)
+      }).catch((e: any) => {
+        console.warn(e)
+      }
+      )
     })
   })
 

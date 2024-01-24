@@ -23,7 +23,7 @@ export async function createSessionHandler(
     let status = 200;
     const { email, password } = req.body;
 
-    const user: User | null | any = await User.scope('auth').findOne({ where: { email } });
+    const user: User | null | any = await User.findOne({ where: { email } });
 
     if (!user) {
 
@@ -53,16 +53,18 @@ export async function createSessionHandler(
         }
     })
 
-    const otherFields = { fullName: user?.employee?.person?.fullName, avatar: user?.employee?.avatar }
+    const fullUser = await User.scope('auth').findOne({ where: { email } });
+
+    const otherFields = { fullName: fullUser?.employee?.person?.fullName, avatar: fullUser?.employee?.avatar }
     // sign a access token
-    const accessToken = signAccessToken(user, employeeId, roles, otherFields);
+    const accessToken = signAccessToken(user, employeeId, roles);
 
     // sign a refresh token
     const refreshToken = await signRefreshToken({ userId: String(user.id) });
 
     const [company]: any = await Company.findAll();
     // send the tokens
-    return res.status(status).send({ accessToken, refreshToken });
+    return res.status(status).send({ accessToken, refreshToken, company, otherFields });
 
 }
 

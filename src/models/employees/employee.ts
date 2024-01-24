@@ -273,7 +273,13 @@ export default class Employee extends Model {
    * @param param1 
    */
   @AfterCreate
-  static createUser = async ({ id: employeeId, contacts, avatar }: Employee, { transaction }: any) => {
+  static createUser = async ({ id: employeeId, contacts, avatar, user }: Employee, { transaction }: any) => {
+
+    if (user){ 
+      
+      return;
+
+    }
 
     const email = contacts?.find((c: Contact) => c.descriptions?.includes('@'))?.descriptions
 
