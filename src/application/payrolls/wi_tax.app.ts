@@ -1,4 +1,4 @@
-import { includes } from 'lodash';
+import { includes, orderBy, sortBy } from 'lodash';
 import { Contract, Employee, PayrollLine, PayStub, Person, Track, User, WITaxTable } from "../../models/index";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
@@ -27,7 +27,7 @@ export type HistoryEventState =
   "dark"
   ;
 
-  export type HistoryType = {
+export type HistoryType = {
   no: number,
   date: Date,
   type: HistoryEventType,
@@ -121,7 +121,7 @@ export default class WITaxApp {
       ?.filter((line: PayrollLine) => line.code === '1402')
       ?.reduce((acc, line: PayrollLine) => acc + line.value, -30000.00) ?? 0
 
-    const christmansSupport = lines
+    const christmasSupport = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1642')
       ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
@@ -149,13 +149,13 @@ export default class WITaxApp {
       ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
 
 
-    const unknowValues: number = lines
+    const unknownValues: number = lines
       ?.filter((line: PayrollLine) => line?.debit)
       //?.filter((line: PayrollLine) => !['1630', '1603', '1642', '1402', '1401', '1000'].includes(line?.code))
       ?.filter((line: PayrollLine) => ((line?.type?.code ?? '').indexOf('70') > -1))
       ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
 
-    const baseIncidenceSS = grossValue - (vacationSupport > 0 ? vacationSupport : 0) - unknowValues;
+    const baseIncidenceSS = grossValue - (vacationSupport > 0 ? vacationSupport : 0) - unknownValues;
 
     let totalWITaxValue = 0;
 
@@ -174,23 +174,24 @@ export default class WITaxApp {
     if (vacationSupport > 0) {
       totalWITaxValue += vacationSupport;
     }
-    if (christmansSupport > 0) {
-      totalWITaxValue += christmansSupport;
+    if (christmasSupport > 0) {
+      totalWITaxValue += christmasSupport;
     }
 
     if (otherValues > 0) {
       totalWITaxValue += otherValues;
     }
 
-    const collectableMaterial = totalWITaxValue - (baseIncidenceSS * 3 / 100) - unknowValues;
+    const collectableMaterial = totalWITaxValue - (baseIncidenceSS * 3 / 100) - unknownValues;
 
     const myWITax = await WITaxTable.findOne({
       where: {
 
-        fromValue: { [Op.lte]: collectableMaterial },
-        toValue: { [Op.gt]: collectableMaterial }
+        fromValue: { [Op.gte]: collectableMaterial },
+        toValue: { [Op.or]: [{ [Op.lt]: collectableMaterial }, { [Op.eq]: 0 }] },
 
-      }
+      },
+      order: [['toValue', 'DESC']]
     })
     let { excess, rate, fixedInstallment }: any = myWITax
     excess = parseFloat(excess);

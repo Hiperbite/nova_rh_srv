@@ -7,11 +7,10 @@ import {
   BelongsTo,
   ForeignKey,
   HasMany,
-  DefaultScope,
 } from "sequelize-typescript";
 
 import { Model, Department as Dep, Contract, Employee, Person, EmployeeRole, Category } from "../index";
-import moment from "moment";
+
 
 /*
 @DefaultScope(() => ({
@@ -20,7 +19,7 @@ import moment from "moment";
 */
 @Scopes(() => ({
   simple:{
-    include: [{ model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]
+    include: [/*{ model: Dep, as: 'department' }{ model: Dep, as: 'childs' },*/ ]
   },
   default: {
     include: [{ model: Contract, include: [Employee] }, { model: Dep, as: 'department' }, { model: Dep, as: 'childs' }]

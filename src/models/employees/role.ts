@@ -1,3 +1,4 @@
+import { EmployeeRoleApp } from "../../application/company/employee-role.app";
 import {
   Table,
   Column,
@@ -44,6 +45,6 @@ export default class EmployeeRole extends Model {
   })
   no?: number;
 
- 
+  static filter = EmployeeRoleApp.filter
 }
 

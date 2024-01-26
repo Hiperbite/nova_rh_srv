@@ -55,7 +55,7 @@ const models: modelsType[] = [
   { key: "departments", model: Department },
   { key: "address", model: Address },
   { key: "contact-types", model: ContactType },
-  { key: "roles", model: EmployeeRole },
+  { key: "employeeroles", model: EmployeeRole },
   { key: "categories", model: Category },
   { key: "salary-packages", model: SalaryPackage },
   { key: "additional-payments", model: AdditionalPayment },
