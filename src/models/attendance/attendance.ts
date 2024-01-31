@@ -1,3 +1,4 @@
+import { AttendanceApp } from "../../application/attendance/attendance.app";
 import {
     Table,
     Column,
@@ -20,7 +21,7 @@ import { AttendanceJustification, AttendanceType, Employee, Person, Model, Contr
                 model: Employee,
                 as: "employee",
                 include: [Contract,
-                   // { model: Attendance, include: [AttendanceType] },
+                    // { model: Attendance, include: [AttendanceType] },
                     {
                         model: Person,
                         attributes: ['id', 'fullName', 'firstName', 'lastName']
@@ -62,6 +63,13 @@ export default class Attendance extends Model {
     })
     endDate!: string;
 
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    })
+    state!: number;
+
     @BelongsTo(() => AttendanceType)
     type!: AttendanceType
 
@@ -82,4 +90,6 @@ export default class Attendance extends Model {
 
     @ForeignKey(() => Employee)
     approverId!: string;
+
+    static filter = AttendanceApp.filter
 }

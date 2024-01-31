@@ -29,8 +29,10 @@ import {
   AccountPaymentData,
   EmployeeRole,
   Department,
-  Attendance
+  Attendance,
+  AttendanceType
 } from "../index";
+import { calculateBusinessDays } from '../../helpers/helper';
 
 @DefaultScope(() => ({
   include: []
@@ -79,6 +81,20 @@ import {
   },
   default: {
     include: [
+      Person,
+      {
+        model: Contract,
+        include: [EmployeeRole, Department],
+      }
+    ]
+  },
+  attendance: {
+    include: [
+      Contract,
+      {
+        model: Attendance,
+        include: [AttendanceType]
+      },
       Person,
       {
         model: Contract,
@@ -217,10 +233,40 @@ export default class Employee extends Model {
     if (oldest === undefined)
       return;
 
+    const attendances = this.attendances?.filter(({ startDate, endDate }: any) => moment().startOf('year').isSameOrBefore(moment(startDate)))
+
+    const vocations = attendances?.
+      filter(({ type }: any) => type?.code === 'VACATION')?.
+      filter(({ state }: any) => state === 1)
+
+
+    const nextDays = vocations?.
+      filter(({ startDate, endDate }: any) => moment().isSameOrBefore(moment(startDate)))?.
+      map(({ startDate, endDate }: any) => calculateBusinessDays(startDate, endDate)?.totalBusinessDays)
+
+    const pastDays = vocations?.
+      filter(({ startDate, endDate }: any) => moment().startOf('year').isSameOrAfter(moment(startDate)))?.
+      map(({ startDate, endDate }: any) => calculateBusinessDays(startDate, endDate)?.totalBusinessDays)
+
+    const consumed = pastDays?.
+      reduce((a: number, b: number) => a + b, 0)
+
+    const planned = nextDays?.
+      reduce((a: number, b: number) => a + b, 0)
+
     const startDate = moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
     const balance = startDate.diff(moment().startOf('year'), 'months') * 2 * (-1)
+    const annualBalance = balance > 22 ? 22 : balance;
 
-    return balance > 22 ? 22 : balance;
+    return {
+
+      available: annualBalance - consumed - planned,
+      consumed,
+      planned,
+      annualBalance,
+      attendances
+    };
+
   }
   @Column({
     type: DataType.VIRTUAL
@@ -275,8 +321,8 @@ export default class Employee extends Model {
   @AfterCreate
   static createUser = async ({ id: employeeId, contacts, avatar, user }: Employee, { transaction }: any) => {
 
-    if (user){ 
-      
+    if (user) {
+
       return;
 
     }
