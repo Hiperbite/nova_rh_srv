@@ -174,8 +174,13 @@ return ;
 const Repo = sequelize.getRepository;
 (true &&
   sequelize
+<<<<<<< HEAD
     .sync({ alter: true, force: true })
     .then(initializer)
+=======
+    .sync({ alter: true, force: false })
+    //.then(initializer)
+>>>>>>> e64e9142dadf31f08639f997daf806ee16ec54ca
     .catch(console.error)
 )
 

@@ -6,16 +6,26 @@ import {
   ForeignKey,
   Scopes,
   HasMany,
+  DefaultScope,
 } from "sequelize-typescript";
 
 import { Model } from "../index";
 
-type FileType = "DIR" | "FILE" | "OTHER"| "SHORTCUT";
+type FileType = "DIR" | "FILE" | "OTHER" | "SHORTCUT";
 
+@DefaultScope(() => ({
+  order: [
+    ['type', 'ASC'],
+    ['fileName', 'ASC'],
+  ],
+}))
 @Scopes(() => ({
   default: {
     include: []
+  }, trashed:{
+    where: {isActive:false}
   }
+  
 }))
 @Table({
   timestamps: true,
@@ -64,7 +74,7 @@ export default class File extends Model {
   @ForeignKey(() => File)
   dirId?: string;
 
-  @HasMany(() => File)
+  @HasMany(() => File, { as: 'files' })
   files?: File[];
 
 }

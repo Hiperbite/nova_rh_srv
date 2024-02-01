@@ -13,32 +13,11 @@ const printLog = (info: any) => {
 
       info.client = data;
 
-      const {
-        method,
-        url,
-        query,
-        params,
-        body,
-        headers,
-        connection
-      }: any = info?.meta?.req ?? {};
-
-
-      const log = {
-        level: info.level,
-        status: info.meta?.res?.statusCode,
-        message: info?.message,
-        method,
-        url,
-        query,
-        params,
-        body,
-      };
-
 
       return info;
     })
 
+    return info;
   } catch (error) {
     console.log(error);
   }
@@ -69,7 +48,7 @@ export const loggerOptions = {
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp(),
-    winston.format.printf(printLog),
+    //winston.format.printf(printLog),
   ),
   meta: true, // optional: control whether you want to log the meta data about the request (default to true)
   msg: "HTTP > code: {{res.statusCode}}, METHOD: {{req.method}}, RESPONSE_TIME: {{res.responseTime}}ms, URL: {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"

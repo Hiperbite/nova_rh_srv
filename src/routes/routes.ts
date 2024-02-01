@@ -38,8 +38,7 @@ routes.use('/users', userRoutes)
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)
 
-
-routes.use('/doc-manager/files', files)
+routes.use('/drive/files', files)
 
 //routes.use('/commons/contacts', contactRoutes)
 routes.use('/commons/dashboards', dashboards)

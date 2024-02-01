@@ -16,8 +16,15 @@ import {
   sequelize,
   WorkingHour,
 } from "./index";
+<<<<<<< HEAD
 
 //import { faker } from '@faker-js/faker';
+=======
+import { faker } from '@faker-js/faker/locale/pt_BR'
+//import { faker } from '@faker-js/faker';
+import { FileType } from './doc-manager/file';
+import moment from 'moment';
+>>>>>>> e64e9142dadf31f08639f997daf806ee16ec54ca
 
 import { faker } from '@faker-js/faker/locale/pt';
 
@@ -2086,7 +2093,7 @@ function createRandomEmployees(): any {
           typeId: contactType?.find(({ code }: any) => code === 'EMAIL')?.id
         },
         {
-          descriptions: faker.phone.number('+244 9########'),
+          descriptions: faker.phone.number,
           typeId: contactType?.find(({ code }: any) => code === "PHONENUMBER")?.id
         }
       ],
@@ -2150,6 +2157,7 @@ function createRandomEmployees(): any {
 createRandomEmployees();
 const fileTypes = ['DIR', 'FILE', 'OTHER', 'SHORTCUT'];
 
+<<<<<<< HEAD
 // Array of possible permissions
 const permissions = ['w', 'r', 'd', 'c'];
 
@@ -2175,6 +2183,38 @@ const files:any=[];
   });
 })()
 ;
+=======
+const generateFile = (path:string='/') => {
+
+  const type: FileType = faker.helpers.arrayElement(["DIR", "FILE", "OTHER", "SHORTCUT"])
+  const innerFIles = Math.floor(Math.random() * (10)) ;
+  const file: any = {
+    fileName: type === 'DIR' ? faker.lorem.word() : faker.system.commonFileName(),
+    path,
+    type,
+    code: moment().toDate()+String(Math.random()),
+    permissions: "a",
+    files: type === 'DIR' && innerFIles > 1 ? [...Array(innerFIles).keys()].map((_: number) => generateFile(path+faker.lorem.word()+'/')) : [],
+    isActive: true,
+  }
+
+
+  return file;
+}
+const initFiles=() => {
+  let i = 15;
+  let files: any[] = []
+  while (--i >= 0 && files.push(generateFile())) {
+
+  }
+  initialData.push({
+    model: 'File', data: files
+  });
+
+}
+
+initFiles()
+>>>>>>> e64e9142dadf31f08639f997daf806ee16ec54ca
 const initializer = (_?: any) =>
   initialData.forEach(({ model: m, data, include = { all: true } }: any) => {
     const s = sequelize;
@@ -2184,14 +2224,16 @@ const initializer = (_?: any) =>
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
         if (f === null) {
-          if (m === 'Employee') {
+          if (m === 'File') {
             let y = 9
           }
           model.create(d, { include: include ?? { all: true } }).catch((e: any) => {
             console.log(e)
           })
         }
-      }).catch(console.log)
+      }).catch((e:any)=>{
+        console.log(e)
+      })
     })
   })
 
