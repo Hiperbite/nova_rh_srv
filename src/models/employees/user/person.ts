@@ -9,7 +9,7 @@ import {
   Scopes,
   BeforeCreate,
 } from "sequelize-typescript";
-import { Address, Contact, Country, Document, Employee, Model } from "../index";
+import { Address, Contact, Country, Document, Employee, Model } from "../../index";
 
 
 export type MaritalstatusType =

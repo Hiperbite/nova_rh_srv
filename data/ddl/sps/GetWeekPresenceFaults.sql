@@ -1,7 +1,9 @@
+-- Active: 1667157413070@@127.0.0.1@3306@nova_ri
 
+DELIMITER //
 DROP PROCEDURE GETWEEKPRESENCEFAULTS;
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `GETWEEKPRESENCEFAULTS`(IN STARTDATE DATE
+-- Active: 1667157413070@@127.0.0.1@3306@nova_rh
+CREATE  PROCEDURE `GETWEEKPRESENCEFAULTS`(IN STARTDATE DATE
 , IN ENDDATE DATE)
 BEGIN 
 	SELECT
@@ -12,7 +14,7 @@ BEGIN
 	                1,
 	                2
 	            ) = 'Mo'
-	            and DAYOFWEEK(Attendances.`startDate`) = 2,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 1,
 	            1,
 	            NULL
 	        )
@@ -24,7 +26,7 @@ BEGIN
 	                1,
 	                2
 	            ) = 'Tu'
-	            and DAYOFWEEK(Attendances.`startDate`) = 3,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 2,
 	            1,
 	            NULL
 	        )
@@ -36,7 +38,7 @@ BEGIN
 	                1,
 	                2
 	            ) = 'We'
-	            and DAYOFWEEK(Attendances.`startDate`) = 4,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 3,
 	            1,
 	            NULL
 	        )
@@ -48,7 +50,7 @@ BEGIN
 	                1,
 	                2
 	            ) = 'Th'
-	            and DAYOFWEEK(Attendances.`startDate`) = 5,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 4,
 	            1,
 	            NULL
 	        )
@@ -60,7 +62,7 @@ BEGIN
 	                1,
 	                2
 	            ) = 'Fr'
-	            and DAYOFWEEK(Attendances.`startDate`) = 6,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 5,
 	            1,
 	            NULL
 	        )
@@ -72,7 +74,7 @@ BEGIN
 	                1,
 	                2
 	            ) = 'Sa'
-	            and DAYOFWEEK(Attendances.`startDate`) = 7,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 6,
 	            1,
 	            NULL
 	        )
@@ -84,20 +86,21 @@ BEGIN
 	                1,
 	                2
 	            ) = 'Su'
-	            and DAYOFWEEK(Attendances.`startDate`) = 1,
+	            and (DAYOFWEEK(Attendances.`startDate`) - 1) = 0,
 	            1,
 	            NULL
 	        )
 	    ) as sundayCount
 	from Attendances
 	    LEFT JOIN `Employees` on Attendances.`employeeId` = Employees.id
-	    LEFT JOIN `Contracts` on Contracts.`employeeId` = Employees.id
+	    LEFT JOIN `Contracts` on Contracts.`employeeId` = Employees.id 
+				
 	    LEFT JOIN WorkingHours on Contracts.id = `WorkingHours`.`contractId`
+		LEFT JOIN AttendanceTypes on AttendanceTypes.id=Attendances.typeId 
+				and (AttendanceTypes.code='ABSENT' or AttendanceTypes.code='VACATION')
 	WHERE
 		(Attendances.`startDate` BETWEEN STARTDATE and ENDDATE) 
-		and 
-		(Employees.`isActive` = 1)
-		and
-	    (Attendances.`typeId` = 'f6bcaa60-ee5d-490d-ba0c-d8ca55afa5ca'
-	    OR Attendances.`typeId` = '68987a50-8f96-4735-af13-def233140b30');
-	END
+		and Employees.`isActive` = 1
+		and Contracts.`isActive`  is true;
+	END;
+	//

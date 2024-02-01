@@ -10,13 +10,16 @@ import {
   Document,
   Employee,
   Person,
-  Role,
+  EmployeeRole,
   SalaryPackage,
   sequelize,
   WorkingHour,
+  User,
+  Role,
 } from "./index";
 
 import { faker } from '@faker-js/faker';
+import PayrollSetting from './Settings/payroll.settings';
 
 
 type InitializerType = { model: any, data: any[], include?: any }
@@ -116,11 +119,7 @@ const initialData: InitializerType[] = [
               {
                 id: "a87abeca-d35f-41f4-af36-57db93e7b7f2",
                 code: "ARS",
-                name: "Subdepartamento de Arquitetura de Software",
-                childs: [
-                  { id: "04f1f990-63f5-40a6-8371-0e74ab806500", code: "MIC", name: "Arquitetura de Microserviços" },
-                  { id: "3a7b1982-58be-4b27-bb61-1330c26bb68b", code: "NUV", name: "Arquitetura de Nuvem" }
-                ]
+                name: "Subdepartamento de Arquitetura de Software"
               }
             ]
           },
@@ -150,63 +149,15 @@ const initialData: InitializerType[] = [
               {
                 id: "b549b112-b53b-4f14-aa11-3804064b0487",
                 code: "GER",
-                name: "Subdepartamento de Gerenciamento de Ativos",
-                childs: [
-                  { id: "1cf50a00-378f-472b-8c33-977c036572fe", code: "HRD", name: "Controle de Ativos de Hardware" },
-                  { id: "17e156f0-6a2e-4565-85b3-57b50590bbf7", code: "SFT", name: "Gerenciamento de Licenças de Software" }
-                ]
+                name: "Subdepartamento de Gerenciamento de Ativos"
               }
             ]
           },
-          {
-            id: "045e756c-0b81-4c84-875b-1a48458c9ef6",
-            code: "DIA",
-            name: "Departamento de Análise de Dados e Inteligência Artificial",
-            childs: [
-              {
-                id: "2b405b19-6166-4b5a-8b86-055632b01d6e",
-                code: "CID",
-                name: "Subdepartamento de Ciência de Dados",
-                childs: [
-                  { id: "f424819e-7d13-48c6-b6ef-30e7b902db8d", code: "AND", name: "Equipe de Análise de Dados" },
-                  { id: "bd90d0f6-4881-4c19-86de-01b5e32056d3", code: "APM", name: "Equipe de Aprendizado de Máquina" }
-                ]
-              },
-              {
-                id: "b663dc4f-6605-4d7f-bcbf-3eb35413c0d9",
-                code: "INT",
-                name: "Subdepartamento de Inteligência de Negócios",
-                childs: [
-                  { id: "021ab18d-9a3b-46c1-9ec3-9924c08f9cc4", code: "BI", name: "Equipe de Business Intelligence" },
-                  { id: "cd076d0d-d6fc-4c6d-9c91-cd62806ad3a5", code: "VIS", name: "Equipe de Visualização de Dados" }
-                ]
-              }
-            ]
-          },
+
           {
             id: "27f47214-8b20-434a-b6d2-8ed3981e2f29",
             code: "UXD",
             name: "Departamento de Experiência do Usuário e Design",
-            childs: [
-              {
-                id: "0c670eda-20e6-4c4c-b1b0-3c22e7d5ea1c",
-                code: "UXD",
-                name: "Subdepartamento de Experiência do Usuário",
-                childs: [
-                  { id: "a39d433d-094c-4657-b2f2-1d10d7abcb6e", code: "PES", name: "Equipe de Pesquisa de Usuário" },
-                  { id: "33f0e63a-4d53-4096-9f59-29eb43f2e5ca", code: "DIN", name: "Equipe de Design de Interação" }
-                ]
-              },
-              {
-                id: "af6a656d-40f3-4314-8b92-179e2c25ef2d",
-                code: "DSV",
-                name: "Subdepartamento de Design Visual",
-                childs: [
-                  { id: "b0c65b8f-d01e-4b7c-b0da-c6d620b7e2c6", code: "GRA", name: "Equipe de Design Gráfico" },
-                  { id: "0ee03ff3-cd4d-4596-b46b-4c659b7482a0", code: "INT", name: "Equipe de Design de Interface" }
-                ]
-              }
-            ]
           }
         ]
       },
@@ -234,10 +185,6 @@ const initialData: InitializerType[] = [
                 id: "7647f9ad-ea40-4e58-b849-6aa6bbd8aa4d",
                 code: "MKT",
                 name: "Subdepartamento de Marketing",
-                childs: [
-                  { id: "df0f189b-4eac-4e58-90c5-31dd4633fb48", code: "DIG", name: "Equipe de Marketing Digital" },
-                  { id: "b0d43e08-3637-4f6e-9b6e-07ac8b3a49cd", code: "CON", name: "Equipe de Marketing de Conteúdo" }
-                ]
               }
             ]
           },
@@ -250,19 +197,11 @@ const initialData: InitializerType[] = [
                 id: "e1a0e6b3-4d91-46ce-aacb-176d8a5d0ff1",
                 code: "CON",
                 name: "Subdepartamento de Contabilidade",
-                childs: [
-                  { id: "89b69fbf-cb65-4a9d-a02a-b33d91fdd24c", code: "CPG", name: "Equipe de Contas a Pagar e Receber" },
-                  { id: "33245f6b-eeb2-4564-9324-9479c2710b92", code: "CGE", name: "Equipe de Contabilidade Geral" }
-                ]
               },
               {
                 id: "b2d9f112-c3ac-4fa9-8895-90c9f29b5974",
                 code: "PLF",
                 name: "Subdepartamento de Planejamento Financeiro",
-                childs: [
-                  { id: "a9749796-cda4-409c-85e4-b967635ada73", code: "ORÇ", name: "Equipe de Orçamento" },
-                  { id: "54dd847e-020a-4e61-8a3e-0aa062012e5e", code: "AFN", name: "Equipe de Análise Financeira" }
-                ]
               },
               {
                 id: "8e0d8e15-0ff5-4d13-b363-688b9be13551",
@@ -289,7 +228,119 @@ const initialData: InitializerType[] = [
     ]
   },
   {
-    model: 'Role', data: [
+    model: "WITaxTable", data: [
+      {
+        id: "00f8b600-21f2-4f53-99df-4db73100a52e",
+        code: 1, leve: 1,
+        fromValue: 0.0000,
+        toValue: 100000.00,
+        fixedInstallment: 0,
+        rate: 0,
+        excess: 0
+      },
+      {
+        id: "00f8b601-21f2-4f53-99df-4db73100a52e",
+        code: 2, leve: 2,
+        fromValue: 100001.00,
+        toValue: 150000.00,
+        fixedInstallment: 0,
+        rate: 13,
+        excess: 100001.00
+      },
+      {
+        id: "00f8b602-21f2-4f53-99df-4db73100a52e",
+        code: 3, leve: 3,
+        fromValue: 150001.00,
+        toValue: 200000.00,
+        fixedInstallment: 12500,
+        rate: 16,
+        excess: 150001.00
+      },
+      {
+        id: "00f8b603-21f2-4f53-99df-4db73100a52e",
+        code: 4, leve: 4,
+        fromValue: 200001.00,
+        toValue: 300000.00,
+        fixedInstallment: 31250,
+        rate: 18,
+        excess: 200001.00
+      },
+      {
+        id: "00f8b615-21f2-4f53-99df-4db73100a52e",
+        code: 5, leve: 5,
+        fromValue: 300001.00,
+        toValue: 500000.00,
+        fixedInstallment: 49250,
+        rate: 19,
+        excess: 300001.00
+      },
+      {
+        id: "00f8b614-21f2-4f53-99df-4db73100a52e",
+        code: 6, leve: 6,
+        fromValue: 500001.00,
+        toValue: 1000000.00,
+        fixedInstallment: 87250,
+        rate: 20,
+        excess: 500001.00
+      },
+      {
+        id: "00f8b604-21f2-4f53-99df-4db73100a52e",
+        code: 7, leve: 7,
+        fromValue: 1000001.00,
+        toValue: 1000000.00,
+        fixedInstallment: 147249,
+        rate: 21,
+        excess: 1000001.00
+      },
+      {
+        id: "00f8b605-21f2-4f53-99df-4db73100a52e",
+        code: 8, leve: 8,
+        fromValue: 1500001.00,
+        toValue: 2000000.00,
+        fixedInstallment: 292249,
+        rate: 22,
+        excess: 1500001.00
+      },
+      {
+        id: "00f8b606-21f2-4f53-99df-4db73100a52e",
+        code: 9, leve: 9,
+        fromValue: 2000001.00,
+        toValue: 2500000.00,
+        fixedInstallment: 402249,
+        rate: 23,
+        excess: 2000001.00
+      },
+      {
+        id: "00f8b607-21f2-4f53-99df-4db73100a52e",
+        code: 10, leve: 10,
+        fromValue: 2_500_001.00,
+        toValue: 5_000_000.00,
+        fixedInstallment: 517_249,
+        rate: 24,
+        excess: 2_500_001.00
+      },
+      {
+        id: "00f8b608-21f2-4f53-99df-4db73100a52e",
+        code: 11, leve: 11,
+        fromValue: 5000001.00,
+        toValue: 10000000.00,
+        fixedInstallment: 1117249,
+        rate: 24.5,
+        excess: 5000001.00
+      },
+      {
+        id: "00f8b609-21f2-4f53-99df-4db73100a52e",
+        code: 12, leve: 12,
+        fromValue: 10000001.00,
+        toValue: 0,
+        fixedInstallment: 2342248,
+        rate: 25,
+        excess: 10000001.00
+      }
+    ]
+  },
+  {
+    model: 'EmployeeRole', data: [
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1', name: 'Project manager' },
       { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '2', name: 'Software Architect' },
       { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '3', name: 'Data science' },
@@ -313,28 +364,12 @@ const initialData: InitializerType[] = [
     ]
   },
   {
-    model: 'RoleLevel', data: [
-
-      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", no: 1 ,code: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", no: 2 ,code: 2 },
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", no: 3 ,code: 3 },
-      { id: "33f8b609-21f2-4f53-99df-4db73100a52e", no: 4 ,code: 4 },
-      { id: "43f8b609-21f2-4f53-99df-4db73100a52e", no: 5 ,code: 5 },
-      { id: "53f8b609-21f2-4f53-99df-4db73100a52e", no: 6 ,code: 6 },
-      { id: "63f8b609-21f2-4f53-99df-4db73100a52e", no: 7 ,code: 7 },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", no: 8 ,code: 8 },
-      { id: "89f8b609-21f2-4f53-99df-4db73100a52e", no: 9 ,code: 9 },
-      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", no: 10,code: 10 },
-      { id: "03f8b609-21f2-4f53-99df-4db73100a52e", no: 11,code: 11 },
-      { id: "81f8b609-21f2-4f53-99df-4db73100a52e", no: 12,code: 12 },
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", no: 13,code: 13 },
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", no: 14,code: 14 },
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", no: 15,code: 15 },
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", no: 16,code: 16 },
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", no: 17,code: 17 },
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", no: 18,code: 18 },
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", no: 19,code: 19 },
-      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", no: 20,code: 20 },
+    model: 'RoleModule', data: [
+      { id: "00f8b609-21f2-4f53-99df-4db73100a52e", name: "employee", code: 12 },
+      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", name: "payroll", code: 21 },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", name: "attendance", code: 31 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a521", name: "settings", code: 13 },
+      { id: "89f0b609-21f2-4f53-99df-4db73100a52e", name: "company", code: 13 }
     ]
   },
   {
@@ -350,44 +385,75 @@ const initialData: InitializerType[] = [
     model: 'AdditionalPaymentType', data: [
 
       { id: "00f8b609-21f2-4f53-99df-4db73100a52e", code: '1000', name: 'Vencimento Base', level: 1 },
-      { id: "13f8b609-21f2-4f53-99df-4db73100a52e", code: '1401', level: 0, name: 'Almoço' },
-      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Competitividade' },
+      { id: "13f8b609-21f2-4f53-99df-4db73190a52e", code: '1401', level: 0, name: 'Subsídio de Alimentação' },
+      { id: "13f8b609-21f2-4f53-99df-4db73180a52e", code: '1002', level: 0, name: 'Isenção de horário Total' },
+      { id: "13f8b609-21f2-4f53-99df-4db73170a52e", code: '1003', level: 0, name: 'Isenção de horário Parcial' },
+      { id: "23f8b609-21f2-4f53-99df-4db73100a52e", code: '1406', level: 0, name: 'Subsídio de Competitividade' },
       { id: "33f8b609-21f2-4f53-99df-4db73100a52e", code: 'BN', level: 0, name: 'Bônus' },
       { id: "43f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
       { id: "53f8b609-21f2-4f53-99df-4db73100a52e", code: 'AS', level: 0, name: 'Adiantamento salarial' },
       { id: "63f8b609-21f2-4f53-99df-4db73100a52e", code: 'TF', level: 0, name: 'Trabalho em feriados' },
-      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'VC', level: 0, name: 'Feriados' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52e", code: 'HD', level: 0, name: 'Feriados' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52a", code: '1630', level: 0, name: 'Subsídio de Férias' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52b", code: '1642', level: 0, name: 'Subsídio de Natal' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52c", code: 'STR', level: 0, name: 'Subsídio de Turno' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52d", code: 'SCE', level: 0, name: 'Subsídio de Condições Especiais de Trabalho' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a534", code: 'SEM', level: 0, name: 'Subsídio de Enfermidade ou Maternidade' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a52f", code: 'SED', level: 0, name: 'Subsídio de Educação' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a50e", code: 'SAS', level: 0, name: 'Subsídio de Ação Social' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a59e", code: 'PDS', level: 0, name: 'Prémios de Desempenho' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a08e", code: 'SAF', level: 0, name: 'Subsídio de Apoio à Família' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a58e", code: '1603', level: 0, name: 'Subsídio de abono Famíliar' },
+      { id: "73f8b609-21f2-4f53-99df-4db73100a57e", code: 'SNT', level: 0, name: 'Subsídio Noturno' },
       { id: "89f8b609-21f2-4f53-99df-4db73100a52e", code: 'HE', level: 0, name: 'Horas extras' },
-      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", code: 'VA', level: 0, name: 'Variável' },
+      { id: "93f8b609-21f2-4f53-99df-4db73100a52e", code: 'VA', level: 0, name: 'Remuneração Variável' },
       { id: "03f8b609-21f2-4f53-99df-4db73100a52e", code: 'CM', level: 0, name: 'Comissões' },
       { id: "81f8b609-21f2-4f53-99df-4db73100a52e", code: 'CP', level: 0, name: 'Complemento' },
-      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", code: 'DS', level: 0, name: 'Disponibilidade' },
-      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", code: 'AC', level: 0, name: 'Acomodação' },
-      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", code: 'TR', level: 0, name: 'Transporte' },
-      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", code: 'ET', level: 0, name: 'Espaço de trabalho' },
-      { id: "86f8b609-21f2-4f53-99df-4db73100a52e", code: 'RF', level: 0, name: 'Refeição' },
-      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", code: 'AP', level: 0, name: 'Aprendizado' },
-      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", code: 'OU', level: 0, name: 'Outro' }
+      { id: "82f8b609-21f2-4f53-99df-4db73100a52e", code: 'DS', level: 0, name: 'Subsídio de Disponibilidade' },
+      { id: "83f8b609-21f2-4f53-99df-4db73100a52e", code: 'AC', level: 0, name: 'Subsídio de Acomodação' },
+      { id: "84f8b609-21f2-4f53-99df-4db73100a52e", code: '1402', level: 0, name: 'Subsídio de Transporte' },
+      { id: "85f8b609-21f2-4f53-99df-4db73100a52e", code: 'ET', level: 0, name: 'Subsídio de Espaço de trabalho' },
+      { id: "87f8b609-21f2-4f53-99df-4db73100a52e", code: 'AP', level: 0, name: 'Subsídio de Aprendizado' },
+      { id: "88f8b609-21f2-4f53-99df-4db73100a52e", code: 'OU', level: 0, name: 'Outro Subsídio' }
     ]
   },
   {
     model: 'Business', data: [
-      { code: '1', name: 'Lavandaria' },
-      { code: '2', name: 'Cinema' },
-      { code: '3', name: 'Hospital' },
-      { code: '4', name: 'Clínica' },
-      { code: '5', name: 'Cabeleireiro' },
-      { code: '6', name: 'Estética' },
-      { code: '7', name: 'Mecânica' },
-      { code: '8', name: 'Restaurante' },
-      { code: '9', name: 'Supermercado' },
-      { code: '10', name: 'Hotelaria' },
-      { code: '11', name: 'Fábrica' },
-      { code: '12', name: 'Armarinho' },
-      { code: '13', name: 'Loja' },
-      { code: '14', name: 'Saúde' },
-      { code: '15', name: 'Educação e Ensino' },
-      { code: '16', name: 'Outro' }
+      { code: "1", name: "Lojas físicas (roupas, eletrônicos, móveis, etc.)" },
+      { code: "2", name: "Comércio eletrônico (lojas online)" },
+      { code: "3", name: "Consultoria empresarial" },
+      { code: "4", name: "Serviços de contabilidade e financeiros" },
+      { code: "5", name: "Serviços jurídicos" },
+      { code: "6", name: "Restaurantes" },
+      { code: "7", name: "Cafeterias" },
+      { code: "8", name: "Serviços de catering" },
+      { code: "9", name: "Desenvolvimento de software" },
+      { code: "10", name: "Consultoria em TI" },
+      { code: "11", name: "Venda de hardware e dispositivos eletrônicos" },
+      { code: "12", name: "Clínicas médicas" },
+      { code: "13", name: "Academias e estúdios de fitness" },
+      { code: "14", name: "Spa e salões de beleza" },
+      { code: "15", name: "Escolas e creches" },
+      { code: "16", name: "Cursos online" },
+      { code: "17", name: "Serviços de tutoria" },
+      { code: "18", name: "Cinema e teatro" },
+      { code: "19", name: "Parques de diversões" },
+      { code: "20", name: "Eventos e produção de shows" },
+      { code: "21", name: "Hotéis e pousadas" },
+      { code: "22", name: "Agências de viagens" },
+      { code: "23", name: "Restaurantes turísticos" },
+      { code: "24", name: "Construção civil" },
+      { code: "25", name: "Corretagem imobiliária" },
+      { code: "26", name: "Serviços de reforma e manutenção" },
+      { code: "27", name: "Energias renováveis" },
+      { code: "28", name: "Consultoria ambiental" },
+      { code: "29", name: "Produtos sustentáveis" },
+      { code: "30", name: "Galerias de arte" },
+      { code: "31", name: "Estúdios de design" },
+      { code: "32", name: "Produção de eventos culturais" },
+      { code: "33", name: "Fazendas orgânicas" },
+      { code: "34", name: "Lojas de alimentos saudáveis" },
+      { code: "35", name: "Mercados de agricultores" }
     ]
   },
   {
@@ -1935,7 +2001,7 @@ const initialData: InitializerType[] = [
         code: 'A',
         name: faker.company.name(),
         description: faker.person.bio(),
-        nif: faker.finance.accountNumber(),
+        nif: '500' + faker.finance.accountNumber(),
         socialCapital: faker.finance.amount(),
         integrationToken: '',
         slogan: faker.company.buzzPhrase(),
@@ -1947,6 +2013,7 @@ const initialData: InitializerType[] = [
           province: faker.location.state(),
           countryId: '13f8b609-21f2-4f53-99df-4db73100a52e',
         }],
+        isActive: false,
         business: { code: '17', name: faker.commerce.department() }
       }]
   },
@@ -1994,7 +2061,43 @@ const initialData: InitializerType[] = [
       },*/
 
     ]
-  }]
+  },
+  {
+    model: 'PayrollSetting', data: [{
+      name: 'PST',
+      code: 'PST',
+      paymentDay: 30,
+      absenceCount: false,
+      absencePercent: 0,
+      overtimeCount: false,
+      overtimePercent: 0
+    }]
+  },
+  /*
+  {
+    model: "User", data: [
+      {
+        username: "admin",
+        email: "admin",
+        verificationCode: "107-A59",
+        permissions: null,
+        password: "$2b$10$J/bJiLD85NjnZ6DJie.guO30jSkEQurq46sc3sbplD0QDUU5V90C6",
+        role: "ROLE_ADMIN",
+        salt: "$2b$10$J/bJiLD85NjnZ6DJie.guO"
+      },
+      {
+        username: "demo",
+        email: "lutonda@gmail.com",
+        verificationCode: "440-8BC",
+        permissions: null,
+        password: "$2b$10$.eB9iq.Op5KycbdUVGtyBORMD2y93xj.rKvPwfp07.X2Hi09ebsZa",
+        role: "ROLE_ADMIN",
+        salt: "$2b$10$.eB9iq.Op5KycbdUVGtyBO"
+      }
+    ]
+  }
+  */
+]
 
 
 function createRandomEmployees(): any {
@@ -2022,25 +2125,29 @@ function createRandomEmployees(): any {
   departments.push(flatten(y[2]))
   departments = departments.flat(1)
 
-  const roles: any[] = initialData?.find(({ model }: any) => model === 'Role')?.data ?? []
+  const roles: any[] = initialData?.find(({ model }: any) => model === 'EmployeeRole')?.data ?? []
   const types: any[] = initialData?.find(({ model }: any) => model === 'AdditionalPaymentType')?.data ?? []
   const contactType: any[] = initialData?.find(({ model }: any) => model === 'ContactType')?.data ?? []
   const countries: any[] = initialData?.find(({ model }: any) => model === 'Country')?.data.filter(({ id }: any) => id) ?? []
   const categories: any[] = initialData?.find(({ model }: any) => model === 'Category')?.data.filter(({ id }: any) => id) ?? []
   const banks: any[] = initialData?.find(({ model }: any) => model === 'Bank')?.data ?? []
 
+
+  const accountPaymentDatas = (i: number) =>
+    [...Array(i + 1).keys()].map(() => ({
+      iban: faker.finance.iban(),
+      number: faker.finance.accountNumber(),
+      bankId: faker.helpers.arrayElement(banks?.map(({ id }: any) => id)),
+      currency: faker.finance.currencyCode(),
+      swift: faker.finance.bic(),
+      countryId: faker.helpers.arrayElement(countries?.filter(({ id }) => id)?.map(({ id }: any) => id))
+    }))
+  //accountPaymentDatas((faker.number.int(2))).map((x: any) => AccountPaymentData.create(x))
+
   const generateEmployee = (key: number) => {
 
-    const accountPaymentDatas = (i: number) =>
-      [...Array(i + 1).keys()].map(() => ({
-        iban: faker.finance.iban(),
-        number: faker.finance.accountNumber(),
-        bankId: faker.helpers.arrayElement(banks?.map(({ id }: any) => id)),
-        currency: faker.finance.currencyCode(),
-        swift: faker.finance.bic(),
-        countryId: faker.helpers.arrayElement(countries?.filter(({ id }) => id)?.map(({ id }: any) => id))
-      }))
-
+    let weekDays = ["Mo", "Tu", "We", "Th", "Fr"];
+    (Math.floor(Math.random() * 10) > 2) && weekDays.push('Sa')
     return {
       code: 'A' + String(key).padStart(7, '0'),
       isActive: faker.datatype.boolean(0.8),
@@ -2103,45 +2210,83 @@ function createRandomEmployees(): any {
           endDate: faker.date.future({ refDate: '2024-01-01T00:00:00.000Z' }),
           type: faker.helpers.arrayElement(["F", "H"]),
           salaryPackage: {
-            baseValue: faker.finance.amount({ min: 100000, max: 500000, dec: 2 }),
+            baseValue: faker.finance.amount({ min: 40000, max: 5000000, dec: 2 }),
             baseValuePeriod: 3,
             startDate: faker.date.past(),
-            additionalPayments: [
-              {
-                baseValue: faker.finance.amount({ min: 10000, max: 50000, dec: 2 }),
-                baseValuePeriod: faker.number.int(3),
-                startDate: faker.date.past({ refDate: '2023-01-01T00:00:00.000Z' }),
-                typeId: faker.helpers.arrayElement(types?.map(({ id }: any) => id))
-              }
-            ]
+            additionalPayments: [1, ...Array(Math.floor(Math.random() * 5)).keys()].map((i: any) => ({
+              baseValue: faker.finance.amount({ min: 10000, max: 500000, dec: 2 }),
+              baseValuePeriod: faker.number.int(3),
+              startDate: faker.date.past({ refDate: '2023-01-01T00:00:00.000Z' }),
+              typeId: faker.helpers.arrayElement(types?.map(({ id }: any) => id))
+            })
+            )
           },
           workingHour: {
             period: faker.number.int(3),
             hours: faker.number.int({ min: 30, max: 60 }),
-            weekDays: ["Mo", "Tu", "Th", "Fr", "Sa"]
+            weekDays
           }
         }
       ]
     }
   }
-  let i = 300;
-  while (--i >= 0 && employees.push(generateEmployee(i))) { }
+  let i = 110;
+  while (--i >= 0 && employees.push(generateEmployee(i + 2))) { }
+
+  employees.push({
+    ...generateEmployee(0), user: {
+      username: "demo",
+      email: "lutonda@gmail.com",
+      verificationCode: "440-8BC",
+      permissions: null,
+      passwordResetCode: 'demo',
+      password: "$2b$10$.eB9iq.Op5KycbdUVGtyBORMD2y93xj.rKvPwfp07.X2Hi09ebsZa",
+      role: "ROLE_ADMIN",
+      salt: "$2b$10$.eB9iq.Op5KycbdUVGtyBO",
+      roles: [
+        { level: 4, roleModuleId: "00f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "86f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "87f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a521" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a52e" },
+      ]
+    }
+  })
+  employees.push({
+    ...generateEmployee(1), user: {
+      username: "admin",
+      email: "admin",
+      verificationCode: "107-A59",
+      permissions: null,
+      passwordResetCode: 'admin',
+      password: "$2b$10$J/bJiLD85NjnZ6DJie.guO30jSkEQurq46sc3sbplD0QDUU5V90C6",
+      role: "ROLE_ADMIN",
+      salt: "$2b$10$J/bJiLD85NjnZ6DJie.guO",
+      roles: [
+        { level: 4, roleModuleId: "00f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "86f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "87f8b609-21f2-4f53-99df-4db73100a52e" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a521" },
+        { level: 4, roleModuleId: "89f0b609-21f2-4f53-99df-4db73100a52e" },
+      ]
+    }
+  })
   initialData.push({
     model: 'Employee', data: employees, include:
-      [Contact, AccountPaymentData,
+      [{ model: User, as: 'user' ,includes:[Role]}, Contact, AccountPaymentData,
         Document,
-        {
-          model: Person, include: [
-            { model: Address, as: 'birthPlaceAddress' },
-            { model: Address, as: 'livingAddress' }]
-        },
-        {
-          model: Contract, include: [
-            AdditionalField,
-            WorkingHour,
-            { model: SalaryPackage, include: [AdditionalPayment] },
-          ]
-        }]
+      {
+        model: Person, include: [
+          { model: Address, as: 'birthPlaceAddress' },
+          { model: Address, as: 'livingAddress' }]
+      },
+      {
+        model: Contract, include: [
+          AdditionalField,
+          WorkingHour,
+          { model: SalaryPackage, include: [AdditionalPayment] },
+        ]
+      }]
   });
 }
 
@@ -2156,14 +2301,17 @@ const initializer = (_?: any) =>
 
       model?.findOne({ where: { code: d?.code } }).then((f: any) => {
         if (f === null) {
-          if (m === 'Employee') {
-            let y = 9
+          if (m === 'User') {
+            let u = 0;
           }
           model.create(d, { include: include ?? { all: true } }).catch((e: any) => {
             console.log(e)
           })
         }
-      }).catch(console.log)
+      }).catch((e: any) => {
+        console.warn(e)
+      }
+      )
     })
   })
 

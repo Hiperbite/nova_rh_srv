@@ -14,11 +14,11 @@ import {
 import { Contact, Address, Model, Business, Country, Payroll } from "../index";
 
 @DefaultScope(() => ({
-    include: [{ model: Address, include: [Country] }, Business, Payroll, Contact]
+    include: [ Business,Address,  Contact]
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Address, include: [Country] }, Business]
+        include: [ Business, Contact]
     }
 }))
 @Table({

@@ -29,8 +29,8 @@ const mailServices = {
 
 const sendEmail = async ({ service, data }: { service: any; data: any }) => {
   logger.error({ service, data })
-  const WEB_CLIENT_URL = data?.sequelize?.options?.storage;
-  ejs.renderFile(layout, { data, app: { WEB_CLIENT_URL }, ...service }, (err: any, html: any) => {
+  const clientUrl = WEB_CLIENT_URL ?? "http://localhost:3000/"//data?.sequelize?.options?.storage;
+  ejs.renderFile(layout, { data, app: { WEB_CLIENT_URL: clientUrl }, ...service }, (err: any, html: any) => {
     const payload = {
       to: data?.email,
       ...service,

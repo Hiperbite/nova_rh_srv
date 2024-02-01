@@ -1,6 +1,7 @@
--- Active: 1667157413070@@127.0.0.1@3306@nova_rh
+-- Active: 1667157413070@@127.0.0.1@3306@nova_ri
 
 DROP PROCEDURE GetCalendarDate;
+
 
 
 CREATE PROCEDURE GetCalendarDate(IN BEGIN_DATE VARCHAR(100),IN end_date VARCHAR(100))

@@ -17,7 +17,7 @@ export default class ContactType extends Model {
     type: DataType.STRING,
     allowNull: true,
   })
-  code?: string;
+  code!: string;
 
   @HasMany(() => Contact)
   contacts?: Contact[]

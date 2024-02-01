@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { Attendance, Employee, Procedure, SPs } from "../../models/index";
+import { Attendance, AttendanceType, Employee, Procedure, SPs } from "../../models/index";
 import Api from "../Api";
 import Repository, { Paginate } from "../../repository/repository";
 import {
   Model as M,
 } from "sequelize-typescript";
+import { Op } from "sequelize";
+import moment from "moment";
 
 class AttendanceApi extends Api<Attendance> {
   constructor() {
@@ -24,7 +26,7 @@ class AttendanceApi extends Api<Attendance> {
     if (employee)
       body = { ...body, ...employee.id }
 
-    const attendance: Attendance | void = await this.repo.create(body, { include: { all: true } });
+    const attendance = await Attendance.create(body);
 
     return res.json(attendance);
   };
@@ -50,7 +52,13 @@ class AttendanceApi extends Api<Attendance> {
 
     const totalPresences: any = await Procedure(SPs.GetTotalWeekPresence, [startDate, endDate]);
 
-    const totalFaults: any = await Procedure(SPs.GetWeekPresenceFaults, [startDate, endDate]);
+    const totalFaults: any = await Procedure(SPs.GetWeekPresence, [startDate, endDate]);
+
+    const totalEmployees: any = await Employee.count({
+      where: {
+        isActive: true
+      }
+    });
 
     let presences = {
       monday: totalPresences[0]?.mondayCount - totalFaults[0]?.mondayCount,
@@ -62,9 +70,63 @@ class AttendanceApi extends Api<Attendance> {
       sunday: totalPresences[0]?.sundayCount - totalFaults[0]?.sundayCount
     }
 
-    return res.json({presences, totalPresences: totalPresences[0], totalFaults: totalFaults[0]});
+    return res.json({ presences, totalPresences: totalPresences[0], totalFaults: totalFaults[0], totalEmployees });
 
   }
+
+  lastVaccation = async (req: Request, res: Response): Promise<Response> => {
+
+
+    const type = await AttendanceType.findOne({
+      where: {
+        code: 'VACATION' 
+      }
+    });
+
+    const lastVaccation = await Attendance.scope("full").findAll({
+      where: {
+        employeeId: req.query?.employeeId,
+        typeId: type?.id,
+        startDate: {
+          [Op.lte]: Date.now(), 
+        },
+        endDate: {
+          [Op.lte]: Date.now(), 
+        }
+      }, order:
+        [['endDate', 'DESC']],
+        limit: 1
+    })
+
+    return res.json(lastVaccation);
+
+  }
+
+  NextVaccations = async (req: Request, res: Response): Promise<Response> => {
+
+    const type = await AttendanceType.findOne({
+      where: {
+        code: 'VACATION' 
+      }
+    });
+
+    const nextVaccations = await Attendance.scope("full").findAll({
+      where: {
+        employeeId: req.query?.employeeId,
+        typeId: type?.id,
+        startDate: {
+          [Op.gt]: Date.now(), 
+        }
+      }, order:
+        [['endDate', 'DESC']]
+    })
+
+    return res.json(nextVaccations);
+
+  }
+
+
+
 }
 
 export default new AttendanceApi();
