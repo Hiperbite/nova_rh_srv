@@ -1,6 +1,10 @@
-import { Table, Column, DataType, BeforeCreate, BelongsTo, ForeignKey, AfterUpdate } from "sequelize-typescript";
-import Repository from "../../repository/repository";
-import { Company, Model, User } from "../index";
+
+import {
+    Table,
+    Column,
+    DataType,
+    Model
+} from "sequelize-typescript";
 
 @Table({
   timestamps: true,
@@ -24,18 +28,30 @@ export default class PayrollSetting extends Model {
     type: DataType.INTEGER,
     allowNull: true,
   })
-  period?: number;
+  paymentDay?: number;
 
   @Column({
-    type: DataType.DATEONLY,
+    type: DataType.BOOLEAN,
     allowNull: true,
   })
-  startDate?: Date;
+  absenceCount?: boolean;
 
-  @BelongsTo(() => Company)
-  company?: Company
+  @Column({
+    type: DataType.DECIMAL(32, 2),
+    allowNull: true,
+  })
+  absencePercent?: boolean;
 
-  @ForeignKey(() => Company)
-  companyId?: string
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  overtimeCount?: boolean;
+
+  @Column({
+    type: DataType.DECIMAL(32, 2),
+    allowNull: true,
+  })
+  overtimePercent?: number;
 
 }

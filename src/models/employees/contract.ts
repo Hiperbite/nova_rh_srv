@@ -13,16 +13,17 @@ import {
   BeforeCreate,
 } from "sequelize-typescript";
 
-import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, Role, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
+import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
 /*
 @DefaultScope(() => ({
-  include: [Role, Department,SalaryPackage, WorkingHour,AdditionalField],
+  include: [EmployeeRole, Department,SalaryPackage, WorkingHour,AdditionalField],
   orderBy: [['startDate', 'DESC']]
 }))*/
 @Scopes(() => ({
   full: {
     include: [
-      Role,
+      EmployeeRole,
+      Category,
       AdditionalField,
       WorkingHour,
       SalaryPackage,
@@ -31,15 +32,15 @@ import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, Wo
       { model: Department, include: [{ as: 'department', model: Department }] }],
   },
   default: {
-    include: [Role, Department]
+    include: [EmployeeRole, Department]
   },
   coworkers: {
     attributes: { exclude: ['payStubState', 'departmentId', 'department', 'additionalFields', 'salaryPackage', 'workingHour'] },
-    include: [Role,
+    include: [EmployeeRole,
       { model: Employee, include: [Person, { model: User, as: 'user' }] }]
   },
   employee: {
-    include: [Role, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
+    include: [EmployeeRole, { model: Employee, include: [Person] }, { model: Department, include: [{ as: 'department', model: Department }] }],
     orderBy: [['startDate', 'DESC']]
   }
 }))
@@ -78,10 +79,10 @@ export default class Contract extends Model {
   @ForeignKey(() => Employee)
   employeeId?: string;
 
-  @BelongsTo(() => Role)
-  role?: Role;
+  @BelongsTo(() => EmployeeRole)
+  role?: EmployeeRole;
 
-  @ForeignKey(() => Role)
+  @ForeignKey(() => EmployeeRole)
   roleId?: string;
 
   @BelongsTo(() => Category)

@@ -11,7 +11,9 @@ import {
 } from "../../service/auth.service";
 
 import { verifyJwt } from "../../application/jwt";
-import { User, Employee } from "../../models/index";
+
+import { User, Employee, Role, RoleModule, Company } from "../../models/index";
+
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -21,7 +23,7 @@ export async function createSessionHandler(
     let status = 200;
     const { email, password } = req.body;
 
-    const user: User | null | any = await User/*.scope('auth')*/.findOne({ where: { email } });
+    const user: User | null | any = await User.findOne({ where: { email } });
 
     if (!user) {
 
@@ -40,14 +42,30 @@ export async function createSessionHandler(
 
     const employeeId = user.employeeId;
 
+    const roles = await Role.findAll({
+        where: {
+            userId: user?.id
+        },
+        attributes: ['level'],
+        include: {
+            model: RoleModule,
+            attributes: ['name']
+        }
+    })
+
+    const fullUser = await User.scope('auth').findOne({ where: { email } });
+
+    const otherFields = { fullName: fullUser?.employee?.person?.fullName, avatar: fullUser?.employee?.avatar }
     // sign a access token
-    const accessToken = signAccessToken(user, employeeId);
+    const accessToken = signAccessToken(user, employeeId, roles);
 
     // sign a refresh token
     const refreshToken = await signRefreshToken({ userId: String(user.id) });
 
+    const [company]: any = await Company.findAll();
     // send the tokens
-    return res.status(status).send({ accessToken, refreshToken });
+    return res.status(status).send({ accessToken, refreshToken, company, otherFields });
+
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
@@ -84,8 +102,8 @@ export async function lockAccessTokenHandler(req: Request, res: Response) {
 
     const token = get(req, "headers.authorization");
 
-    const decoded: any = verifyJwt<{ session: string }>(
-        String(token?.split(" ")[1]),
+    const decoded: any = verifyJwt(
+        String(token?.split(' ')[1]),
         "accessTokenPublicKey"
     );
 
@@ -96,7 +114,7 @@ export async function lockAccessTokenHandler(req: Request, res: Response) {
     }
 
     user.role = "ROLE_LOCKED";
-    
+
     const accessToken = signAccessToken(user, decoded?.employeeId);
 
     return res.send({ accessToken });

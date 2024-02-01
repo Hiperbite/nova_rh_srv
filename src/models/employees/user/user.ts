@@ -14,13 +14,14 @@ import {
   Scopes,
   BelongsTo,
   ForeignKey,
+  BelongsToMany,
+  HasMany,
 } from "sequelize-typescript";
-import { Model, Address, Employee, Person } from "../index";
+import { Model, Address, Employee, Person, Role } from "../../index";
 
 import bcrypt from "bcrypt";
-import { UserApp } from "../../application/common/user.app";
-import sendEmail, { mailServices } from "../../application/mailler/index";
-import { uniqueId } from "lodash";
+import { UserApp } from "../../../application/common/user.app";
+import sendEmail, { mailServices } from "../../../application/mailler/index";
 import { randomUUID } from "crypto";
 
 const UniqIndex = createIndexDecorator({
@@ -28,53 +29,21 @@ const UniqIndex = createIndexDecorator({
   type: 'UNIQUE',
   unique: true,
 });
-export type ROLES =
-  | 'ROLES_STUDENT'
-  | 'ROLES_PROFESSOR'
-  | 'ROLES_TECHNICAL'
-  | 'ROLES_MANAGER'
-  | 'ROLES_OFFICE_CHEF'
-
-export type PermissionsType =
-  | "STUDENTS_1"
-  | "STUDENTS_2"
-  | "STUDENTS_3"
-  | "STUDENTS_4"
-  | "CANDIDATES_1"
-  | "CANDIDATES_2"
-  | "CANDIDATES_3"
-  | "CANDIDATES_4"
-  | "CLASS_1"
-  | "CLASS_2"
-  | "CLASS_3"
-  | "CLASS_4"
-  | "CLASSIFICATION_1"
-  | "CLASSIFICATION_2"
-  | "CLASSIFICATION_3"
-  | "CLASSIFICATION_4"
-  | "STAFF_1"
-  | "STAFF_2"
-  | "STAFF_3"
-  | "STAFF_4"
-  | "TABLES_1"
-  | "TABLES_2"
-  | "TABLES_3"
-  | "TABLES_4"
-  | "ADMIN_1"
-  | "ADMIN_2"
-  | "ADMIN_3"
-  | "ADMIN_4"
-  | "ACADEMIC_1"
-  | "ACADEMIC_2"
-  | "ACADEMIC_3"
-  | "ACADEMIC_4"
 
 @Scopes(() => ({
   main: {
     include: []
   },
   auth: {
-    include: []
+    include: [{
+      model: Employee,
+      attributes: ['avatar'],
+      include: [{
+        model: Person,
+        attributes: ['firstName', 'lastName', 'fullName'],
+        includes: ['firstName', 'lastName', 'fullName'],
+      }]
+    }]
   },
   full: {
     include: [{
@@ -134,9 +103,9 @@ export default class User extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  role!: ROLES;
+  role!: string;
 
   @Default(true)
   @Column({
@@ -175,6 +144,17 @@ export default class User extends Model {
   })
   verified?: boolean;
 
+
+
+  @BelongsTo(() => Employee)
+  employee!: Employee
+
+  @ForeignKey(() => Employee)
+  employeeId!: string;
+
+  @HasMany(() => Role)
+  roles!: Role[]
+
   @BeforeSave
   @BeforeCreate
   static initVer = UserApp.initVer;
@@ -187,19 +167,18 @@ export default class User extends Model {
   static hashPassword = UserApp.hashPassword;
 
 
-  @BelongsTo(() => Employee)
-  employee!: Employee
 
-  @ForeignKey(() => Employee)
-  employeeId!: string;
 
   @AfterCreate
   static notifyUser = (user: User) =>
-    User.scope('full').findByPk(user?.id).then((data: User | null) =>
-      sendEmail({
-        service: mailServices["createUser"],
-        data
-      })
+    User.scope('full').findByPk(user?.id).then((data: User | null) => {
+      if (data?.employee?.code && data?.employee?.code?.indexOf('A') < 0)
+        sendEmail({
+          service: mailServices["createUser"],
+          data
+        })
+    }
+
     )
   @BeforeCreate
   static setUserName = (user: User) => user.username ||= randomUUID()
@@ -224,8 +203,10 @@ export default class User extends Model {
     "email",
     "role",
     "verified",
-    "personId",
+    "employeeId",
     "person",
+    "personId",
+    "employee",
     "permissions",
     "isNew",
   ];

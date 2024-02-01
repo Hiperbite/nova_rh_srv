@@ -27,25 +27,44 @@ import {
   AdditionalPayment,
   AdditionalPaymentType,
   AccountPaymentData,
-  Role,
+  EmployeeRole,
   Department,
-  Attendance
+  Attendance,
+  AttendanceType
 } from "../index";
+import { calculateBusinessDays } from '../../helpers/helper';
 
 @DefaultScope(() => ({
   include: []
 }))
 @Scopes(() => ({
   all: {
-    include: {
-      all: true
+    include: [{
+      all: true,
+    },
+    {
+      model: Contract, include: [
+        EmployeeRole, Department,
+        PayStub,
+        {
+          model: SalaryPackage,
+          include: [
+            {
+              model: AdditionalPayment,
+              include: [AdditionalPaymentType]
+            }
+          ]
+        },
+      ]
     }
+
+    ]
   },
   payStub: {
     include: [
       {
         model: Contract, include: [
-          Role, Department,
+          EmployeeRole, Department,
           PayStub,
           {
             model: SalaryPackage,
@@ -65,7 +84,21 @@ import {
       Person,
       {
         model: Contract,
-        include: [Role, Department],
+        include: [EmployeeRole, Department],
+      }
+    ]
+  },
+  attendance: {
+    include: [
+      Contract,
+      {
+        model: Attendance,
+        include: [AttendanceType]
+      },
+      Person,
+      {
+        model: Contract,
+        include: [EmployeeRole, Department],
       }
     ]
   }
@@ -118,6 +151,7 @@ export default class Employee extends Model {
     type: DataType.VIRTUAL
   })
   get contract() {
+    let l;
     let c: any = this.contracts
     c = c?.filter(({ isActive }: any) => isActive)
     c = c?.filter(({ endDate, startDate }: any) => moment().isBetween(startDate, endDate ?? moment().add(1, 'years').format('YYYY-MM-DD')) || moment().isBefore(startDate))
@@ -125,9 +159,16 @@ export default class Employee extends Model {
       sort((n: Contract, p: Contract) =>
         moment(n.startDate).isBefore(moment(p.startDate)) ? -1 : 1)[0];
 
-    return c;
+    return c ?? this.contracts?.sort((n: Contract, p: Contract) =>
+      moment(n.startDate).isBefore(moment(p.startDate)) ? -1 : 1)[0];;
   }
 
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get disabled() {
+    return !this.contract?.isActive || moment().isAfter(moment(this.contract?.endDate))
+  }
   @Column({
     type: DataType.VIRTUAL
   })
@@ -154,6 +195,11 @@ export default class Employee extends Model {
   @Column({
     type: DataType.VIRTUAL,
   })
+  level: number = 0;
+
+  @Column({
+    type: DataType.VIRTUAL,
+  })
   get idCard() {
     return (
       this?.documents
@@ -176,49 +222,95 @@ export default class Employee extends Model {
         .filter((doc: Document) => doc.type == "PASSPORT")[0] ?? {}
     );
   }
+
+  @Column({
+    type: DataType.VIRTUAL
+  })
+  get holidayBalance() {
+
+    const oldest: Contract | undefined =
+      this.contracts?.sort((a: Contract, b: Contract) => moment(a.startDate).isBefore(b.startDate) ? -1 : 1)[0]
+    if (oldest === undefined)
+      return;
+
+    const attendances = this.attendances?.filter(({ startDate, endDate }: any) => moment().startOf('year').isSameOrBefore(moment(startDate)))
+
+    const vocations = attendances?.
+      filter(({ type }: any) => type?.code === 'VACATION')?.
+      filter(({ state }: any) => state === 1)
+
+
+    const nextDays = vocations?.
+      filter(({ startDate, endDate }: any) => moment().isSameOrBefore(moment(startDate)))?.
+      map(({ startDate, endDate }: any) => calculateBusinessDays(startDate, endDate)?.totalBusinessDays)
+
+    const pastDays = vocations?.
+      filter(({ startDate, endDate }: any) => moment().startOf('year').isSameOrAfter(moment(startDate)))?.
+      map(({ startDate, endDate }: any) => calculateBusinessDays(startDate, endDate)?.totalBusinessDays)
+
+    const consumed = pastDays?.
+      reduce((a: number, b: number) => a + b, 0)
+
+    const planned = nextDays?.
+      reduce((a: number, b: number) => a + b, 0)
+
+    const startDate = moment(oldest?.startDate).isBefore(moment().startOf('year')) ? moment().add(-1, 'year').startOf('year') : moment(oldest?.startDate)
+    const balance = startDate.diff(moment().startOf('year'), 'months') * 2 * (-1)
+    const annualBalance = balance > 22 ? 22 : balance;
+
+    return {
+
+      available: annualBalance - consumed - planned,
+      consumed,
+      planned,
+      annualBalance,
+      attendances
+    };
+
+  }
   @Column({
     type: DataType.VIRTUAL
   })
   get payStub() {
-/*
-    let myPayrolls: any[] = [];
-
-    this.contracts?.forEach((contact: Contract) => {
-
-      const startDate = moment(contact.startDate);
-      let current = startDate.add(1, 'm');
-      const newPayroll = new PayStub()
-      newPayroll.contract = contact;
-      while (current.isBetween(contact.startDate, contact.endDate)) {
-
-
-        let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
-
-        const grossValue = 0, deductionValue = 0;
-
-        try {
-          const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-          const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
-
-        } catch (err: any) {
-          let u = err;
-        }
-        myPayrolls.push({
-          date: current.format('Y-M'),
-          fromDate: current.format('Y-M'),
-          toDate: current.format('Y-M'),
-          grossValue,
-          deductionValue,
-          netValue: grossValue - deductionValue,
-          payStubs: currentPayrolls,
-          state: 0,
+    /*
+        let myPayrolls: any[] = [];
+    
+        this.contracts?.forEach((contact: Contract) => {
+    
+          const startDate = moment(contact.startDate);
+          let current = startDate.add(1, 'm');
+          const newPayroll = new PayStub()
+          newPayroll.contract = contact;
+          while (current.isBetween(contact.startDate, contact.endDate)) {
+    
+    
+            let currentPayrolls = (contact?.payStubs?.find((p: PayStub) => moment(p?.date).format('Y-M') === current.format('Y-M')) ?? newPayroll)?.proposalLines
+    
+            const grossValue = 0, deductionValue = 0;
+    
+            try {
+              const grossValue = currentPayrolls?.filter(({ debit }: any) => debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+              const deductionValue = currentPayrolls?.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((a: number, b: number) => a + b);
+    
+            } catch (err: any) {
+              let u = err;
+            }
+            myPayrolls.push({
+              date: current.format('Y-M'),
+              fromDate: current.format('Y-M'),
+              toDate: current.format('Y-M'),
+              grossValue,
+              deductionValue,
+              netValue: grossValue - deductionValue,
+              payStubs: currentPayrolls,
+              state: 0,
+            })
+            current = current.add(1, 'M');
+          }
+    
         })
-        current = current.add(1, 'M');
-      }
-
-    })
-    */
-    return ;//myPayrolls;
+        */
+    return;//myPayrolls;
 
   }
 
@@ -227,7 +319,13 @@ export default class Employee extends Model {
    * @param param1 
    */
   @AfterCreate
-  static createUser = async ({ id: employeeId, contacts, avatar }: Employee, { transaction }: any) => {
+  static createUser = async ({ id: employeeId, contacts, avatar, user }: Employee, { transaction }: any) => {
+
+    if (user) {
+
+      return;
+
+    }
 
     const email = contacts?.find((c: Contact) => c.descriptions?.includes('@'))?.descriptions
 

@@ -1,17 +1,17 @@
+import PayrollSetting from './Settings/payroll.settings';
 
 import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
 
 import Model from "./model";
-import User from "./employees/user";
+import User from "./employees/user/user";
 import Token from "./common/token";
 import Session from "./common/session";
 import Address from "./common/address";
 import Contact from "./employees/contact";
 import AccountPaymentData from "./employees/account_payment_data";
 import Company from "./company/company";
-import Role from './employees/role';
-import RoleLevel from './employees/role_level';
+import EmployeeRole from './employees/role';
 import Attachment from "./common/attachment";
 import dotenv from "dotenv";
 
@@ -19,7 +19,7 @@ import Business from "./company/business";
 
 import Sequence from "./common/sequence";
 import Document from "./document/document";
-import Person from "./employees/person";
+import Person from "./employees/user/person";
 import Track from "./common/track";
 import Notification from "./common/notification";
 import Ticket from "./help-desk/ticket";
@@ -57,9 +57,16 @@ import Category from "./employees/category";
 import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
+import Role from "./employees/user/role";
+import WITaxTable from "./payroll/wi_tax_tables";
+
+import RoleModule from "./employees/user/RoleModule";
+
+import { tr } from "@faker-js/faker";
+
 
 dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DIALECT, DB_NAME, DB_KEY } = process.env;
 
 const dialect: Dialect | any = DB_DIALECT ?? 'mysql'
 let referer = null;
@@ -113,6 +120,7 @@ const sequelizeOptions: SequelizeOptions = {
     SalaryPackage,
     PayStub,
     Payroll,
+    WITaxTable,
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
@@ -129,50 +137,66 @@ const sequelizeOptions: SequelizeOptions = {
 
     Department,
     ContactType,
-    RoleLevel,
     Bank,
+    EmployeeRole,
     Role,
+    RoleModule,
+    PayrollSetting
   ],
 }
-let sequelize = new Sequelize(sequelizeOptions);
 const UniqIndex = createIndexDecorator({
   name: uuid() + '-index',
   type: 'UNIQUE',
   unique: true,
 });
 
-const switchTo = (db: string, ref: string) => {
-return;
-  if ( NODE_ENV !== 'development' && MY_NODE_ENV !== 'development') {
-    if (sequelize.options.dialect === 'sqlite')
-      sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
-    else {
-      const key = db ?? ref
-        .replace('https://', '')
-        .replace('http://', '')
-        .replace('wwww.', '')
-        .replace('.nova.ao', '')
-        .replace('.', '_')
-        .replace('/', '')
+let sequelize = new Sequelize(sequelizeOptions);
+const instances: any[] = []
+const switchTo = (db: any, ref: string) => {
+  return;
+  let instance: any;
+  if (ref === '' || ref.indexOf('localhost') > -1) {
+    return;
+  }
+  if (sequelize.options.dialect === 'sqlite')
+    sequelize = new Sequelize({ ...sequelizeOptions, storage: "./data/" + db + ".database.sqlite" });
+  else {
+    const key = db ?? ref
+      .replace('https://', '')
+      .replace('http://', '')
+      .replace('wwww.', '')
+      .replace('.nova.ao', '')
+      .replace('rh.', '')
+      .replace('.', '_')
+      .replace('/', '')
 
-      logger.info({ message: '......................................' })
-      logger.info({ message: 'request coming from: ' + ref })
-      logger.info({ message: 'client key : ' + key })
+    logger.info({ message: 'client key : ' + key })
+
+    instance = instances.find((x: any) => x.key === key)
+
+    if (instance === undefined) {
       //hiperbit_hiperbite_rh
-     const database = sequelize.options.database = DB_NAME + '_' + key + '_rh';
+      const database = sequelize.options.database = DB_KEY + '_' + key;
       //sequelize.options.username = DB_USER + '_' + key;
       logger.info({ message: 'connecting to database with key ' + sequelize.options.database })
-      sequelize = new Sequelize({ ...sequelizeOptions, ...{ database } });
+      instance = new Sequelize({ ...sequelizeOptions, ...{ database, username: database } });
+      instances.push({ key, instance })
+    } else {
+      instance = instance?.instance
     }
+
+    sequelize = instance
   }
+
 
   sequelize.options.storage = ref
 }
+
 const Repo = sequelize.getRepository;
 (false &&
   sequelize
-    .sync({ alter: true, force: true})
-    .then(initializer)
+    .sync({ alter: true, force: false })
+    //.then(initializer)
     .catch(console.error)
 )
 
@@ -189,7 +213,11 @@ enum SPs {
   GetStudentsCountGender = 'GetStudentsCountGender',
   GetStudentsRegistered = 'GetStudentsRegistered',
   GetStudentHonorRoll = 'GetStudentHonorRoll',
-  GetStudentCount = 'GetStudentCount'
+  GetStudentCount = 'GetStudentCount',
+  GetTotalWeekPresence = 'GetTotalWeekPresence(?,?)',
+  GetWeekPresence = 'GetWeekPresenceFaults(?,?)',
+  GetWiTAX = 'GETWITAX(?,?)',
+  GetEvents = 'GetEvents'
 }
 const Procedure = async (procedure: SPs, opts: any = []) =>
   await sequelize
@@ -217,9 +245,8 @@ export {
   Attachment,
   Document,
   Person,
-  RoleLevel,
   Category,
-  Role,
+  EmployeeRole,
   Contract,
   AdditionalField,
   AdditionalPaymentType,
@@ -227,6 +254,7 @@ export {
   SalaryPackage,
   PayStub,
   Payroll,
+  WITaxTable,
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
@@ -257,5 +285,8 @@ export {
   LicenseSetting,
   Setting,
   Department,
-  WorkingHour
+  WorkingHour,
+  Role,
+  RoleModule,
+  PayrollSetting
 };

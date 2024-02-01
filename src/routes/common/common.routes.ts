@@ -23,7 +23,7 @@ import {
   SalaryPackage,
   AdditionalPayment,
   AdditionalField,
-  Role,
+  EmployeeRole,
   Payroll,
   Country,
   AccountPaymentData,
@@ -32,6 +32,10 @@ import {
   Track,
   PayStub,
   Bank,
+  Category,
+  WITaxTable,
+  PayrollLine,
+  PayrollLineType,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -51,7 +55,8 @@ const models: modelsType[] = [
   { key: "departments", model: Department },
   { key: "address", model: Address },
   { key: "contact-types", model: ContactType },
-  { key: "roles", model: Role },
+  { key: "employeeroles", model: EmployeeRole },
+  { key: "categories", model: Category },
   { key: "salary-packages", model: SalaryPackage },
   { key: "additional-payments", model: AdditionalPayment },
   { key: "additional-fields", model: AdditionalField },
@@ -59,6 +64,9 @@ const models: modelsType[] = [
   { key: "working-hours", model: WorkingHour },
   { key: "payroll", model: Payroll },
   { key: "pay-stubs", model: PayStub },
+  { key: "pay-stub-lines", model: PayrollLine },
+  { key: "pay-stub-line-types", model: AdditionalPaymentType },
+  { key: "wi-tax-tables", model: WITaxTable},
   { key: "account-payment-datas", model: AccountPaymentData },
   { key: "banks", model: Bank },
 
