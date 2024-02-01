@@ -172,10 +172,10 @@ return ;
   sequelize.options.storage = ref
 }
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
     .sync({ alter: true, force: true })
-  //  .then(initializer)
+    .then(initializer)
     .catch(console.error)
 )
 

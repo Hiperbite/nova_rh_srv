@@ -9,6 +9,7 @@ import {
   Department,
   Document,
   Employee,
+  File,
   Person,
   Role,
   SalaryPackage,
@@ -16,8 +17,9 @@ import {
   WorkingHour,
 } from "./index";
 
-import { faker } from '@faker-js/faker';
+//import { faker } from '@faker-js/faker';
 
+import { faker } from '@faker-js/faker/locale/pt';
 
 type InitializerType = { model: any, data: any[], include?: any }
 const initialData: InitializerType[] = [
@@ -2146,7 +2148,33 @@ function createRandomEmployees(): any {
 }
 
 createRandomEmployees();
+const fileTypes = ['DIR', 'FILE', 'OTHER', 'SHORTCUT'];
 
+// Array of possible permissions
+const permissions = ['w', 'r', 'd', 'c'];
+
+
+const generateFile=()=>{
+  
+  return {
+    fileType : fileTypes[getRandomInt(0, fileTypes.length - 1)],
+    path : `/random/path/${getRandomInt(1, 100)}`,
+    fileName : faker.system.commonFileName(),
+    permission : '',
+    
+  };
+}
+(()=>{
+  let i=30;
+const files:any=[];
+  while(--i>0;files.push(generateFile())){}
+
+  initialData.push({
+    model: 'File', data: files, include:
+      [File]
+  });
+})()
+;
 const initializer = (_?: any) =>
   initialData.forEach(({ model: m, data, include = { all: true } }: any) => {
     const s = sequelize;
