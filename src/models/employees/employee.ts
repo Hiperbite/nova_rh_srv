@@ -257,12 +257,12 @@ export default class Employee extends Model {
     const lastYear = moment().add(-1, 'year').endOf('year');
     let months: number = 0;
     if (moment(oldest?.startDate).year() === moment().add(-1, 'years').year()) {
-      months = lastYear.diff(moment(oldest?.startDate), 'months')
+      months = lastYear.diff(moment(oldest?.startDate), 'months') + 1
     } else if (moment(oldest?.startDate).year() < moment().year()) {
       months = 12
     }
-    
-    const annualBalance = months * 2 ;
+
+    const annualBalance = months * 2;
 
     return {
 

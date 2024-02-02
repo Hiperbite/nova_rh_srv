@@ -187,8 +187,8 @@ export default class WITaxApp {
     const myWITax = await WITaxTable.findOne({
       where: {
 
-        fromValue: { [Op.gte]: collectableMaterial },
-        toValue: { [Op.or]: [{ [Op.lt]: collectableMaterial }, { [Op.eq]: 0 }] },
+        fromValue: { [Op.lte]: collectableMaterial },
+        toValue: { [Op.or]: [{ [Op.gt]: collectableMaterial }, { [Op.eq]: 0 }] },
 
       },
       order: [['toValue', 'DESC']]
