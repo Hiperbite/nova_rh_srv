@@ -7,7 +7,7 @@ import {
   Scopes,
 } from "sequelize-typescript";
 
-import { Contract, Model } from "../index";
+import { Contract, Model, Vacancy } from "../index";
 
 
 @Scopes(() => ({
@@ -63,6 +63,12 @@ export default class WorkingHour extends Model {
 
   @ForeignKey(() => Contract)
   contractId?: string;
+
+  @BelongsTo(() => Vacancy)
+  vacancy?: Vacancy;
+
+  @ForeignKey(() => Vacancy)
+  vacancyId?: string;
 
 }
 

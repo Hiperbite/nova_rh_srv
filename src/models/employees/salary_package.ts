@@ -9,7 +9,7 @@ import {
   DefaultScope,
 } from "sequelize-typescript";
 
-import { AdditionalPayment, Contract, Model, /* RoleLevel as Level */ } from "../index";
+import { AdditionalPayment, Contract, Model, Vacancy } from "../index";
 
 
 
@@ -62,5 +62,11 @@ export default class SalaryPackage extends Model {
 
   @ForeignKey(() => Contract)
   contractId?: string;
+
+  @BelongsTo(() => Vacancy, 'vacancyId')
+  vacancy?: Vacancy;
+
+  @ForeignKey(() => Vacancy)
+  vacancyId?: string;
 }
 

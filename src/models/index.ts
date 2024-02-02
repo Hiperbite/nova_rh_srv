@@ -2,8 +2,14 @@ import PayrollSetting from './Settings/payroll.settings';
 
 import { createIndexDecorator, Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { Dialect } from "sequelize";
-
 import Model from "./model";
+
+import Candidacy from "./recruitment/candidacy"
+import Candidate from "./recruitment/candidate"
+import ValidationAnswer from "./recruitment/validation_answer"
+import Vacancy from "./recruitment/vacancy"
+import Requirement  from "./recruitment/requirement"
+import ValidationQuestion  from "./recruitment/validation_question"
 import User from "./employees/user/user";
 import Token from "./common/token";
 import Session from "./common/session";
@@ -141,7 +147,14 @@ const sequelizeOptions: SequelizeOptions = {
     EmployeeRole,
     Role,
     RoleModule,
-    PayrollSetting
+    PayrollSetting,
+    
+    Vacancy,
+    ValidationQuestion,
+    Requirement,
+    Candidacy,
+    Candidate,
+    ValidationAnswer
   ],
 }
 const UniqIndex = createIndexDecorator({
@@ -288,5 +301,14 @@ export {
   WorkingHour,
   Role,
   RoleModule,
-  PayrollSetting
+  PayrollSetting,
+
+
+  Vacancy,
+  Requirement, 
+  ValidationQuestion,
+  
+  Candidacy,
+  Candidate,
+  ValidationAnswer
 };
