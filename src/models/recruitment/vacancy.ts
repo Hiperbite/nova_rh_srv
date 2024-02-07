@@ -2,20 +2,21 @@ import { includes } from "lodash";
 import { Op } from "sequelize";
 import moment from "moment";
 import {
-  Table,
-  Column,
-  DataType,
-  BelongsTo,
-  ForeignKey,
-  Scopes,
-  HasOne,
-  DefaultScope,
-  HasMany,
-  BeforeCreate,
+    Table,
+    Column,
+    DataType,
+    BelongsTo,
+    ForeignKey,
+    Scopes,
+    HasOne,
+    DefaultScope,
+    HasMany,
+    BeforeCreate,
 } from "sequelize-typescript";
 
 
 import { Model, Requirement, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
+import SequenceApp from "../../application/common/sequence.app";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -37,23 +38,23 @@ enum State {
 }))
 @Table({
     timestamps: true,
-    tableName: "vacancies",
+    tableName: "Vacancies",
 })
 export default class Vacancy extends Model {
-   
+
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING,
         allowNull: true,
     })
-    code?: number;
-    
+    code?: string;
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
     title?: string;
 
-    
+
     @Column({
         type: DataType.INTEGER,
         allowNull: true,
@@ -73,62 +74,65 @@ export default class Vacancy extends Model {
     level?: number;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING,
         allowNull: true,
-      })
-      type?: number;
-    
+    })
+    type?: string;
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
-      })
-      jobType?: string;
-      
-      @Column({
+    })
+    jobType?: string;
+
+    @Column({
         type: DataType.DATEONLY,
         allowNull: true,
-      })
-      endDate?: Date | null;
-    
-      @Column({
+    })
+    endDate?: Date | null;
+
+    @Column({
         type: DataType.DATEONLY,
         allowNull: true,
-      })
-      startDate!: Date;
-    
-      @BelongsTo(() => Employee)
-      employee?: Employee;
-    
-      @ForeignKey(() => Employee)
-      employeeId?: string;
-    
-      @BelongsTo(() => EmployeeRole)
-      role?: EmployeeRole;
-    
-      @ForeignKey(() => EmployeeRole)
-      roleId?: string;
-    
-      @BelongsTo(() => Category)
-      category?: Category;
-    
-      @ForeignKey(() => Category)
-      categoryId?: string;
-    
-      @BelongsTo(() => Department)
-      department!: Department;
-    
-      @ForeignKey(() => Department)
-      departmentId!: string;
-    
-      @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
-      salaryPackage?: SalaryPackage;
-    
-      @HasOne(() => WorkingHour)
-      workingHour?: WorkingHour;
+    })
+    startDate!: Date;
 
-      
-      @HasMany(() => Requirement)
-      requirements?: Requirement[];
+    @BelongsTo(() => EmployeeRole)
+    role?: EmployeeRole;
 
-      
+    @ForeignKey(() => EmployeeRole)
+    roleId?: string;
+
+    @BelongsTo(() => Category)
+    category?: Category;
+
+    @ForeignKey(() => Category)
+    categoryId?: string;
+
+    @BelongsTo(() => Department)
+    department!: Department;
+
+    @ForeignKey(() => Department)
+    departmentId!: string;
+
+    @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
+    salaryPackage?: SalaryPackage;
+
+    @HasOne(() => WorkingHour)
+    workingHour?: WorkingHour;
+
+
+    @HasMany(() => Requirement)
+    requirements?: Requirement[];
+
+    @BeforeCreate
+    static initModel = async (vacancy: Vacancy, { transaction }: any) => {
+        if (vacancy?.code && vacancy?.code?.indexOf('A') > -1)
+            return;
+
+        let code = await SequenceApp.count(Vacancy.name, { transaction });
+        vacancy.code = String(code).padStart(8, '0');
+
+    };
+
 }

@@ -55,6 +55,7 @@ export default class Repository<T extends M>  {
     let { include }: any = this?.Model?.options?.scopes?.all ?? {};
     let includes = include ?? options?.include;
     await this.start();
+    try{
     final = await this.Model.create(data, {
       ... {
         ...options,
@@ -62,8 +63,13 @@ export default class Repository<T extends M>  {
       }, transaction: this.transaction
     });
     await this.commit();
-
+  
     return final;
+  }catch(err:any){
+    this.rollback();
+    
+    throw err;
+  }
   };
 
   public updateOne = async (data: any, options?: any): Promise<T | any> => {

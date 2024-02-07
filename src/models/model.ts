@@ -56,6 +56,8 @@ export default class Model extends Main {
   //@AfterBulkUpdate
   static afterModelUpdate = (model: Model, { transaction }: any = { transaction: null }) => {
 
+    return;
+    
     if (model?.previous()) { } else return model;
 
     const before = model?.previous();

@@ -36,6 +36,7 @@ import {
   WITaxTable,
   PayrollLine,
   PayrollLineType,
+  Vacancy,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -51,6 +52,10 @@ interface modelsType {
 }
 
 const models: modelsType[] = [
+  { key: "vacancies", model: Vacancy, midllewares: [] },
+
+
+  
   { key: "contacts", model: Contact, midllewares: [] },
   { key: "departments", model: Department },
   { key: "address", model: Address },

@@ -42,7 +42,18 @@ export default class Requirement extends Model {
         type: DataType.TEXT,
         allowNull: true,
     })
-    requiredSkills?: string;
+    _requiredSkills?: string;
+
+    @Column({
+        type: DataType.VIRTUAL,
+        allowNull: true,
+    })
+    get requiredSkills(){
+        return this.getDataValue('requiredSkills').split(',')
+    }
+    set requiredSkills(skills:string[]){
+        this.setDataValue('requiredSkills',skills.join(','))
+    }
     
     @Column({
         type: DataType.TEXT,
