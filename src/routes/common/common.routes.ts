@@ -37,6 +37,8 @@ import {
   PayrollLine,
   PayrollLineType,
   Vacancy,
+  Candidate,
+  Candidacy,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -53,6 +55,8 @@ interface modelsType {
 
 const models: modelsType[] = [
   { key: "vacancies", model: Vacancy, midllewares: [] },
+  { key: "candidates", model: Candidate, midllewares: [] },
+  { key: "candidacies", model: Candidacy, midllewares: [] },
 
 
   

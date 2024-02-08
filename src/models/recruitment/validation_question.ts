@@ -40,17 +40,17 @@ enum State {
 
 export default class ValidationQuestion extends Model{
     
-    @Column({
-        type: DataType.STRING,
-        allowNull: true,
-    })
-    question?: string;
     
     @Column({
         type: DataType.INTEGER,
         allowNull: true,
     })
     no?: number;
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+    question?: string;
 
     @Column({
         type: DataType.INTEGER,

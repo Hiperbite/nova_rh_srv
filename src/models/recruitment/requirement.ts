@@ -38,28 +38,42 @@ enum State {
 })
 export default class Requirement extends Model {
    
-    @Column({
-        type: DataType.TEXT,
-        allowNull: true,
-    })
-    _requiredSkills?: string;
-
-    @Column({
-        type: DataType.VIRTUAL,
-        allowNull: true,
-    })
-    get requiredSkills(){
-        return this.getDataValue('requiredSkills').split(',')
-    }
-    set requiredSkills(skills:string[]){
-        this.setDataValue('requiredSkills',skills.join(','))
-    }
     
     @Column({
         type: DataType.TEXT,
         allowNull: true,
     })
-    optionalSkills?: string;
+    get requiredSkills() {
+        return this.getDataValue('requiredSkills').split('_')
+    };
+    set requiredSkills(s: string[]) {
+        if (s) {
+            try {
+
+                this.setDataValue('requiredSkills', typeof s == 'string' ? s : s?.join('_'))
+            } catch (error) {
+                let u = this;
+            }
+        }
+    };
+
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+    })
+    get optionalSkills() {
+        return this.getDataValue('optionalSkills').split('_')
+    };
+    set optionalSkills(s: string[]) {
+        if (s) {
+            try {
+
+                this.setDataValue('optionalSkills', typeof s == 'string' ? s : s?.join('_'))
+            } catch (error) {
+                let u = this;
+            }
+        }
+    };
 
     @HasMany(()=>ValidationQuestion)
     questions?: ValidationQuestion[]

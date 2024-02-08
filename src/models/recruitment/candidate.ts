@@ -12,7 +12,7 @@ import {
     ForeignKey,
     BelongsTo
 } from "sequelize-typescript";
-import { Contract, Model, PayStub, Vacancy, ValidationQuestion } from "../index";
+import { Candidacy, Contract, Model, PayStub, Vacancy, ValidationQuestion } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -37,18 +37,13 @@ enum State {
     tableName: "Candidates",
 })
 export default class Candidate extends Model {
-   
-    @Column({
-        type: DataType.TEXT,
-        allowNull: true,
-    })
-    skills?: string;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
     firstName?: string;
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
@@ -60,13 +55,13 @@ export default class Candidate extends Model {
         allowNull: true,
     })
     otherName?: string;
-    
+
     @Column({
         type: DataType.DATEONLY,
         allowNull: true,
     })
     birthDate?: Date;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
@@ -77,24 +72,31 @@ export default class Candidate extends Model {
         allowNull: true,
     })
     github?: string;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
     email?: string;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: true,
     })
     phoneNumber?: string;
-    
-    @BelongsTo(() => Vacancy)
-    vacancy?: Vacancy;
-  
-    @ForeignKey(() => Vacancy)
-    vacancyId?: string;
-    
 
+
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+    })
+    get skills() {
+        return this.getDataValue('skills').split(',')
+    };
+    set skills(s: string[]) {
+        this.setDataValue('skills', s?.join(','))
+    };
+    
+    @HasMany(() => Candidacy)
+    candidacies?: Candidacy[];
 }

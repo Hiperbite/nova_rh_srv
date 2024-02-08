@@ -15,7 +15,7 @@ import {
 } from "sequelize-typescript";
 
 
-import { Model, Requirement, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
+import { Model, Requirement, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category, Candidacy } from "../index";
 import SequenceApp from "../../application/common/sequence.app";
 /**
  * 0 - Aberto
@@ -121,9 +121,11 @@ export default class Vacancy extends Model {
     @HasOne(() => WorkingHour)
     workingHour?: WorkingHour;
 
+    @HasOne(() => Requirement)
+    requirement?: Requirement;
 
-    @HasMany(() => Requirement)
-    requirements?: Requirement[];
+    @HasMany(() => Candidacy)
+    candidacies?: Candidacy[];
 
     @BeforeCreate
     static initModel = async (vacancy: Vacancy, { transaction }: any) => {

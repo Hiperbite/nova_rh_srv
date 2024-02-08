@@ -206,7 +206,7 @@ const switchTo = (db: any, ref: string) => {
 }
 
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)

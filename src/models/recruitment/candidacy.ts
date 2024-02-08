@@ -37,19 +37,15 @@ enum State {
     tableName: "Candidacies",
 })
 export default class Candidacy extends Model {
-   
-    
+       
     @HasMany(()=>ValidationAnswer)
     questions?: ValidationAnswer[]
-
 
     @BelongsTo(() => Vacancy)
     vacancy?: Vacancy;
   
     @ForeignKey(() => Vacancy)
     vacancyId?: string;
-
-
     
     @BelongsTo(() => Candidate)
     candidate?: Candidate;
