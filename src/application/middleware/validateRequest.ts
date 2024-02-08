@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import sequelize, { switchTo } from "../../models/index";
-import { MY_NODE_ENV, NODE_ENV } from "../../config";
+import { logger, MY_NODE_ENV, NODE_ENV } from "../../config";
+import { Op } from "sequelize";
 const uuidPattern = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/
 
 const encode = (str: string) => {
@@ -22,12 +23,14 @@ export const routerRequest = (
 ) => {
   const { apikey }: any = req?.headers;
   if (apikey === undefined) {
-   // throw { code: 403 }
+    // throw { code: 403 }
   }
-  const currentKey = decode(apikey ?? '')
 
-    switchTo(currentKey, req.headers?.referer??'')
+  logger.info('START: ---------------------------------------------------------');
+  logger.info(req);
+  const currentKey = null;//decode(apikey ?? '')
 
+  switchTo(currentKey, req.headers?.referer ?? '')
 
   next()
 }
@@ -37,6 +40,8 @@ const validateRequest = (
   next: NextFunction
 ) => {
   const { where, order: o, include: i }: any = req.query
+
+  delete req.query.refresh
   if (where) {
     Object.keys(where).forEach((key: string) => {
       try {
@@ -44,11 +49,11 @@ const validateRequest = (
           where[key] = JSON.parse(where[key]);
       } catch (error) { }
       if (where[key] && where[key].indexOf(',') > -1)
-        where[key] = where[key].split(',');
+        where[key] = { [Op.in]: where[key].split(',') };
       if (where[key] === 'true' || where[key] === 'false')
         where[key] = where[key] === 'true' ? true : false;
       if (where[key] === 'null')
-        where[key] = null;
+        where[key] = { [Op.eq]: null };
       if (where[key] === 'undefined')
         delete where[key];
     })

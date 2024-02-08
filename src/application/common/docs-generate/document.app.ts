@@ -261,8 +261,8 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
       },
       {
         text: [
-          g?'O':'A',
-          ' TRABALHAD',g?'O': 'A','R prestará as suas funções dentro do horário de quarenta e duas (42) horas semanais, distribuídas de segunda-feira a sexta-feira, dentro do período de 08h30 e término às 17h00, sem prejuízo de qualquer alteração de horário de trabalho, decorrente de necessidades objectivas de funcionamento dos serviços do EMPREGADOR e nos termos legais'],
+          g ? 'O' : 'A',
+          ' TRABALHAD', g ? 'O' : 'A', 'R prestará as suas funções dentro do horário de quarenta e duas (42) horas semanais, distribuídas de segunda-feira a sexta-feira, dentro do período de 08h30 e término às 17h00, sem prejuízo de qualquer alteração de horário de trabalho, decorrente de necessidades objectivas de funcionamento dos serviços do EMPREGADOR e nos termos legais'],
       },
 
 
@@ -398,7 +398,7 @@ async function getContractDefinitions({ employeeId, data }: any): Promise<TDocum
 async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumentDefinitions> {
 
 
-  const payStub = await PayStub.scope('default').findOne({ where: { id: payStubId }, include: { all: true } })
+  const payStub = await PayStub.scope('xfull').findOne({ where: { id: payStubId }, include: { all: true } })
 
   const banckAccount = await AccountPaymentData.findOne({ where: { employeeId: payStub?.contract?.employeeId }, include: { all: true } })
 
@@ -408,6 +408,16 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
   const logo = company?.logos?.includes('http')
     ? await toDataURL(company?.logos ?? '')
     : company?.logos
+
+  const template = await [template_0, template_0][0]({ payStubId, address, company, banckAccount, payStub, logo })
+
+  return template;
+
+}
+async function template_0({ address, company, banckAccount, payStub, logo }: any): Promise<TDocumentDefinitions> {
+
+  const month = moment().set('month', (payStub?.month-1??0)).format('MMMM').toUpperCase();
+
   return {
 
 
@@ -418,13 +428,13 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
 
         layout: {
           fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return '#FFF'//(rowIndex % 2 === 0) ? '#fafaff' : null;
+            return '#fefefe'//(rowIndex % 2 === 0) ? '#fafaff' : null;
           },
           hLineColor: function (i, node) {
-            return '#FFF'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+            return '#fefefe'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
           },
           vLineColor: function (i, node) {
-            return '#FFF'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+            return '#fefefe'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
           },
         },
         //layout: 'headerLineOnly', // optional
@@ -445,7 +455,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
               {
                 text: [{ text: 'RECIBO DE SALARIO\n', style: 'h1' },
 
-                moment().set('month', (payStub?.month ?? 0) - 1).format('MMMM').toUpperCase,
+                  month,
                   ' DE ',
                 payStub?.year
                 ],
@@ -475,13 +485,13 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
 
         layout: {
           fillColor: function (rowIndex: number, node: any, columnIndex: number) {
-            return (rowIndex % 2 === 0) ? '#fafaff' : "#fafaff";
+            return (rowIndex % 2 === 0) ? '#fefefe' : "#fdfdfd";
           },
           hLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
+            return '#fdfdfd'//(i === 0 || i === node?.table?.body?.length) ? '#AAA' : 'blue';
           },
           vLineColor: function (i, node) {
-            return '#eeeeff'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
+            return '#fdfdfd'//(i === 0 || i === node?.table?.widths?.length) ? 'red' : 'blue';
           },
         },
         style: {
@@ -508,9 +518,9 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
             ],
             [
               { text: 'Segurança Social:', style: 'd3' },
-              { text: payStub?.contract?.department?.name, style: 'd2' },
+              { text: payStub?.contract?.employee?.person?.socialSecurityNumber, style: 'd2' },
               { text: 'Categoria:', style: 'd3' },
-              { text: payStub?.contract?.role?.name?.includes('-') ? payStub?.contract?.role?.name?.split('-')[1] : '...', style: 'd2' }
+              { text: payStub?.contract?.category?.name, style: 'd2' }
             ],
             [
               { text: 'NIF:', style: 'd3' },
@@ -560,7 +570,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
                 text: 'VALOR',
                 style: 'th',
               }
-            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
+            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, '',
             {
               text: currency(line?.value).split('AOA')[0],
               style: 'textRight',
@@ -580,7 +590,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
               },
               {
                 fillColor: '#FFF',
-                text: 'Valor Bruto',
+                text: 'Total',
                 style: ['th', { alignment: 'right' }],
               },
               {
@@ -723,19 +733,12 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
     footer: {
       columnGap: 50,
       columns: [
-        [
-          {
-            text: company?.name + '',
-            style: ['lowFooter', 'd2', { margin: [0, 0, 0, 10] }],
-          }, {
-            text:
-              company?.contacts?.map(({ descriptions }: any) => descriptions ?? '').join(' | ') + '\n'
-              + address?.fullAddress,
-            style: ['lowFooter', { margin: [0, 0, 0, 10] }],
-          },]
-        , {
-          text: '\n\nwww.nova.ao',
-          style: ['lowFooter', { alignment: 'right' }]
+        ['\n\n\n\n'
+        ],
+        //  [{ image: writeRotatedText('I am rotated'), fit: [7, 53], alignment: 'center' }],
+        {
+          text: ['\n\n\n', 'Gerado com muito gosto por ', 'www.nova.ao'],
+          style: ['lowFooter', { alignment: 'right', fontSize: 8 }]
         },
       ]
     }
@@ -761,7 +764,7 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
         color: '#333'
       },
       d2: {
-        bold: true,
+        fontSize: 10,
       },
       headers: {
         fontSize: 18,
@@ -826,7 +829,23 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
   }
 
 }
-
+/*
+const writeRotatedText = function (text: string) {
+  var ctx, canvas: any = document?.createElement('canvas');
+  // I am using predefined dimensions so either make this part of the arguments or change at will 
+  canvas.width = 36;
+  canvas.height = 270;
+  ctx = canvas.getContext('2d');
+  ctx.font = '36pt Arial';
+  ctx.save();
+  ctx.translate(36, 270);
+  ctx.rotate(-0.5 * Math.PI);
+  ctx.fillStyle = '#000';
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+  return canvas.toDataURL();
+};
+*/
 export async function generateDocument({ employeeId, callBack, type, ...data }: any) {
 
   const printer = new PdfPrinter(fonts);

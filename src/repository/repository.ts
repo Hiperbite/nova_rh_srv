@@ -1,3 +1,4 @@
+import { includes } from 'lodash';
 import { Transaction } from "sequelize";
 import {
   Model as M,
@@ -37,7 +38,11 @@ export default class Repository<T extends M>  {
 
   public findOne = async (id: string, opts: any = {}): Promise<T | null> => {
     const options = await this.refactorOptions(opts);
-    const data = await (opts?.scope ? this.repo.scope(opts?.scope) : this.repo).findByPk(id, options);
+    const data = await (
+      opts?.scope
+        ? this.repo.scope(opts?.scope)
+        : this.repo
+    ).findByPk(id, options);
 
     return data;
   };
@@ -46,13 +51,16 @@ export default class Repository<T extends M>  {
 
     let final;
 
-    try {                                                                           
-      await this.start();
-      final = await this.Model.create(data, { ...options, transaction: this.transaction });
-      await this.commit();
-    } catch (err: any) {
-      throw err;
-    }
+    let { include }: any = this?.Model?.options?.scopes?.all ?? {};
+    let includes = include ?? options?.include;
+    await this.start();
+    final = await this.Model.create(data, {
+      ... {
+        ...options,
+        include: includes
+      }, transaction: this.transaction
+    });
+    await this.commit();
 
     return final;
   };
@@ -63,8 +71,8 @@ export default class Repository<T extends M>  {
 
     try {
       await this.start();
-      let model = await this.findOne(id)
-      let done = await model?.update(d, { transaction: this.transaction })
+      let model = await this.findOne(id, { include: { all: true } });
+      let done = await model?.update(d, { include: { all: true }, transaction: this.transaction })
 
 
       if (done) {
@@ -77,6 +85,8 @@ export default class Repository<T extends M>  {
         return null
       }
     } catch (err: any) {
+
+      this.rollback();
       throw err;
     }
 
@@ -145,9 +155,9 @@ export default class Repository<T extends M>  {
           ? limit
           : (Number(page) - 1) * limit;
 
-
     const fromScope = scope ?
       this.repo.scope(scope) : this.repo;
+
     return new Paginate(
       await fromScope.findAll(
         {
@@ -158,15 +168,14 @@ export default class Repository<T extends M>  {
               ?.split(",")
               .filter((x: string) => exclude.indexOf(x) === -1)
             : { exclude },
-          include ,
+          include,
           offset,
           limit,
           order,
         }),
-
       Number(page),
       limit,
-      await this.size({ include, where })
+      await this.size({ scope, where })
     );
   };
 

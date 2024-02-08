@@ -9,17 +9,31 @@ import {
     BeforeSave,
     HasMany,
     DefaultScope,
+    AfterFind,
+    AfterCreate,
 } from "sequelize-typescript";
-import moment from "moment";
-import { Model, Contract, PayrollLine, SalaryPackage, Payroll, Employee, Person } from "../index";
-import { payrollState } from "./payroll";
+import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole } from "../index";
+
+import PayStubApp from "../../application/payrolls/pay_stub.app";
 
 @DefaultScope(() => ({
-    include: [{ model: Payroll, include: [] }]
+    //include: [{ model: Payroll, include: [] },]
 }))
 @Scopes(() => ({
     default: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [SalaryPackage, { model: Employee, include: [Person] }] }]
+        include: [Payroll, PayrollLine]
+    },
+    rebuild: {
+        include: [Payroll]
+    },
+    'mine-default': {
+        include: [{ model: Payroll, include: [] }, PayrollLine],
+    },
+    full: {
+        include: [{ model: Payroll, include: [] }, PayrollLine,]
+    },
+    xfull: {
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Person, AccountPaymentData] }] }]
     }
 }))
 @Table({
@@ -101,9 +115,9 @@ export default class PayStub extends Model {
         allowNull: true,
     })
     get proposal() {
-        this.lines = this.contract?.payStubState.lines?.map((line: any) => new PayrollLine(line));
+        //  this.lines = this.contract?.payStubState.lines?.map((line: any) => new PayrollLine(line));
 
-        return this.contract?.payStubState
+        return;// this.contract?.payStubState
     }
 
     @Column({
@@ -113,92 +127,23 @@ export default class PayStub extends Model {
     get proposalLines() {
         //return [];
 
-        if (this.payroll?.state ?? 0 > payrollState.Approved)
-            return [];
-        //return this.contract?.payStubState;
 
-        const salaryPackage: any = this?.contract?.salaryPackage
-        const additionalPayments: any = salaryPackage?.additionalPayments
-
-        let lines: any[] = []
-        lines.push({
-            isActive: true,
-            code: '1000',
-            date: new Date(),
-            value: Number(salaryPackage?.baseValue),
-            debit: true,
-            quantity: 1,
-            baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: '',
-            typeId: 'Base',
-
-        })
-        additionalPayments?.
-            filter(({ isActive }: any) => isActive).
-            filter(({ startDate }: any) => moment(this.date).isAfter(moment(startDate))).
-            map(({ code, descriptions, startDate, isActive, baseValue, baseValuePeriod, type }: any) => (
-                {
-                    isActive,
-                    code: type?.code,
-                    date: new Date(),
-                    descriptions,
-                    startDate,
-                    value: Number(baseValue),
-                    property: 1,
-                    debit: true,
-                    baseValuePeriod,
-                    typeId: type?.name
-                }
-            )
-            )?.forEach((x: any) => lines.push(x));
-
-
-
-        const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
-
-        lines.push({
-            isActive: true,
-            code: '350',
-            date: new Date(),
-            value: grossValue * 3 / 100,
-            debit: false,
-            quantity: 1,
-            baseValuePeriod: salaryPackage?.baseValuePeriod,
-            descriptions: '',
-            typeId: 'INSS [3%]'
-        })
-
-        const IRTTable = [
-            { a: 0, b: 70000, v: 0 },
-            { a: 70001, b: 150000, v: 10 },
-            { a: 150001, b: 300000, v: 16 },
-            { a: 300001, b: 500000, v: 19 },
-            { a: 500001, b: 1500000, v: 20 },
-            { a: 1500001, b: 3000000, v: 24 },
-        ]
-        const IRTpercent = (r: number): number => IRTTable.find(({ a, b }: any) => r > a && r <= b)?.v ?? 0
-
-        if (grossValue > 70000) {
-            lines.push({
-                isActive: true,
-                code: '401',
-                date: new Date(),
-                value: grossValue * IRTpercent(grossValue) / 100,
-                debit: false,
-                quantity: 1,
-                baseValuePeriod: salaryPackage?.baseValuePeriod,
-                descriptions: '',
-                typeId: `IRT [${IRTpercent(grossValue)}%]`
-            })
-        }
-
-
-        const deductionValue = lines.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((x: any, y: any) => Number(x) + Number(y));
-        const netValue = grossValue - deductionValue;
-
-        return lines;
+        return;// this.lines = [];
     }
 
+    @AfterFind
+    static rebuildPayStubs = async (payStubs: any, opts: any) => {
+
+        if (opts?.topModel?._scopeNames?.indexOf('rebuild') > -1) {
+            for (let payStub of payStubs) {
+                payStub.lines = await PayrollLine.findAll({ where: { payStubId: payStub.id } })
+            }
+        }
+        return payStubs;
+    }
+    @AfterCreate
+    static afterCreatePayStub = PayStubApp.afterCreatePayStub
+    
     @BeforeCreate
     @BeforeSave
     static initModel = async (payStub: PayStub) => {

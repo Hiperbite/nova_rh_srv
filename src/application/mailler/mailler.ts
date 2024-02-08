@@ -3,19 +3,40 @@ import nodemailer, { SendMailOptions } from "nodemailer";
 import log from "../logger";
 import { smtp, NODE_ENV, MAILER_USER, MY_NODE_ENV } from "../../config";
 //const MAILER_USER='mailtrap@hiperbite.ao'
-const transporter = nodemailer.createTransport({
-  host: smtp.host,
-  port: smtp.port,
-  secure: smtp.secure,
-  auth: {
-    user: smtp.user,
-    pass: smtp.pass,
-  },
+let transporter: any = {};
 
-  tls: {
-    rejectUnauthorized: false
+try {
+
+
+  transporter = nodemailer.createTransport({
+    host: smtp.host,
+    port: smtp.port,
+    secure: smtp.secure,
+    auth: {
+      user: smtp.user,
+      pass: smtp.pass,
+    },
+
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+  transporter.verify(function (err: any, success: any) {
+    try {
+      if (err) {
+        console.log(err);
+        logger.info(err)
+      } else {
+        logger.info('Server is ready to take our messages');
+      }
+    } catch (err: any) {
+      logger.error(err)
+    }
+  });
+
+} catch (e: any) {
+let u=e;
 }
-});
 /*
 const transporter = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
@@ -26,24 +47,16 @@ const transporter = nodemailer.createTransport({
   }
 });*/
 
-transporter.verify(function (err: any, success: any) {
-  try {
-    if (err) {
-      console.log(err);
-      logger.info(err)
-    } else {
-      logger.info('Server is ready to take our messages');
-    }
-  } catch (err: any) {
-    logger.error(err)
-  }
-});
 
 async function sendEmail(payload: SendMailOptions) {
-  payload.bcc = 
+  payload.bcc =
     payload.from =
     smtp.user;
 
+  /**
+   * TODO: FIX THIS WARNING
+   *  Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification
+   */
   if (NODE_ENV !== 'production') {
     payload.subject = `${MY_NODE_ENV} MODE - ${payload.subject}`
     payload.from = MAILER_USER

@@ -10,6 +10,7 @@ import company from "./company/company.routes";
 import business from "./company/business.routes";
 
 import files from "./doc-manager/file.routes";
+import favoriteFile from "./doc-manager/favorite-file.routes";
 
 
 import dashboards from "./common/dashBoard.routes";
@@ -22,10 +23,12 @@ import personal from "./employees/person.routes";
 import accountpaymentdata from "./employees/account_payment_data.routes"
 
 import payroll from "./payrolls/payroll.routes";
+import settings from "./settings";
 
 import attendance from "./attendance-management/attendance.routes";
 import attendanceType from "./attendance-management/attendance-type.routes";
 import attendanceJustification from "./attendance-management/attendance-justification.routes";
+import roleRoutes from "./employees/role.routes";
 
 const routes = Router();
 
@@ -35,10 +38,13 @@ routes.use('/attendances/justifications', attendanceJustification)
 routes.use('/attendances/types', attendanceType)
 
 routes.use('/users', userRoutes)
+routes.use('/roles', roleRoutes)
+
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)
 
 routes.use('/drive/files', files)
+routes.use('/drive/favorite-files', favoriteFile)
 
 //routes.use('/commons/contacts', contactRoutes)
 routes.use('/commons/dashboards', dashboards)
@@ -57,6 +63,8 @@ routes.use('/employees/contracts', contracts)
 routes.use('/employees/personal', personal)
 
 routes.use('/payrolls/payroll', payroll)
+routes.use('/settings', settings)
+
 
 routes.use(commonRoutes)
 

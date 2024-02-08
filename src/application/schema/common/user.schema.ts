@@ -46,7 +46,7 @@ export const resetPasswordSchema = object({
   body: object({
     password: string({
       required_error: "Password is required",
-    }).min(6, "Password is too short - should be min 6 chars"),
+    }).min(4, "Password is too short - should be min 6 chars"),
     passwordConfirmation: string({
       required_error: "Password confirmation is required",
     }),

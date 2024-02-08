@@ -43,7 +43,8 @@ const {
   refreshTokenPrivateKey,
   refreshTokenPublicKey,
   TOKEN_EXPIRE_IN,
-  IP_INFO_TOKEN
+  IP_INFO_TOKEN,
+  WEB_CLIENT_URL
 } = process.env;
 
 const app: Application = express();
@@ -58,6 +59,9 @@ const config = () => {
 
   app.use(errorHandler);
 
+  var xmlparser = require('express-xml-bodyparser');
+
+  app.use(xmlparser());
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
@@ -101,15 +105,18 @@ const config = () => {
   app.use(limiter);
 
   const allowedOrigins: string[] = [
-    "http://localhost:3000",
+    //"http://localhost:3000",
+    //"http://localhost:3001",
+    //"http://localhost:3002",
     "https://rh.demo.nova.ao",
+    "https://rh.hiperbite.nova.ao",
     "*",
   ];
 
   const corsOptions = {
     credentials: true, // This is important.
     origin: (origin: any, callback: any) => {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      if (true || allowedOrigins.indexOf(origin) !== -1 || !origin) {
         callback(null, true);
       } else {
         callback(new Error("DUde,u r not allowed by CORS"));
@@ -157,12 +164,6 @@ const smtp = {
   secure: Number(MAILER_PORT || "") == 465,
 };
 
-const WEB_CLIENT_URL = {
-  development: "http://localhost:3000",
-  test: "http://localhost:3000",
-  quality: "https://academic.app.hiperbite.com",
-  production: "http://localhost:3000",
-}[MY_NODE_ENV ?? "development"];
 
 const socket = socketService;
 export {
