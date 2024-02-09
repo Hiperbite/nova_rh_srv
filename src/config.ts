@@ -20,6 +20,7 @@ import socketIO from "socket.io";
 
 import express, { Application } from "express";
 import socketService from "./service/socket.service";
+import multer from "multer";
 
 dotenv.config({ path: __dirname + "/../.env" });
 
@@ -52,6 +53,9 @@ const httpServer = createServer(app);
 
 const logLevel = "info";
 const config = () => {
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+
   app.use(expressWinston.logger(loggerOptions));
   app.use(expressWinston.errorLogger(errorLoggerOptions));
   app.use(express.static('public'))

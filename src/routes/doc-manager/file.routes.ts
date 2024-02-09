@@ -1,6 +1,7 @@
 import { File } from "../../models";
 import express from "express";
 import Api from "../../api/Api";
+import { afterUpload, downloader, uploader } from "../../services/drive/multer.uploader";
 
 /**
  * TODO: Find best place to put this stash
@@ -20,7 +21,12 @@ router
   .post(
     "/",
     // validateResource(createStudentSchema),
-    asyncHandler(api.create)
+
+    asyncHandler(uploader),
+
+    asyncHandler(afterUpload),
+    //afterUpload,
+    asyncHandler(api.create),
   )
 
   .put(
@@ -38,6 +44,14 @@ router
   .get("/:id",
     // validateResource(updateStudentSchema),
     asyncHandler(api.find))
+
+  .get("/download/:id",
+    // validateResource(updateStudentSchema),
+    //asyncHandler(api.find),
+
+    asyncHandler(downloader)
+
+  )
 
   .get("/",
     // validateResource(updateStudentSchema),
