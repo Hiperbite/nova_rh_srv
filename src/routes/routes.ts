@@ -22,6 +22,7 @@ import payroll from "./payrolls/payroll.routes";
 import settings from "./settings";
 
 import attendance from "./attendance-management/attendance.routes";
+import frequency from "./attendance-management/frequency.routes";
 import attendanceType from "./attendance-management/attendance-type.routes";
 import attendanceJustification from "./attendance-management/attendance-justification.routes";
 import roleRoutes from "./employees/role.routes";
@@ -29,6 +30,7 @@ import roleRoutes from "./employees/role.routes";
 const routes = Router();
 
 
+routes.use('/attendances/frequencies', frequency)
 routes.use('/attendances/attendances', attendance)
 routes.use('/attendances/justifications', attendanceJustification)
 routes.use('/attendances/types', attendanceType)

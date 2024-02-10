@@ -61,8 +61,9 @@ import Role from "./employees/user/role";
 import WITaxTable from "./payroll/wi_tax_tables";
 
 import RoleModule from "./employees/user/RoleModule";
+import Frequency from './attendance/frequency.model';
 
-import { tr } from "@faker-js/faker";
+
 
 
 dotenv.config();
@@ -141,7 +142,8 @@ const sequelizeOptions: SequelizeOptions = {
     EmployeeRole,
     Role,
     RoleModule,
-    PayrollSetting
+    PayrollSetting,
+    Frequency
   ],
 }
 const UniqIndex = createIndexDecorator({
@@ -288,5 +290,6 @@ export {
   WorkingHour,
   Role,
   RoleModule,
-  PayrollSetting
+  PayrollSetting,
+  Frequency
 };

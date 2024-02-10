@@ -30,7 +30,8 @@ import {
   EmployeeRole,
   Department,
   Attendance,
-  AttendanceType
+  AttendanceType,
+  Frequency
 } from "../index";
 import { calculateBusinessDays } from '../../helpers/helper';
 
@@ -146,6 +147,9 @@ export default class Employee extends Model {
 
   @HasMany(() => Attendance)
   attendances!: Attendance[];
+
+  @HasMany(() => Frequency)
+  frequencies!: Frequency[];
 
   @Column({
     type: DataType.VIRTUAL

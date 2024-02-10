@@ -13,7 +13,7 @@ import {
   BeforeCreate,
 } from "sequelize-typescript";
 
-import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category } from "../index";
+import { Model, Employee, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category, Frequency } from "../index";
 /*
 @DefaultScope(() => ({
   include: [EmployeeRole, Department,SalaryPackage, WorkingHour,AdditionalField],
@@ -102,6 +102,9 @@ export default class Contract extends Model {
 
   @HasMany(() => PayStub)
   payStubs?: PayStub[]
+
+  @HasMany(() => Frequency)
+  frequencies?: Frequency[]
 
   @HasOne(() => SalaryPackage, { as: 'salaryPackage' })
   salaryPackage?: SalaryPackage;

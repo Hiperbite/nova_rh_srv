@@ -17,7 +17,7 @@ import {
   BelongsToMany,
   HasMany,
 } from "sequelize-typescript";
-import { Model, Address, Employee, Person, Role } from "../../index";
+import { Model, Address, Employee, Person, Role, Frequency } from "../../index";
 
 import bcrypt from "bcrypt";
 import { UserApp } from "../../../application/common/user.app";
@@ -144,8 +144,6 @@ export default class User extends Model {
   })
   verified?: boolean;
 
-
-
   @BelongsTo(() => Employee)
   employee!: Employee
 
@@ -165,9 +163,6 @@ export default class User extends Model {
 
   @BeforeSave
   static hashPassword = UserApp.hashPassword;
-
-
-
 
   @AfterCreate
   static notifyUser = (user: User) =>
