@@ -191,8 +191,6 @@ const switchTo = (db: any, ref: string) => {
 
     sequelize = instance
   }
-
-
   sequelize.options.storage = ref
 }
 
