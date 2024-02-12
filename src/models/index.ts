@@ -57,6 +57,7 @@ import Category from "./employees/category";
 import AttendanceType from "./attendance/attendance-type";
 import AttendanceJustification from "./attendance/justification";
 import Attendance from "./attendance/attendance";
+import File from "./doc-manager/file";
 import Role from "./employees/user/role";
 import WITaxTable from "./payroll/wi_tax_tables";
 
@@ -64,6 +65,8 @@ import RoleModule from "./employees/user/RoleModule";
 import Frequency from './attendance/frequency.model';
 
 
+import { tr } from "@faker-js/faker";
+import FavoriteFile from './doc-manager/favorite-file';
 
 
 dotenv.config();
@@ -141,6 +144,8 @@ const sequelizeOptions: SequelizeOptions = {
     Bank,
     EmployeeRole,
     Role,
+    FavoriteFile,
+    File,
     RoleModule,
     PayrollSetting,
     Frequency
@@ -288,6 +293,8 @@ export {
   Setting,
   Department,
   WorkingHour,
+  File,
+  FavoriteFile,
   Role,
   RoleModule,
   PayrollSetting,

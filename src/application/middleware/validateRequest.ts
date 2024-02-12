@@ -53,9 +53,9 @@ const validateRequest = (
       if (where[key] === 'true' || where[key] === 'false')
         where[key] = where[key] === 'true' ? true : false;
       if (where[key] === 'null')
-        where[key] = null;
+        where[key] = { [Op.eq]: null };
       if (where[key] === 'undefined')
-        where[key] = null;
+        delete where[key];
     })
     req.query.where = where
   }

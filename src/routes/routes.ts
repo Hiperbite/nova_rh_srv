@@ -9,6 +9,10 @@ import trackRoutes from "./common/track.routes";
 import company from "./company/company.routes";
 import business from "./company/business.routes";
 
+import files from "./doc-manager/file.routes";
+import favoriteFile from "./doc-manager/favorite-file.routes";
+
+
 import dashboards from "./common/dashBoard.routes";
 import helpers from "./common/helper.routes";
 import employees from "./employees/employee.routes";
@@ -40,6 +44,10 @@ routes.use('/roles', roleRoutes)
 
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)
+
+routes.use('/drive/files', files)
+routes.use('/drive/favorite-files', favoriteFile)
+
 //routes.use('/commons/contacts', contactRoutes)
 routes.use('/commons/dashboards', dashboards)
 routes.use('/commons/helpers', helpers)

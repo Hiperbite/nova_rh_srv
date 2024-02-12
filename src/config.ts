@@ -20,6 +20,7 @@ import socketIO from "socket.io";
 
 import express, { Application } from "express";
 import socketService from "./service/socket.service";
+import multer from "multer";
 
 dotenv.config({ path: __dirname + "/../.env" });
 
@@ -44,7 +45,8 @@ const {
   refreshTokenPublicKey,
   TOKEN_EXPIRE_IN,
   IP_INFO_TOKEN,
-  WEB_CLIENT_URL
+  WEB_CLIENT_URL,
+  DISK_PATH
 } = process.env;
 
 const app: Application = express();
@@ -52,6 +54,9 @@ const httpServer = createServer(app);
 
 const logLevel = "info";
 const config = () => {
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+
   app.use(expressWinston.logger(loggerOptions));
   app.use(expressWinston.errorLogger(errorLoggerOptions));
   app.use(express.static('public'))
@@ -172,6 +177,9 @@ export {
   DB_USER,
   DB_PASSWORD,
   DB_NAME,
+  
+  DISK_PATH,
+
   AUTHORIZED_CLIENTS,
   TOKEN_SECRET,
   PORT,

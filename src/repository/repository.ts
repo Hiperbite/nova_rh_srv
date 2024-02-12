@@ -51,7 +51,6 @@ export default class Repository<T extends M>  {
 
     let final;
 
-
     let { include }: any = this?.Model?.options?.scopes?.all ?? {};
     let includes = include ?? options?.include;
     await this.start();

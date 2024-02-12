@@ -11,8 +11,12 @@ const printLog = (info: any) => {
 
     ipInfoApi().then(data => {
       info.client = data;
+
+
+      return info;
     })
 
+    return info;
   } catch (error) {
     //console.log(error);
     return "error writing logs";

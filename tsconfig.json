@@ -26,6 +26,7 @@
       "DOM",
       "ES5"
     ],
+    //"moduleResolution": "node",
     "moduleResolution": "nodenext",
     /* Projects */
     // "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
