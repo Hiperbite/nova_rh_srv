@@ -45,7 +45,8 @@ const {
   refreshTokenPublicKey,
   TOKEN_EXPIRE_IN,
   IP_INFO_TOKEN,
-  WEB_CLIENT_URL
+  WEB_CLIENT_URL,
+  DISK_PATH
 } = process.env;
 
 const app: Application = express();
@@ -176,6 +177,9 @@ export {
   DB_USER,
   DB_PASSWORD,
   DB_NAME,
+  
+  DISK_PATH,
+
   AUTHORIZED_CLIENTS,
   TOKEN_SECRET,
   PORT,

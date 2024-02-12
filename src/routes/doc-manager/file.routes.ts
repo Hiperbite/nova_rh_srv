@@ -1,7 +1,8 @@
 import { File } from "../../models";
 import express from "express";
 import Api from "../../api/Api";
-import { afterUpload, downloader, uploader } from "../../services/drive/multer.uploader";
+import { afterUpload, dirSize, downloader, uploader } from "../../services/drive/multer.uploader";
+import { DISK_PATH } from "../../config";
 
 /**
  * TODO: Find best place to put this stash
@@ -45,6 +46,10 @@ router
     // validateResource(updateStudentSchema),
     asyncHandler(api.find))
 
+  .get("/",
+    // validateResource(updateStudentSchema),
+    asyncHandler(api.findBy)
+  )
   .get("/download/:id",
     // validateResource(updateStudentSchema),
     //asyncHandler(api.find),
@@ -52,10 +57,19 @@ router
     asyncHandler(downloader)
 
   )
-
-  .get("/",
+  .get("/my-disk/size",
     // validateResource(updateStudentSchema),
-    asyncHandler(api.findBy));
+    //asyncHandler(api.find),
+
+    asyncHandler(async (req: any, res: any) => {
+      const size = await dirSize(DISK_PATH ?? '');
+      console.log(size);
+      res.send({size})
+    })
+
+  )
+
+  ;
 ;
 
 export default router;

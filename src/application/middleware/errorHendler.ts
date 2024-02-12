@@ -1,8 +1,8 @@
 import { logger } from "../../config";
 
-export const genericErrorHendler = (err: any, req: any, res: any, next: any) =>{
+export const genericErrorHendler = (err: any, req: any, res: any, next: any) => {
     // All errors from async & non-async route above will be handled here
-    let errors =    [];
+    let errors = [];
 
     if (err?.original?.code === "ER_NO_REFERENCED_ROW_2") {
         errors = [{ message: `${err.table} not founds`, fields: err.fields }];
@@ -13,14 +13,15 @@ export const genericErrorHendler = (err: any, req: any, res: any, next: any) =>{
     } else if (Array.isArray(err) && err.length > 0) {
         errors = err;
     } else if (Array.isArray(err)) {
-        errors = [{ message: "Some thing wrong is happning" }];
+        errors = [{ message: "Some thing wrong is happening" }];
     } else if (err.data) {
         errors = [err.data];
+        
     } else {
         errors = err;
     }
 
-    res.status(err.code ?? 500).send(errors);
+    res.status(Number(err.code) || 500).send(errors);
     logger.error({ message: errors, meta: { req, res } })
 }
 
