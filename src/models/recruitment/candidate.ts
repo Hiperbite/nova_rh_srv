@@ -85,6 +85,17 @@ export default class Candidate extends Model {
     })
     phoneNumber?: string;
 
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+    })
+    coverLetter?: string;
+
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+    })
+    bio?: string;
 
     @Column({
         type: DataType.TEXT,

@@ -9,11 +9,10 @@ import {
     AfterFind,
     AfterUpdate,
     AfterSave,
-    
     ForeignKey,
     BelongsTo
 } from "sequelize-typescript";
-import { Contract, Model, PayStub, Requirement } from "../index";
+import { Contract, Model, PayStub, Requirement, ValidationQuestion as _ValidationQuestion, RequirementQuestion as _RequirementQuestion } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -37,10 +36,9 @@ enum State {
     timestamps: true,
     tableName: "ValidationQuestions",
 })
+export default class ValidationQuestion extends Model {
 
-export default class ValidationQuestion extends Model{
-    
-    
+
     @Column({
         type: DataType.INTEGER,
         allowNull: true,
@@ -50,17 +48,19 @@ export default class ValidationQuestion extends Model{
         type: DataType.STRING,
         allowNull: true,
     })
-    question?: string;
+    question!: string;
 
     @Column({
         type: DataType.INTEGER,
         allowNull: true,
+        defaultValue: 1,
     })
     points?: number;
-    
+
     @Column({
         type: DataType.INTEGER,
         allowNull: true,
+        defaultValue: 0,
     })
     type?: number;
 
@@ -68,16 +68,50 @@ export default class ValidationQuestion extends Model{
         type: DataType.STRING,
         allowNull: true,
     })
-    idealAnswer?: string;
+    idealAnswer!: string;
+
     @Column({
-        type: DataType.STRING,
+        type: DataType.TEXT,
         allowNull: true,
     })
-    optionsAnswer?: string;
-    
+    get optionsAnswer() {
+        return this.getDataValue('optionsAnswer')?.split('**')
+    }
+    set optionsAnswer(answer: string[]) {
+        this.setDataValue('optionsAnswer', answer.join('**'));
+    };
+
+    @HasMany(() => _RequirementQuestion)
+    requirements?: _RequirementQuestion[];
+}
+
+@Table({
+    timestamps: true,
+    tableName: "RequirementQuestions",
+})
+class RequirementQuestion extends Model {
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: true,
+    })
+    no?: number;
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: true,
+    })
+    points?: number;
+
     @BelongsTo(() => Requirement)
     requirement?: Requirement;
-  
+
     @ForeignKey(() => Requirement)
     requirementId?: string;
+
+    @BelongsTo(() => _ValidationQuestion)
+    question?: _ValidationQuestion;
+
+    @ForeignKey(() => _ValidationQuestion)
+    questionId?: string;
 }
+
+export { RequirementQuestion }

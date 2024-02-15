@@ -12,7 +12,7 @@ import {
     ForeignKey,
     BelongsTo
 } from "sequelize-typescript";
-import { Contract, Model, PayStub, Vacancy, ValidationQuestion } from "../index";
+import { Contract, Model, PayStub, RequirementQuestion, Vacancy, ValidationQuestion } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -75,8 +75,8 @@ export default class Requirement extends Model {
         }
     };
 
-    @HasMany(()=>ValidationQuestion)
-    questions?: ValidationQuestion[]
+    @HasMany(()=>RequirementQuestion)
+    questions?: RequirementQuestion[]
 
     @BelongsTo(() => Vacancy)
     vacancy?: Vacancy;

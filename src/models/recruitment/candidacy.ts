@@ -39,7 +39,7 @@ enum State {
 export default class Candidacy extends Model {
        
     @HasMany(()=>ValidationAnswer)
-    questions?: ValidationAnswer[]
+    answers?: ValidationAnswer[]
 
     @BelongsTo(() => Vacancy)
     vacancy?: Vacancy;

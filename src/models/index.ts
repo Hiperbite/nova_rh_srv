@@ -8,8 +8,8 @@ import Candidacy from "./recruitment/candidacy"
 import Candidate from "./recruitment/candidate"
 import ValidationAnswer from "./recruitment/validation_answer"
 import Vacancy from "./recruitment/vacancy"
-import Requirement  from "./recruitment/requirement"
-import ValidationQuestion  from "./recruitment/validation_question"
+import Requirement from "./recruitment/requirement"
+import ValidationQuestion, { RequirementQuestion } from "./recruitment/validation_question"
 import User from "./employees/user/user";
 import Token from "./common/token";
 import Session from "./common/session";
@@ -69,6 +69,8 @@ import WITaxTable from "./payroll/wi_tax_tables";
 import RoleModule from "./employees/user/RoleModule";
 
 import { tr } from "@faker-js/faker";
+import VacancyProcess from './recruitment/vacancy_process';
+import SelectionProcess from './recruitment/selection_process';
 
 
 dotenv.config();
@@ -148,10 +150,14 @@ const sequelizeOptions: SequelizeOptions = {
     Role,
     RoleModule,
     PayrollSetting,
-    
+
     Vacancy,
     ValidationQuestion,
     Requirement,
+    RequirementQuestion,
+    VacancyProcess,
+    SelectionProcess,
+
     Candidacy,
     Candidate,
     ValidationAnswer
@@ -305,9 +311,12 @@ export {
 
 
   Vacancy,
-  Requirement, 
+  Requirement,
   ValidationQuestion,
-  
+  RequirementQuestion,
+  VacancyProcess,
+  SelectionProcess,
+
   Candidacy,
   Candidate,
   ValidationAnswer

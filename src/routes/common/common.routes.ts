@@ -39,6 +39,10 @@ import {
   Vacancy,
   Candidate,
   Candidacy,
+  ValidationQuestion,
+  RequirementQuestion,
+  SelectionProcess,
+  VacancyProcess,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -57,6 +61,10 @@ const models: modelsType[] = [
   { key: "vacancies", model: Vacancy, midllewares: [] },
   { key: "candidates", model: Candidate, midllewares: [] },
   { key: "candidacies", model: Candidacy, midllewares: [] },
+  { key: "validation-questions", model: ValidationQuestion, midllewares: [] },
+  { key: "requirement-questions", model: RequirementQuestion, midllewares: [] },
+  { key: "selection-process", model: SelectionProcess, midllewares: [] },
+  { key: "vacancy-process", model: VacancyProcess, midllewares: [] },
 
 
   
