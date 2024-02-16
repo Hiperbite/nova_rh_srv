@@ -2,7 +2,7 @@
     "name": "nova_rh",
     "version": "1.0.0",
     "homepage": "",
-    "description": "Nova HR",
+    "description": "Nova HR - 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",
     "main": "index.js",
     "scripts": {
         "build": "tsc",

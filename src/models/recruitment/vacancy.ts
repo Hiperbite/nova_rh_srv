@@ -15,7 +15,25 @@ import {
 } from "sequelize-typescript";
 
 
-import { Model, Requirement, VacancyProcess, SalaryPackage, Department, Person, AdditionalField, WorkingHour, PayStub, EmployeeRole, AdditionalPayment, AdditionalPaymentType, User, Category, Candidacy } from "../index";
+import { 
+    Model,
+     Requirement,
+      VacancyProcess, 
+      SalaryPackage, 
+      Department, 
+      Person, 
+      AdditionalField, 
+      WorkingHour, 
+      PayStub, 
+      EmployeeRole, 
+      AdditionalPayment, 
+      AdditionalPaymentType, 
+      User, 
+      Category, 
+      Candidacy ,
+      RequirementQuestion,
+      ValidationQuestion
+    } from "../index";
 import SequenceApp from "../../application/common/sequence.app";
 /**
  * 0 - Aberto
@@ -34,6 +52,9 @@ enum State {
 @Scopes(() => ({
     default: {
         include: []
+    },
+    full:{
+        include:[Department,EmployeeRole, Category, SalaryPackage, WorkingHour,{model:Requirement,include:[{model:RequirementQuestion, include:[ValidationQuestion]}]}]
     }
 }))
 @Table({
