@@ -19,7 +19,7 @@ import {
     ForeignKey,
     AfterCreate,
 } from "sequelize-typescript";
-import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, EmployeeRole, SalaryPackage } from "../index";
+import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, EmployeeRole, SalaryPackage, } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 

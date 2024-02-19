@@ -12,7 +12,7 @@ import {
     AfterFind,
     AfterCreate,
 } from "sequelize-typescript";
-import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole } from "../index";
+import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole, Currency, PayStubCurrency } from "../index";
 
 import PayStubApp from "../../application/payrolls/pay_stub.app";
 
@@ -33,7 +33,7 @@ import PayStubApp from "../../application/payrolls/pay_stub.app";
         include: [{ model: Payroll, include: [] }, PayrollLine,]
     },
     xfull: {
-        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Person, AccountPaymentData] }] }]
+        include: [PayStubCurrency, { model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Currency, Person, AccountPaymentData] }] }]
     }
 }))
 @Table({
@@ -85,6 +85,13 @@ export default class PayStub extends Model {
 
     @HasMany(() => PayrollLine)
     lines?: PayrollLine[];
+
+    @BelongsTo(() => PayStubCurrency)
+    currency?: PayStubCurrency
+
+    @ForeignKey(() => PayStubCurrency)
+    currencyId?: string
+
 
     @Column({
         type: DataType.VIRTUAL,
@@ -143,7 +150,7 @@ export default class PayStub extends Model {
     }
     @AfterCreate
     static afterCreatePayStub = PayStubApp.afterCreatePayStub
-    
+
     @BeforeCreate
     @BeforeSave
     static initModel = async (payStub: PayStub) => {

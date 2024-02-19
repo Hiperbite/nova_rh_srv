@@ -12,6 +12,8 @@ import {
   BeforeCreate,
   DefaultScope,
   AfterFind,
+  ForeignKey,
+  BelongsTo,
 } from "sequelize-typescript";
 import SequenceApp from "../../application/common/sequence.app";
 
@@ -31,7 +33,7 @@ import {
   Department,
   Attendance,
   AttendanceType,
-  Frequency
+  Currency,
 } from "../index";
 import { calculateBusinessDays } from '../../helpers/helper';
 
@@ -148,8 +150,11 @@ export default class Employee extends Model {
   @HasMany(() => Attendance)
   attendances!: Attendance[];
 
-  @HasMany(() => Frequency)
-  frequencies!: Frequency[];
+  @BelongsTo(() => Currency)
+  defaultCurrency?: Currency
+
+  @ForeignKey(() => Currency)
+  defaultCurrencyId?: string
 
   @Column({
     type: DataType.VIRTUAL
@@ -349,6 +354,7 @@ export default class Employee extends Model {
 
   }
 
+  
   @BeforeCreate
   static initModel = async (employee: Employee, { transaction }: any) => {
     if (employee?.code && employee?.code?.indexOf('A') > -1)

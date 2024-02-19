@@ -62,11 +62,13 @@ import Role from "./employees/user/role";
 import WITaxTable from "./payroll/wi_tax_tables";
 
 import RoleModule from "./employees/user/RoleModule";
-import Frequency from './attendance/frequency.model';
+import Frequency from './attendance/frequency';
 
 
 import { tr } from "@faker-js/faker";
 import FavoriteFile from './doc-manager/favorite-file';
+import Currency from './common/currency';
+import PayStubCurrency from './common/paystub-currency';
 
 
 dotenv.config();
@@ -128,6 +130,7 @@ const sequelizeOptions: SequelizeOptions = {
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
+    PayStubCurrency,
 
     WorkingHour,
     Notification,
@@ -148,6 +151,7 @@ const sequelizeOptions: SequelizeOptions = {
     File,
     RoleModule,
     PayrollSetting,
+    Currency,
     Frequency
   ],
 }
@@ -198,7 +202,7 @@ const switchTo = (db: any, ref: string) => {
 }
 
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)
@@ -263,6 +267,7 @@ export {
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
+  PayStubCurrency,
   Bank,
 
   Business,
@@ -296,5 +301,6 @@ export {
   Role,
   RoleModule,
   PayrollSetting,
+  Currency,
   Frequency
 };

@@ -4,13 +4,15 @@ import {
     DataType,
     BelongsTo,
     ForeignKey,
+    Scopes,
 } from "sequelize-typescript";
 
 import {
     Model,
-    User,
     Contract,
-    Employee
+    Employee,
+    Person,
+    Department,
 } from "../index";
 
 const states = [
@@ -18,9 +20,12 @@ const states = [
     { id: 1, name: "Saída" }
 ]
 
+@Scopes(() => ({
+    full: { include: [{ model: Contract, include: [Department,{ model: Employee, include: [Person] }] }] }
+}))
 @Table({
     indexes: [
-        { fields: ['state', 'startDate', 'endDate', 'employeeId', 'contractId'], unique: true }
+        //{ fields: ['state', 'date', 'contractId'], unique: true }
     ],
     timestamps: true,
     tableName: "Frequencies",
@@ -41,23 +46,16 @@ export default class Frequency extends Model {
     }
 
     @Column({
-        type: DataType.DATE,
-        allowNull: true,
+        type: DataType.INTEGER,
     })
-    startDate?: string;
+    type?: number;
 
     @Column({
         type: DataType.DATE,
-        allowNull: true
+        allowNull: true,
     })
-    endDate!: string;
-
-    @BelongsTo(() => Employee)
-    employee!: Employee
-
-    @ForeignKey(() => Employee)
-    employeeId!: string;
-
+    date?: Date;
+    
     @BelongsTo(() => Contract)
     contract!: Contract;
 

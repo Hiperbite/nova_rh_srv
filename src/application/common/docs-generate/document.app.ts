@@ -1,3 +1,4 @@
+
 import { number } from 'zod';
 import moment from 'moment';
 import { novaIcon } from '../../../public/assets/imgs/index';
@@ -13,7 +14,7 @@ const fonts = {
 };
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { AccountPaymentData, Address, Company, Contact, Employee, PayStub } from '../../../models/index';
+import { AccountPaymentData, Address, Company, Contact, Employee, PayStub, Currency } from '../../../models/index';
 import { toDataURL } from '../../../routes/hendlers';
 
 
@@ -53,7 +54,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
   const employee = await Employee.scope('all').findByPk(employeeId)
   const [company] = await Company.findAll();
   const document: any = employee?.idCard || employee?.passport
-
+  const parseValue = (v: number) => v
   const logo = company?.logos?.includes('http')
     ? await toDataURL(company?.logos ?? '')
     : company?.logos
@@ -82,7 +83,7 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
       },
       {
         text: [
-          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ', é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no/a ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento base mensal de ', { text: currency(employee?.contract?.salaryPackage?.baseValue), bold: true }, '.\n\n',
+          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ', é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no/a ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento base mensal de ', { text: currency(parseValue(employee?.contract?.salaryPackage?.baseValue)), bold: true }, '.\n\n',
           'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
           { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
           { text: data.entity.toUpperCase(), bold: true },
@@ -414,9 +415,36 @@ async function getPayStubDefinitions({ payStubId, data }: any): Promise<TDocumen
   return template;
 
 }
+
+const countervalue = (mycurrency: Currency, payStub: PayStub) => {
+
+  let data = []
+  if (mycurrency?.value !== 0) {
+    return [
+      ['Salario Líquido:', {
+        text: currency(payStub?.netValue / mycurrency?.value ?? 0).split('AOA')[0],
+        style: ['h2', { alignment: 'right', fontSize: 18 }],
+      }],
+      ['Contravalor[' + mycurrency?.code + ']:', {
+        text: currency(payStub?.netValue ?? 0).split('AOA')[0],
+        style: ['h2', { alignment: 'right', fontSize: 18 }],
+      }]
+    ]
+  }
+
+  return []
+
+
+}
 async function template_0({ address, company, banckAccount, payStub, logo }: any): Promise<TDocumentDefinitions> {
 
-  const month = moment().set('month', (payStub?.month-1??0)).format('MMMM').toUpperCase();
+
+
+  const month = moment().set('month', (payStub?.month - 1 ?? 0)).format('MMMM').toUpperCase();
+  const { defaultCurrency } = payStub?.contract?.employee
+
+  const myCurrency = payStub?.currency ?? defaultCurrency ?? { value: 1 };
+  const parseValue = (value: number) => value / (myCurrency?.value ?? 1)
 
   return {
 
@@ -525,7 +553,7 @@ async function template_0({ address, company, banckAccount, payStub, logo }: any
             [
               { text: 'NIF:', style: 'd3' },
               { text: payStub?.contract?.employee?.idCard, style: 'd2' },
-              { text: 'Nivel:', style: 'd3' }, ''],
+              { text: 'MOEDA:', style: 'd3' }, defaultCurrency?.name ?? 'Kwanza'],
 
           ]
         }
@@ -572,7 +600,7 @@ async function template_0({ address, company, banckAccount, payStub, logo }: any
               }
             ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, '',
             {
-              text: currency(line?.value).split('AOA')[0],
+              text: currency(parseValue(line?.value)).split('AOA')[0],
               style: 'textRight',
             }])) ?? []),
 
@@ -594,7 +622,7 @@ async function template_0({ address, company, banckAccount, payStub, logo }: any
                 style: ['th', { alignment: 'right' }],
               },
               {
-                text: currency(payStub?.grossValue ?? 0)?.split('AOA')[0],
+                text: currency(parseValue(payStub?.grossValue ?? 0))?.split('AOA')[0],
                 style: ['th', { alignment: 'right' }],
               }
             ]
@@ -643,7 +671,7 @@ async function template_0({ address, company, banckAccount, payStub, logo }: any
               }
             ], ...(payStub?.lines?.filter(({ debit }: any) => !debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
             {
-              text: currency(line?.value).split('AOA')[0],
+              text: currency(parseValue(line?.value)).split('AOA')[0],
               style: 'textRight',
             }])) ?? []),
             [
@@ -664,7 +692,7 @@ async function template_0({ address, company, banckAccount, payStub, logo }: any
                 style: ['th', { alignment: 'right' }],
               },
               {
-                text: currency(payStub?.deductionValue ?? 0)?.split('AOA')[0],
+                text: currency(parseValue(payStub?.deductionValue ?? 0))?.split('AOA')[0],
                 style: ['th', { alignment: 'right' }],
               }
             ]
@@ -711,18 +739,23 @@ async function template_0({ address, company, banckAccount, payStub, logo }: any
                 ['Resumo', ''],
                 ['Salario Bruto:',
                   {
-                    text: currency(payStub?.grossValue ?? 0).split('AOA')[0],
+                    text: currency(parseValue(payStub?.grossValue ?? 0)).split('AOA')[0],
                     style: ['h2', { alignment: 'right' }],
                   }],
                 ['Deduções:',
                   {
-                    text: currency(payStub?.deductionValue ?? 0).split('AOA')[0],
+                    text: currency(parseValue(payStub?.deductionValue ?? 0)).split('AOA')[0],
                     style: ['h2', { alignment: 'right', }],
                   }],
                 ['Salario Líquido:', {
-                  text: currency(payStub?.netValue ?? 0).split('AOA')[0],
+                  text: currency(parseValue(payStub?.netValue ?? 0)).split('AOA')[0],
                   style: ['h2', { alignment: 'right', fontSize: 18 }],
                 }],
+                [myCurrency?.value === 1 ? '' : 'Contravalor\n[1,00 KZ=' + currency(myCurrency?.value).split('AOA')[0] + myCurrency?.code + ']:', myCurrency?.value === 1 ? '' : {
+                  text: currency(payStub?.netValue ?? 0).split('AOA')[0],
+                  style: ['h2', { alignment: 'right' }],
+                }],
+
 
               ]
             }

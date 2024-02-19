@@ -36,6 +36,7 @@ import {
   WITaxTable,
   PayrollLine,
   PayrollLineType,
+  Currency,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -66,7 +67,7 @@ const models: modelsType[] = [
   { key: "pay-stubs", model: PayStub },
   { key: "pay-stub-lines", model: PayrollLine },
   { key: "pay-stub-line-types", model: AdditionalPaymentType },
-  { key: "wi-tax-tables", model: WITaxTable},
+  { key: "wi-tax-tables", model: WITaxTable },
   { key: "account-payment-datas", model: AccountPaymentData },
   { key: "banks", model: Bank },
 
@@ -83,7 +84,7 @@ const models: modelsType[] = [
   { key: "event-schedules", model: EventSchedule },
   { key: "event-types", model: EventType },
   { key: "countries", model: Country },
-
+  { key: "currencies", model: Currency },
 ];
 
 models.forEach(({ model, key, midllewares = [] }: modelsType) => {

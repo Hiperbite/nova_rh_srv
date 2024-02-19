@@ -115,7 +115,7 @@ export default class Repository<T extends M>  {
     const data: T[] = await this.repo.findAll({
       where,
       include,
-      attributes: attributes ? (attributes).split(',') : undefined,
+      attributes: attributes ? Array.isArray(attributes) ? attributes : (attributes)?.split(',') : undefined,
       offset: Number(offset),
       limit: Number(limit),
     });
@@ -136,6 +136,7 @@ export default class Repository<T extends M>  {
     options: any
   ): Promise<Paginate<T> | undefined> => {
     let {
+      group,
       where,
       attributes,
       include,
@@ -164,10 +165,11 @@ export default class Repository<T extends M>  {
           subQuery: false,
           where,
           attributes: attributes
-            ? attributes
+            ? Array.isArray(attributes) ? attributes : attributes
               ?.split(",")
               .filter((x: string) => exclude.indexOf(x) === -1)
             : { exclude },
+          group,
           include,
           offset,
           limit,
