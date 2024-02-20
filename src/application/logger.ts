@@ -25,9 +25,9 @@ export const errorLoggerOptions = {
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
     winston.format.colorize(),
-    winston.format.json(),
+    //winston.format.json(),
     winston.format.timestamp(),
-    //winston.format.console(),
+  //  winston.format.console(),
   ),
 };
 export const loggerOptions = {

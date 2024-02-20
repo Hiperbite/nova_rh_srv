@@ -15,25 +15,25 @@ import {
 } from "sequelize-typescript";
 
 
-import { 
+import {
     Model,
-     Requirement,
-      VacancyProcess, 
-      SalaryPackage, 
-      Department, 
-      Person, 
-      AdditionalField, 
-      WorkingHour, 
-      PayStub, 
-      EmployeeRole, 
-      AdditionalPayment, 
-      AdditionalPaymentType, 
-      User, 
-      Category, 
-      Candidacy ,
-      RequirementQuestion,
-      ValidationQuestion
-    } from "../index";
+    Requirement,
+    VacancyProcess,
+    SalaryPackage,
+    Department,
+    Person,
+    AdditionalField,
+    WorkingHour,
+    PayStub,
+    EmployeeRole,
+    AdditionalPayment,
+    AdditionalPaymentType,
+    User,
+    Category,
+    Candidacy,
+    RequirementQuestion,
+    ValidationQuestion
+} from "../index";
 import SequenceApp from "../../application/common/sequence.app";
 /**
  * 0 - Aberto
@@ -51,10 +51,10 @@ enum State {
 }
 @Scopes(() => ({
     default: {
-        include: []
+        include: [Category, Department, EmployeeRole,]
     },
-    full:{
-        include:[Department,EmployeeRole, Category, SalaryPackage, WorkingHour,{model:Requirement,include:[{model:RequirementQuestion, include:[ValidationQuestion]}]}]
+    full: {
+        include: [Department, EmployeeRole, Category, SalaryPackage, WorkingHour, { model: Requirement, include: [{ model: RequirementQuestion, include: [ValidationQuestion] }] }]
     }
 }))
 @Table({
@@ -74,6 +74,36 @@ export default class Vacancy extends Model {
         allowNull: true,
     })
     title?: string;
+
+    @Column({
+        type: DataType.VIRTUAL
+    })
+    get state() {
+
+        if (
+            moment()
+                .isBetween(
+                    moment(this.getDataValue('startDate')),
+                    moment(this.getDataValue('endDate'))
+                )
+        ) {
+            return { code: 1, name: 'Activo' }
+        }
+        else if (
+            moment()
+                .isBefore(moment(this.getDataValue('endDate')))
+        ) {
+            return { code: 0, name: 'Pendente' }
+        }
+        else {
+            return { code: 2, name: 'Desactivado' }
+        }
+
+
+
+        return;
+    };
+
 
 
     @Column({
