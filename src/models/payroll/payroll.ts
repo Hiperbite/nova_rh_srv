@@ -19,7 +19,7 @@ import {
     ForeignKey,
     AfterCreate,
 } from "sequelize-typescript";
-import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, EmployeeRole, SalaryPackage, } from "../index";
+import { Company, Contract, Department, Employee, Model, PayrollLine, PayrollStatus, PayStub, Person, EmployeeRole, SalaryPackage, PayrollSetting, Currency, } from "../index";
 /**
  * 0 - Aberto
  * 1 - Analise * 
@@ -209,6 +209,9 @@ export default class Payroll extends Model {
         payroll.initialPayStubs = [];
         const contractIds = payroll?.payStubs?.map(({ contractId }: any) => contractId)
 
+
+        const { salaryProcessingCurrency }: any = await PayrollSetting.findOne({ where: {}, include: [Currency] })
+
         const endDate = moment().set('year', payroll?.year ?? 2000).set('month', (payroll?.month ?? 1) - 1).endOf('month').format('YYYY-MM-DD')
         const startDate = moment().set('year', payroll?.year ?? 2000).set('month', (payroll?.month ?? 1) - 1).startOf('month').format('YYYY-MM-DD')
         const elegibleContracts = (await Contract.findAll({
@@ -231,7 +234,18 @@ export default class Payroll extends Model {
                         state: 0,
                         descriptions: '',
                         contractId: contract?.id,
-                        payrollId: payroll?.id
+                        payrollId: payroll?.id,
+
+                        localCurrency: {
+                            descriptions:
+                                salaryProcessingCurrency?.descriptions,
+                            name:
+                                salaryProcessingCurrency?.name,
+                            value:
+                                salaryProcessingCurrency?.value,
+                            code:
+                                salaryProcessingCurrency?.code,
+                        }
                     }, { transaction })
                 payStubs.push(payStub);
             }

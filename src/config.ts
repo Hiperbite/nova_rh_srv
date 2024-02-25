@@ -67,8 +67,8 @@ const config = () => {
   var xmlparser = require('express-xml-bodyparser');
 
   app.use(xmlparser());
-  app.use(bodyParser.json({ limit: "50mb" }));
-  app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
+  app.use(bodyParser.json({ limit: 2_000_000 }));
+  app.use(bodyParser.urlencoded({ limit: 2_000_000, extended: true, parameterLimit: 50000 }));
 
   app.disable("x-powered-by");
   const expiryDate = new Date(Date.now() + 60 * 60 * 1000 * 24 * 366); // 1 year

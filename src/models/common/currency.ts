@@ -7,7 +7,7 @@ import {
     HasMany,
 } from "sequelize-typescript";
 
-import { PayStubCurrency, Model } from "../index";
+import { Model } from "../index";
 
 @DefaultScope(() => ({
 
@@ -23,9 +23,8 @@ import { PayStubCurrency, Model } from "../index";
 })
 export default class Currency extends Model {
     @Column({
-        type: DataType.STRING,
+        type: DataType.STRING(3),
         allowNull: true,
-        unique: true
     })
     code?: string;
 
@@ -36,7 +35,7 @@ export default class Currency extends Model {
     descriptions?: string;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.STRING(100),
         allowNull: false,
     })
     name!: string;
@@ -46,7 +45,4 @@ export default class Currency extends Model {
         allowNull: false,
     })
     value!: number;
-
-    @HasMany(() => PayStubCurrency)
-    payStubCurrencies?: PayStubCurrency[]
 }

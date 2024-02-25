@@ -68,7 +68,7 @@ import Frequency from './attendance/frequency';
 import { tr } from "@faker-js/faker";
 import FavoriteFile from './doc-manager/favorite-file';
 import Currency from './common/currency';
-import PayStubCurrency from './common/paystub-currency';
+
 
 
 dotenv.config();
@@ -100,6 +100,8 @@ const sequelizeOptions: SequelizeOptions = {
   },
   logging: (msg: any) => logger.info(msg),
   models: [
+
+    Currency,
     Attendance,
     AttendanceType,
     AttendanceJustification,
@@ -130,7 +132,6 @@ const sequelizeOptions: SequelizeOptions = {
     PayrollLine,
     PayrollLineType,
     PayrollStatus,
-    PayStubCurrency,
 
     WorkingHour,
     Notification,
@@ -151,7 +152,6 @@ const sequelizeOptions: SequelizeOptions = {
     File,
     RoleModule,
     PayrollSetting,
-    Currency,
     Frequency
   ],
 }
@@ -267,7 +267,7 @@ export {
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
-  PayStubCurrency,
+  
   Bank,
 
   Business,

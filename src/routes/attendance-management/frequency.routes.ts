@@ -13,12 +13,12 @@ const api = new FrequencyApi();
 const router = express
   .Router()
 
-router.post(
-  "/",
-  validateResource(frequencyCreateSchema),
-  asyncHandler(api.create)
-
-)
+  router.post(
+    "/",
+    validateResource(frequencyCreateSchema),
+    asyncHandler(api.create)
+  )
+  
 
 router.put(
   "/:id",
@@ -42,4 +42,10 @@ router.get(
   },
   asyncHandler(api.findBy)
 );
+
+router.post(
+  "/import-from-file",
+  // validateResource(frequencyCreateSchema),
+  asyncHandler(api.createFromFile)
+)
 export default router;

@@ -1,9 +1,12 @@
 
+import { Currency } from "../../models/index";
 import {
-    Table,
-    Column,
-    DataType,
-    Model
+  Table,
+  Column,
+  DataType,
+  Model,
+  BelongsTo,
+  ForeignKey
 } from "sequelize-typescript";
 
 @Table({
@@ -53,5 +56,11 @@ export default class PayrollSetting extends Model {
     allowNull: true,
   })
   overtimePercent?: number;
+
+  @BelongsTo(() => Currency)
+  salaryProcessingCurrency?: Currency;
+
+  @ForeignKey(() => Currency)
+  salaryProcessingCurrencyId?: string;
 
 }

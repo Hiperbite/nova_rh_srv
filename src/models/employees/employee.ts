@@ -271,7 +271,7 @@ export default class Employee extends Model {
       months = 12
     }
 
-    const annualBalance = months * 2;
+    const annualBalance = months > 0 ? (months - 1) * 2 : months;
 
     return {
 
@@ -354,7 +354,7 @@ export default class Employee extends Model {
 
   }
 
-  
+
   @BeforeCreate
   static initModel = async (employee: Employee, { transaction }: any) => {
     if (employee?.code && employee?.code?.indexOf('A') > -1)

@@ -25,7 +25,7 @@ const states = [
 }))
 @Table({
     indexes: [
-        //{ fields: ['state', 'date', 'contractId'], unique: true }
+        { fields: ['uid', 'date', 'contractId'], unique: true }
     ],
     timestamps: true,
     tableName: "Frequencies",
@@ -37,6 +37,13 @@ export default class Frequency extends Model {
         allowNull: true,
     })
     state?: number;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+        
+    })
+    uid?: string;
 
     @Column({
         type: DataType.VIRTUAL,
@@ -51,10 +58,16 @@ export default class Frequency extends Model {
     type?: number;
 
     @Column({
-        type: DataType.DATE,
+        type: DataType.DATEONLY,
         allowNull: true,
     })
     date?: Date;
+    
+    @Column({
+        type: DataType.TIME,
+        allowNull: true,
+    })
+    time?: any;
     
     @BelongsTo(() => Contract)
     contract!: Contract;

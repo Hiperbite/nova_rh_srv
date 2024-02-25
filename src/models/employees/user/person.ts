@@ -119,10 +119,10 @@ export default class Person extends Model {
   gender!: GenderType;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: true
   })
-  socialSecurityNumber?: number
+  socialSecurityNumber?: string
 
   @ForeignKey(() => Address)
   birthPlaceAddressId?: string;

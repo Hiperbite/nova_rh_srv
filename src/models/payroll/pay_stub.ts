@@ -12,7 +12,7 @@ import {
     AfterFind,
     AfterCreate,
 } from "sequelize-typescript";
-import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole, Currency, PayStubCurrency } from "../index";
+import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole, Currency} from "../index";
 
 import PayStubApp from "../../application/payrolls/pay_stub.app";
 
@@ -33,7 +33,7 @@ import PayStubApp from "../../application/payrolls/pay_stub.app";
         include: [{ model: Payroll, include: [] }, PayrollLine,]
     },
     xfull: {
-        include: [PayStubCurrency, { model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Currency, Person, AccountPaymentData] }] }]
+        include: [ { model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Currency, Person, AccountPaymentData] }] }]
     }
 }))
 @Table({
@@ -71,6 +71,17 @@ export default class PayStub extends Model {
     })
     descriptions?: string;
 
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+    })
+    get localCurrency() {
+        return JSON.parse(this.getDataValue('localCurrency'))
+    }
+    set localCurrency(c: any) {
+        this.setDataValue('localCurrency', JSON.stringify(c))
+    }
+
     @BelongsTo(() => Contract)
     contract!: Contract
 
@@ -85,13 +96,6 @@ export default class PayStub extends Model {
 
     @HasMany(() => PayrollLine)
     lines?: PayrollLine[];
-
-    @BelongsTo(() => PayStubCurrency)
-    currency?: PayStubCurrency
-
-    @ForeignKey(() => PayStubCurrency)
-    currencyId?: string
-
 
     @Column({
         type: DataType.VIRTUAL,
