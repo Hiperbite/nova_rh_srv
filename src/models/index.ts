@@ -68,6 +68,7 @@ import Frequency from './attendance/frequency';
 import { tr } from "@faker-js/faker";
 import FavoriteFile from './doc-manager/favorite-file';
 import Currency from './common/currency';
+import AdvancePayment from './payroll/advance-payment';
 
 
 
@@ -123,6 +124,8 @@ const sequelizeOptions: SequelizeOptions = {
     Sequence,
     Category,
     Contract,
+
+    AdvancePayment,
     AdditionalPaymentType,
     AdditionalPayment,
     SalaryPackage,
@@ -152,7 +155,7 @@ const sequelizeOptions: SequelizeOptions = {
     File,
     RoleModule,
     PayrollSetting,
-    Frequency
+    Frequency,
   ],
 }
 const UniqIndex = createIndexDecorator({
@@ -302,5 +305,6 @@ export {
   RoleModule,
   PayrollSetting,
   Currency,
-  Frequency
+  Frequency,
+  AdvancePayment
 };

@@ -37,6 +37,7 @@ import {
   PayrollLine,
   PayrollLineType,
   Currency,
+  AdvancePayment,
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
 
@@ -59,6 +60,7 @@ const models: modelsType[] = [
   { key: "employeeroles", model: EmployeeRole },
   { key: "categories", model: Category },
   { key: "salary-packages", model: SalaryPackage },
+  { key: "advance-payments", model: AdvancePayment },
   { key: "additional-payments", model: AdditionalPayment },
   { key: "additional-fields", model: AdditionalField },
   { key: "additional-payment-types", model: AdditionalPaymentType },

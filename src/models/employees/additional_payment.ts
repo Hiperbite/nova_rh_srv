@@ -8,7 +8,7 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 
-import { AdditionalPaymentType, Model, /* RoleLevel as Level */ SalaryPackage } from "../index";
+import { AdditionalPaymentType, Model, AdvancePayment, SalaryPackage } from "../index";
 
 
 @DefaultScope(() => ({
@@ -59,6 +59,12 @@ export default class AdditionalPayment extends Model {
 
     @ForeignKey(() => AdditionalPaymentType)
     typeId?: string;
+
+    @BelongsTo(() => AdvancePayment)
+    advancePayment?: AdvancePayment;
+
+    @ForeignKey(() => AdvancePayment)
+    AdvancePaymentId?: string;
 
     @BelongsTo(() => SalaryPackage)
     salaryPackage?: SalaryPackage
