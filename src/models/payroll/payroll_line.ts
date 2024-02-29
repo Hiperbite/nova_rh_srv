@@ -11,7 +11,7 @@ import {
     BeforeUpdate,
 } from "sequelize-typescript";
 import moment from "moment";
-import { AdditionalPaymentType, Model, Payroll, PayStub } from "../index";
+import { AdditionalPaymentType, AdvancePayment, Model, Payroll, PayStub } from "../index";
 
 import SequenceApp, { CODES } from "../../application/common/sequence.app";
 import PayStubLineApp from "../../application/payrolls/pay_stub_line.app";
@@ -77,6 +77,12 @@ export default class PayrollLine extends Model {
 
     @ForeignKey(() => AdditionalPaymentType)
     typeId?: string;
+
+    @BelongsTo(() => AdvancePayment)
+    advancePayment?: AdvancePayment;
+
+    @ForeignKey(() => AdvancePayment)
+    advancePaymentId?: string;
 
     @BelongsTo(() => PayStub, {
         foreignKey: {

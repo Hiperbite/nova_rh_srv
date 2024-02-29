@@ -14,11 +14,11 @@ import {
     HasMany,
     BeforeSave,
 } from "sequelize-typescript";
-import { AdditionalPayment, AdditionalPaymentType, Employee, Model, PayStub } from "../index";
+import { AdditionalPayment, AdditionalPaymentType, Employee, Model, PayrollLine, PayStub } from "../index";
 
 @Scopes(() => ({
-    default: {
-
+    all: {
+        include: [PayrollLine]
     }
 }))
 @Table({
@@ -53,6 +53,13 @@ export default class AdvancePayment extends Model {
 
     @Column({
         type: DataType.DATEONLY,
+        allowNull: false,
+        defaultValue: new Date(),
+    })
+    date!: Date;
+
+    @Column({
+        type: DataType.DATEONLY,
         allowNull: true,
     })
     endDate?: Date;
@@ -69,8 +76,8 @@ export default class AdvancePayment extends Model {
     @ForeignKey(() => Employee)
     employeeId!: string
 
-    @HasMany(() => AdditionalPayment)
-    additionalPayments?: AdditionalPayment[]
+    @HasMany(() => PayrollLine)
+    payrollLines?: PayrollLine[]
 
     @BeforeCreate
     @BeforeSave
@@ -81,35 +88,35 @@ export default class AdvancePayment extends Model {
 
         payment.endDate
             = moment(payment.startDate)
-                .add(payment.numberOfInstallments-1, 'month')
+                .add(payment.numberOfInstallments - 1, 'month')
                 .toDate();
 
 
-       /* let additionalPaymentDatas: any[] = []
-
-        let additionalPaymentType = await AdditionalPaymentType.findByPk('53f8b609-21f2-4f53-99df-4db73100a52e')
-        for (let i = 0; i < payment.numberOfInstallments; i++) {
-            additionalPaymentDatas.push({
-
-                code: additionalPaymentType?.code,
-
-                date: moment(payment.startDate).clone().add(i +, 'months').toDate(),
-
-                value: payment.amountPerInstallment,
-
-                debit: true,
-
-                quantity: 1,
-
-                baseValuePeriod: 1,
-
-                descriptions: additionalPaymentType?.descriptions,
-
-                typeId: additionalPaymentType?.id,
-
-            })
-        }
-        AdditionalPayment.bulkCreate(additionalPaymentDatas, { transaction })*/
+        /* let additionalPaymentDatas: any[] = []
+ 
+         let additionalPaymentType = await AdditionalPaymentType.findByPk('53f8b609-21f2-4f53-99df-4db73100a52e')
+         for (let i = 0; i < payment.numberOfInstallments; i++) {
+             additionalPaymentDatas.push({
+ 
+                 code: additionalPaymentType?.code,
+ 
+                 date: moment(payment.startDate).clone().add(i +, 'months').toDate(),
+ 
+                 value: payment.amountPerInstallment,
+ 
+                 debit: true,
+ 
+                 quantity: 1,
+ 
+                 baseValuePeriod: 1,
+ 
+                 descriptions: additionalPaymentType?.descriptions,
+ 
+                 typeId: additionalPaymentType?.id,
+ 
+             })
+         }
+         AdditionalPayment.bulkCreate(additionalPaymentDatas, { transaction })*/
     }
 
 

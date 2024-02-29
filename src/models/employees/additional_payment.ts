@@ -60,12 +60,6 @@ export default class AdditionalPayment extends Model {
     @ForeignKey(() => AdditionalPaymentType)
     typeId?: string;
 
-    @BelongsTo(() => AdvancePayment)
-    advancePayment?: AdvancePayment;
-
-    @ForeignKey(() => AdvancePayment)
-    AdvancePaymentId?: string;
-
     @BelongsTo(() => SalaryPackage)
     salaryPackage?: SalaryPackage
 

@@ -1,14 +1,16 @@
-import { PayrollLine, PayStub, SalaryPackage } from "../../models/index";
+import { includes } from 'lodash';
+import { AdditionalPaymentType, AdvancePayment, Contract, PayrollLine, PayStub, SalaryPackage } from "../../models/index";
 import moment from "moment";
 import WITaxApp from "./wi_tax.app";
 import payrollApi from "api/payrolls/payroll.api";
+import { Op } from "sequelize";
 
 export default class PayStubApp {
 
 
     static afterCreatePayStub = async (payStub: PayStub, { transaction }: any = { transaction: null }) => {
         try {
-            
+
             const salaryPackage: any = await SalaryPackage.findOne({ where: { contractId: payStub?.contractId } })// payStub?.contract?.salaryPackage
             const additionalPayments: any = salaryPackage?.additionalPayments
 
@@ -49,13 +51,42 @@ export default class PayStubApp {
 
                 let u = e;
             }
-            if (payStub.contractId === '22ad6154-2eb2-455f-884e-463d72e34792') {
-                let u = 0;
+
+
+            const contract = await Contract.findByPk(payStub?.contractId);
+
+            const advancePaymentDate = moment().set('year', payStub?.year ?? 2000).set('month', (payStub?.month ?? 1)-1)
+
+            const advancePaymentsAdds: AdvancePayment[] = await AdvancePayment.findAll({
+                where: {
+                    employeeId: contract?.employeeId,
+                    date: { [Op.between]: [advancePaymentDate.startOf('month').toDate(), advancePaymentDate.endOf('month').toDate()] }
+                }, include: { all: true }
+            });
+
+            if (advancePaymentsAdds?.length > 0) {
+                let additionalPaymentType = await AdditionalPaymentType.findByPk('53f8b609-21f2-4f53-99df-4db73100a52e')
+
+                for (let payment of advancePaymentsAdds) {
+                    const num = (payment?.payrollLines?.filter((p: PayrollLine) => p?.debit)?.length ?? 0)
+                    if (num === 0)
+                        lines.push({
+                            isActive: true,
+                            code: additionalPaymentType?.code,
+                            date: new Date(),
+                            value: payment?.amount,
+                            debit: true,
+                            quantity: 1,
+                            baseValuePeriod: salaryPackage?.baseValuePeriod,
+                            descriptions: additionalPaymentType?.name + `[${moment(payment?.date).format('MM/YYYY')}]`,
+                            advancePaymentId: payment?.id
+                        })
+                }
+
+
             }
+
             const grossValue: number = lines?.map((x: any) => Number(x?.value))?.reduce((x: any, y: any) => x + y)
-            if (payStub?.contractId === "cc298b5a-28f1-4a1c-bc4e-ed956e3fb574") {
-                let ui = 0;
-            }
 
             const { excess, rate, fixedInstallment, witValue, ssValue } = await WITaxApp.calculator(lines)
             if (grossValue > 70000) {
@@ -83,11 +114,41 @@ export default class PayStubApp {
                 descriptions: 'INSS [3%]'
             })
 
-            const deductionValue = lines.filter(({ debit }: any) => !debit).map((x: any) => x.value).reduce((x: any, y: any) => Number(x) + Number(y));
-            const netValue = grossValue - deductionValue;
+
+            const advancePaymentsRms: AdvancePayment[] = await AdvancePayment.findAll({
+                where: {
+                    employeeId: contract?.employeeId,
+                    startDate: { [Op.lte]: advancePaymentDate.toDate() },
+                    endDate: { [Op.gte]: advancePaymentDate.toDate() },
+                }
+                , include: { all: true }
+            });
+
+            if (advancePaymentsRms?.length > 0) {
+
+                let additionalPaymentType = await AdditionalPaymentType.findByPk('53f8b609-21f2-4f53-99df-4db73100a52e')
+
+                for (let payment of advancePaymentsRms) {
+                    const num = (payment?.payrollLines?.filter((p: PayrollLine) => !p?.debit)?.length ?? 0) + 1
+                    lines.push({
+                        isActive: true,
+                        code: additionalPaymentType?.code,
+                        date: new Date(),
+                        value: payment?.amountPerInstallment,
+                        debit: false,
+                        quantity: 1,
+                        baseValuePeriod: salaryPackage?.baseValuePeriod,
+                        descriptions: additionalPaymentType?.name + ` - ${num}* ` + ` [${moment(payment?.date).format('MM/YYYY')}]`,
+                        advancePaymentId: payment?.id
+                    })
+                }
+
+
+            }
 
             for (let line of lines)
                 await PayrollLine.create({ ...line, payStubId: payStub?.id }, { transaction })
+
 
 
         } catch (error: any) {

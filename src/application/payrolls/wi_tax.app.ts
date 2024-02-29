@@ -107,53 +107,53 @@ export default class WITaxApp {
     const baseValue = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1000')
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), 0) ?? 0
 
     //30 0000
     const foodSupport = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1401')
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, -30000) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), -30000) ?? 0
 
     //30 000
     const transportSupport = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1402')
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, -30000.00) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), -30000.00) ?? 0
 
     const christmasSupport = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1642')
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), 0) ?? 0
 
     //20 000
     const familySupport = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1603')
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, -(baseValue * 5 / 100)) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), -(baseValue * 5 / 100)) ?? 0
 
     const vacationSupport = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => line.code === '1630')
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), 0) ?? 0
 
     const grossValue: number = lines
       ?.filter((line: PayrollLine) => line?.debit)
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), 0) ?? 0
 
 
     const otherValues: number = lines
       ?.filter((line: PayrollLine) => line?.debit)
       ?.filter((line: PayrollLine) => !['1630', '1603', '1642', '1402', '1401', '1000'].includes(line?.code))
       // ?.filter((line: PayrollLine) => !((line?.type?.code ?? '').indexOf('70') > -1))
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), 0) ?? 0
 
 
     const unknownValues: number = lines
       ?.filter((line: PayrollLine) => line?.debit)
       //?.filter((line: PayrollLine) => !['1630', '1603', '1642', '1402', '1401', '1000'].includes(line?.code))
       ?.filter((line: PayrollLine) => ((line?.type?.code ?? '').indexOf('70') > -1))
-      ?.reduce((acc, line: PayrollLine) => acc + line.value, 0) ?? 0
+      ?.reduce((acc, line: PayrollLine) => acc + Number(line.value), 0) ?? 0
 
     const baseIncidenceSS = grossValue - (vacationSupport > 0 ? vacationSupport : 0) - unknownValues;
 
