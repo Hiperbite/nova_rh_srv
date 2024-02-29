@@ -599,9 +599,9 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
                 text: 'VALOR',
                 style: 'th',
               }
-            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).map((line: any, k: number) => ([k + 1, line?.descriptions, '',
+            ], ...(payStub?.lines?.filter(({ debit }: any) => debit).sort((x: any, y: any) => String(x.code) === '1000' ? -1 : 1).map((line: any, k: number) => ([k + 1, line?.descriptions, 1,
             {
-              text: currency(line?.value, { tax: cur?.value,  currency: 'AOA' }).split('AOA')[0],
+              text: currency(line?.value, { tax: cur?.value, currency: 'AOA' }).split('AOA')[0],
               style: 'textRight',
             }])) ?? []),
 
@@ -623,7 +623,7 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
                 style: ['th', { alignment: 'right' }],
               },
               {
-                text: currency(payStub?.grossValue ?? 0, { tax: cur?.value,  currency: 'AOA' })?.split('AOA')[0],
+                text: currency(payStub?.grossValue ?? 0, { tax: cur?.value, currency: 'AOA' })?.split('AOA')[0],
                 style: ['th', { alignment: 'right' }],
               }
             ]
@@ -670,9 +670,9 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
                 text: 'VALOR',
                 style: 'th',
               }
-            ], ...(payStub?.lines?.filter(({ debit }: any) => !debit).map((line: any, k: number) => ([k + 1, line?.descriptions, 0,
+            ], ...(payStub?.lines?.filter(({ debit }: any) => !debit).sort((x: any, y: any) => x.code > y.code ? -1 : 1).map((line: any, k: number) => ([k + 1, line?.descriptions, 1,
             {
-              text: currency(line?.value, { tax: cur?.value,  currency: 'AOA' }).split('AOA')[0],
+              text: currency(line?.value, { tax: cur?.value, currency: 'AOA' }).split('AOA')[0],
               style: 'textRight',
             }])) ?? []),
             [
@@ -693,7 +693,7 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
                 style: ['th', { alignment: 'right' }],
               },
               {
-                text: currency(payStub?.deductionValue ?? 0, { tax: cur?.value,  currency: 'AOA' })?.split('AOA')[0],
+                text: currency(payStub?.deductionValue ?? 0, { tax: cur?.value, currency: 'AOA' })?.split('AOA')[0],
                 style: ['th', { alignment: 'right' }],
               }
             ]
@@ -745,14 +745,14 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
                   }],
                 ['Deduções:',
                   {
-                    text: currency(payStub?.deductionValue ?? 0,{ tax: cur?.value, currency: 'AOA' }).split('AOA')[0],
+                    text: currency(payStub?.deductionValue ?? 0, { tax: cur?.value, currency: 'AOA' }).split('AOA')[0],
                     style: ['h2', { alignment: 'right', }],
                   }],
                 ['Salario Líquido:', {
-                  text: currency(payStub?.netValue ?? 0,{ tax: cur?.value,  currency: 'AOA' }).split('AOA')[0],
+                  text: currency(payStub?.netValue ?? 0, { tax: cur?.value, currency: 'AOA' }).split('AOA')[0],
                   style: ['h2', { alignment: 'right', fontSize: 12 }],
                 }],
-                [myCurrency?.value === 1 ? '' : 'Contravalor\n[1,00 KZ=' + currency(myCurrency?.value).split('AOA')[0] + myCurrency?.code + ']:', myCurrency?.value === 1 ? '' : {
+                [Number(myCurrency?.value) === 1 ? '' : 'Contravalor\n[1,00 KZ=' + currency(myCurrency?.value).split('AOA')[0] + myCurrency?.code + ']:', Number(myCurrency?.value) === 1 ? '' : {
                   text: currency(payStub?.netValue ?? 0).split('AOA')[0],
                   style: ['h2', { alignment: 'right' }],
                 }],

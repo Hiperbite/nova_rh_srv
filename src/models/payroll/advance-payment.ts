@@ -92,31 +92,6 @@ export default class AdvancePayment extends Model {
                 .toDate();
 
 
-        /* let additionalPaymentDatas: any[] = []
- 
-         let additionalPaymentType = await AdditionalPaymentType.findByPk('53f8b609-21f2-4f53-99df-4db73100a52e')
-         for (let i = 0; i < payment.numberOfInstallments; i++) {
-             additionalPaymentDatas.push({
- 
-                 code: additionalPaymentType?.code,
- 
-                 date: moment(payment.startDate).clone().add(i +, 'months').toDate(),
- 
-                 value: payment.amountPerInstallment,
- 
-                 debit: true,
- 
-                 quantity: 1,
- 
-                 baseValuePeriod: 1,
- 
-                 descriptions: additionalPaymentType?.descriptions,
- 
-                 typeId: additionalPaymentType?.id,
- 
-             })
-         }
-         AdditionalPayment.bulkCreate(additionalPaymentDatas, { transaction })*/
     }
 
 
