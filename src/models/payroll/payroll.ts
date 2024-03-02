@@ -1,4 +1,5 @@
-import { includes } from "lodash";
+import SequenceApp from "../../application/common/sequence.app";
+
 import moment from "moment";
 import { Op } from "sequelize";
 import {
@@ -7,10 +8,6 @@ import {
     DataType,
     Scopes,
     HasMany,
-    AfterFind,
-    AfterUpdate,
-    AfterSave,
-    AfterBulkUpdate,
     BeforeSave,
     BeforeUpdate,
     DefaultScope,
@@ -36,8 +33,6 @@ export enum payrollState {
     //Stuck=90,
 }
 
-
-
 const states = [
     { id: 0, text: "Aberto", actions: ['Confirmar'], color: "secondary" },
     { id: 1, text: "Analise", actions: ['Aprovar'], color: "info" },
@@ -59,12 +54,18 @@ const states = [
 }))
 @Table({
     indexes: [
-        { fields: ['year', 'month'], unique: true }
+        //{ fields: ['year', 'month','id'], unique: true }
     ],
     timestamps: true,
     tableName: "Payrolls",
 })
 export default class Payroll extends Model {
+    @Column({
+        type: DataType.STRING,
+        allowNull: true,
+    })
+    code?: string;
+
     @Column({
         type: DataType.DATE,
         allowNull: true,
@@ -76,6 +77,13 @@ export default class Payroll extends Model {
         allowNull: true,
     })
     month?: number;
+
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+    })
+    type?: number;
 
     @Column({
         type: DataType.INTEGER,
@@ -151,8 +159,15 @@ export default class Payroll extends Model {
 
 
     @BeforeCreate
-    static initializePayroll = (payroll: Payroll) => {
+    static initializePayroll = async (payroll: Payroll, { transaction }: any) => {
+        payroll.month = payroll.date?.getMonth()
+        payroll.year = payroll.date?.getFullYear()
         payroll.state = payrollState.Opened
+
+
+        let code = await SequenceApp.count(PayStub.name, { transaction });
+        payroll.code = String(code).padStart(8, '0');
+
     }
 
     @BeforeUpdate
@@ -192,6 +207,9 @@ export default class Payroll extends Model {
     @BeforeCreate
     static validateEligibility = async (payroll: Payroll) => {
 
+        //if (Number(payroll?.type) === 1)
+            return;
+
         const existPendingPayroll = await Payroll.findOne({
             where: {
                 state: { [Op.lt]: payrollState.Approved }
@@ -205,6 +223,9 @@ export default class Payroll extends Model {
 
     @AfterCreate
     static proposalStubs = async (payroll: Payroll, { transaction }: any = { transaction: null }) => {
+
+        if (Number(payroll?.type) === 1)
+            return;
 
         payroll.initialPayStubs = [];
         const contractIds = payroll?.payStubs?.map(({ contractId }: any) => contractId)

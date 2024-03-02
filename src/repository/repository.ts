@@ -93,11 +93,25 @@ export default class Repository<T extends M>  {
   };
 
   public deleteBy = async (id: any | string): Promise<boolean> => {
-    const model = await this.repo.destroy({
+
+    await this.start();
+
+    const done = await this.repo.destroy({
       where: { id },
+      transaction: this.transaction
     });
 
-    return model == 1;
+    if (done) {
+      await this.commit();
+
+      return done == 1;
+
+    }
+    else {
+      this.rollback();
+      return false
+    }
+
   };
 
   public findOneBy = async (options: any): Promise<any> => {

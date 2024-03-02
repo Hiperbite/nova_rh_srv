@@ -1,3 +1,4 @@
+import { Transaction } from 'sequelize';
 import {
     Table,
     Column,
@@ -11,8 +12,9 @@ import {
     DefaultScope,
     AfterFind,
     AfterCreate,
+    BeforeDestroy,
 } from "sequelize-typescript";
-import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole, Currency} from "../index";
+import { Model, Contract, PayrollLine, AccountPaymentData, Payroll, Employee, Person, Department, Role, Category, EmployeeRole, Currency, PayrollSetting } from "../index";
 
 import PayStubApp from "../../application/payrolls/pay_stub.app";
 
@@ -33,7 +35,7 @@ import PayStubApp from "../../application/payrolls/pay_stub.app";
         include: [{ model: Payroll, include: [] }, PayrollLine,]
     },
     xfull: {
-        include: [ { model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Currency, Person, AccountPaymentData] }] }]
+        include: [{ model: Payroll, include: [] }, PayrollLine, { model: Contract, include: [Department, EmployeeRole, Category, { model: Employee, include: [Currency, Person, AccountPaymentData] }] }]
     }
 }))
 @Table({
@@ -155,17 +157,57 @@ export default class PayStub extends Model {
     @AfterCreate
     static afterCreatePayStub = PayStubApp.afterCreatePayStub
 
+
+    @BeforeDestroy
+    static beforePaystubDestroy = async (paystub: PayStub, { transaction }: any) => {
+        const paystubLines = await PayrollLine.destroy({
+            where: { paystubId: paystub?.id }
+            , transaction
+        })
+    }
+
     @BeforeCreate
     @BeforeSave
     static initModel = async (payStub: PayStub) => {
         if (!payStub.isNewRecord) return true;
-        const { month, year, contractId } = payStub
-        const existPayStub = await PayStub.findOne({ where: { month, year, contractId } });
-        /**
-         * TODO: FIX THIS PEACE OF CODE
-         */
-        if (existPayStub)
-            throw { existPayStub }
 
+
+        const { month, year, contractId } = payStub
+        if (month && year && contractId) {
+            const existPayStub = await PayStub.findOne({ where: { month, year, contractId } });
+            /**
+             * TODO: FIX THIS PEACE OF CODE
+             */
+            if (existPayStub)
+                throw { existPayStub }
+        }
+        const payroll = await Payroll.findByPk(payStub?.payrollId);
+
+        if (Number(payroll?.type) === 0)
+            return;
+
+        if (payroll) {
+
+            const { salaryProcessingCurrency }: any = await PayrollSetting.findOne({ where: {}, include: [Currency] })
+
+            payStub.month = payroll?.month
+            payStub.year = payroll?.year
+            payStub.date = payroll?.date
+            payStub.state = 0;
+            payStub.descriptions = '';
+
+            payStub.localCurrency = {
+                descriptions:
+                    salaryProcessingCurrency?.descriptions,
+                name:
+                    salaryProcessingCurrency?.name,
+                value:
+                    salaryProcessingCurrency?.value,
+                code:
+                    salaryProcessingCurrency?.code,
+            }
+
+        }
     }
+
 }

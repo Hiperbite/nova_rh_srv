@@ -68,27 +68,30 @@ export class EmployeeApp {
   };
 
   static filter = (filter: any) => {
-    const { code, name, roleId, departmentId, date, antiqueness } = filter
+    let { q, code, name, roleId, departmentId, date, antiqueness } = filter
 
     let where: any = {}
     const include: any = Employee?.options;
     const myInclude = include.scopes.default.include
 
-    if (code)
-      where.code = code;
+    if (q) {
+      name = q
+    } else {
+      if (code)
+        where.code = code;
 
-    if (date)
-      where[Op.and] = [{
-        createdAt: {
-          [Op.gte]: date + ' 00:00:00'
-        }
-      }, {
-        createdAt: {
-          [Op.lte]: date + ' 23:59:59'
-        }
-      }];
-
-    myInclude?.forEach((m: any) => {
+      if (date)
+        where[Op.and] = [{
+          createdAt: {
+            [Op.gte]: date + ' 00:00:00'
+          }
+        }, {
+          createdAt: {
+            [Op.lte]: date + ' 23:59:59'
+          }
+        }];
+    }
+    for (let m of myInclude) {
 
       delete m.where
       if (m.as === 'person') {
@@ -131,7 +134,7 @@ export class EmployeeApp {
           }
         }
       }
-    })
+    }
 
     return {
       where,

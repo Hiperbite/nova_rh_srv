@@ -138,7 +138,7 @@ export default class PayStubApp {
                         debit: false,
                         quantity: 1,
                         baseValuePeriod: salaryPackage?.baseValuePeriod,
-                        descriptions: additionalPaymentType?.name + ` - ${num}* ` + ` [${moment(payment?.date).format('MM/YYYY')}]`,
+                        descriptions: additionalPaymentType?.name + ` - ${num}º ` + ` [${moment(payment?.date).format('MM/YYYY')}]`,
                         advancePaymentId: payment?.id
                     })
                 }
