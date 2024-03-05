@@ -6,8 +6,16 @@ import {
   DataType,
   Model,
   BelongsTo,
-  ForeignKey
+  ForeignKey,
+  Scopes
 } from "sequelize-typescript";
+import { includes } from "lodash";
+
+@Scopes(() => ({
+  default: {
+    include: [Currency]
+  }
+}))
 
 @Table({
   timestamps: true,
