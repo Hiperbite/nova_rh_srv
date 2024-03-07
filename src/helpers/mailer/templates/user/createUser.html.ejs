@@ -1,0 +1,42 @@
+<div class="card-body mt-5">
+    <div class="space-y-3 ">
+        <p class="text-gray-700 text-align-justify">
+            Prezado <code class="text-danger" style="color: #dc3545;"><%=data.username%></code>,
+        </p>
+        <p class="text-gray-700">
+            Bem-vindo ao Nova RH! Estamos muito felizes em tê-lo como parte da nossa comunidade. Sua conta foi criada com sucesso e estamos ansiosos para lhe proporcionar uma experiência excepcional.
+        </p>
+        <p class="text-gray-700">Aqui estão alguns detalhes importantes sobre sua conta:</p>
+
+        <p>
+            <span class="text-bold">
+                          Nome de Usuário:
+                        </span> <code class="text-danger" style="color: #dc3545;"><%=data.username%></code> <br /> E-mail Registrado: <code class="text-danger" style="color: #dc3545;"><%=data.email%></code>
+        </p>
+
+        <p class="text-gray-700">
+            Lembre-se de que você pode acessar sua conta a qualquer momento em <a class="text-decoration-none" 
+            href="<%=app.WEB_CLIENT_URL%>authentication/reset-password/<%=data.verificationCode%>/<%=data.id%>"
+             target="_blank">link</a> usando seu nome de usuário e senha escolhidos durante o registro.
+        </p>
+
+        <p class="text-gray-700">
+            Se tiver alguma dúvida, enfrentar algum problema ou precisar de assistência, nossa equipe de suporte está à disposição para ajudar. Basta responder a este e-mail ou entrar em contato através da seção de suporte em nosso site.
+        </p>
+
+        <p class="text-gray-700">
+            Mais uma vez, obrigado por se juntar a nós. Estamos empolgados para acompanhá-lo nesta jornada e ajudá-lo a aproveitar ao máximo nossos serviços.
+        </p>
+    </div>
+
+    <hr>
+
+    <p class="text-gray-700 ">
+        Cumprimentos <br /> <br/> Equipa Nova RH <br />
+        <a class="text-decoration-none" href="https://www.nova.ao" target="_blank">
+                www.nova.ao
+              </a>
+    </p>
+        <br />
+
+</div>
