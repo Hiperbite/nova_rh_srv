@@ -62,12 +62,13 @@ async function sendEmail(payload: SendMailOptions) {
   }
   try {
     transporter.sendMail(payload, (err: any, info: any) => {
+      logger.error({ message: "=======================> 936927698 - success" });
       if (err) {
         logger.error(err)
         log.error(err, "Error sending email");
         return;
       }
-      
+
       logger.info(info);
 
       console.warn(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
