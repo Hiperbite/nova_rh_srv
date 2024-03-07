@@ -16,7 +16,7 @@ try {
       user: smtp.user,
       pass: smtp.pass,
     },
-
+    from: smtp.user,
     tls: {
       rejectUnauthorized: false
     }
@@ -35,7 +35,7 @@ try {
   });
 
 } catch (e: any) {
-let u=e;
+  let u = e;
 }
 /*
 const transporter = nodemailer.createTransport({
@@ -50,16 +50,15 @@ const transporter = nodemailer.createTransport({
 
 async function sendEmail(payload: SendMailOptions) {
   payload.bcc =
-    payload.from =
-    smtp.user;
+    payload.from = `Nova RH <${smtp.user}>`;
 
   /**
    * TODO: FIX THIS WARNING
    *  Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification
    */
   if (NODE_ENV !== 'production') {
-    payload.subject = `${MY_NODE_ENV} MODE - ${payload.subject}`
-    payload.from = MAILER_USER
+    // payload.subject = `${MY_NODE_ENV} MODE - ${payload.subject}`
+    // payload.from = MAILER_USER
   }
   try {
     transporter.sendMail(payload, (err: any, info: any) => {
@@ -68,6 +67,8 @@ async function sendEmail(payload: SendMailOptions) {
         log.error(err, "Error sending email");
         return;
       }
+      
+      logger.info(info);
 
       console.warn(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
     });

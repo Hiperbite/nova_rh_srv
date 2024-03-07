@@ -13,6 +13,9 @@ import { Attendance, Model } from "../index";
 }))
 @Table({
     timestamps: true,
+    freezeTableName: true,
+    paranoid: true,
+    underscored: false,
     tableName: "AttendanceTypes",
 })
 export default class AttendanceType extends Model {
@@ -30,7 +33,7 @@ export default class AttendanceType extends Model {
     code!: string;
 
     @HasMany(() => Attendance)
-    attendance?: Attendance[]
+    attendances?: Attendance[]
 
 
 }
