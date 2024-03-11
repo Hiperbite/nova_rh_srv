@@ -6,6 +6,9 @@ import { Model, Employee, Country, Bank } from "../index";
 @Scopes(() => ({
     default: {
         include: [{ model: Bank, include: [Country] }, Country]
+    },
+    full: {
+        include: [{ model: Bank, include: [Country] }, Country]
     }
 }))
 

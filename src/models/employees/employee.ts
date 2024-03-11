@@ -34,6 +34,7 @@ import {
   Attendance,
   AttendanceType,
   Currency,
+  Category,
 } from "../index";
 import { calculateBusinessDays } from '../../helpers/helper';
 
@@ -47,7 +48,7 @@ import { calculateBusinessDays } from '../../helpers/helper';
     },
     {
       model: Contract, include: [
-        EmployeeRole, Department,
+        EmployeeRole, Department, Category,
         PayStub,
         {
           model: SalaryPackage,

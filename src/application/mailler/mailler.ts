@@ -62,8 +62,6 @@ async function sendEmail(payload: SendMailOptions) {
   }
   try {
     transporter.sendMail(payload, (err: any, info: any) => {
-      logger.error({ message: "=======================> 936927698 - success" });
-      logger.error({ message: "=======================> 936927698 - success", smtp });
       if (err) {
         logger.error(err)
         log.error(err, "Error sending email");
