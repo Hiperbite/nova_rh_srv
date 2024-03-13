@@ -10,6 +10,8 @@ import company from "./company/company.routes";
 import business from "./company/business.routes";
 
 import files from "./doc-manager/file.routes";
+import fileIssuer from "./doc-manager/issuer.routes";
+import fileType from "./doc-manager/file-type.routes";
 import favoriteFile from "./doc-manager/favorite-file.routes";
 
 
@@ -45,6 +47,8 @@ routes.use('/roles', roleRoutes)
 routes.use('/auth', authRoutes)
 routes.use('/tracks', trackRoutes)
 
+routes.use('/drive/issuers', fileIssuer)
+routes.use('/drive/file-types', fileType)
 routes.use('/drive/files', files)
 routes.use('/drive/favorite-files', favoriteFile)
 

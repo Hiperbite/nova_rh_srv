@@ -70,7 +70,7 @@ const storage = multer.diskStorage({
     }
 })
 const limits = {
-    fields: 5,
+    fields: 10,
     fieldNameSize: 50, // TODO: Check if this size is enough
     fieldSize: 20000, //TODO: Check if this size is enough
     fileSize: 10_000_000,
@@ -86,6 +86,18 @@ function afterUpload(req: any, res: any, next: any) {
         ...req.body,
         fileName: req.files[0]?.originalname ?? req.body?.fileName
     }
+
+    let body: any = {};
+    for (let [k, v] of Object.entries(req.body)) {
+        try {
+            body[k] = JSON.parse(String(v));
+        } catch (e) {
+            body[k] = v;
+        }
+    }
+
+
+    req.body = body;
     //res.json({ message: "Successfully uploaded files" });
     next();
     //return;

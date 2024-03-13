@@ -69,6 +69,8 @@ import { tr } from "@faker-js/faker";
 import FavoriteFile from './doc-manager/favorite-file';
 import Currency from './common/currency';
 import AdvancePayment from './payroll/advance-payment';
+import FileType from './doc-manager/file-type';
+import FileIssuer from './doc-manager/file-issuer';
 
 
 
@@ -85,9 +87,10 @@ const sequelizeOptions: SequelizeOptions = {
   password: DB_PASSWORD,
   database: DB_NAME,
   define: {
-    charset: 'utf8mb3',
-    collate: 'utf8mb3_general_ci', 
-    timestamps: true
+    //charset: 'utf8mb3',
+    //collate: 'utf8mb3_general_ci',
+    //timestamps: true
+    
   },
   retry: {
     match: [
@@ -155,7 +158,10 @@ const sequelizeOptions: SequelizeOptions = {
     Bank,
     EmployeeRole,
     Role,
+
+    FileIssuer,
     FavoriteFile,
+    FileType,
     File,
     RoleModule,
     PayrollSetting,
@@ -209,7 +215,7 @@ const switchTo = (db: any, ref: string) => {
 }
 
 const Repo = sequelize.getRepository;
-(false &&
+(true &&
   sequelize
     .sync({ alter: true, force: false })
     //.then(initializer)
@@ -274,7 +280,7 @@ export {
   PayrollLine,
   PayrollLineType,
   PayrollStatus,
-  
+
   Bank,
 
   Business,
@@ -303,6 +309,8 @@ export {
   Setting,
   Department,
   WorkingHour,
+  FileIssuer,
+  FileType,
   File,
   FavoriteFile,
   Role,

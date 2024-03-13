@@ -13,9 +13,9 @@ import {
   AfterFind,
 } from "sequelize-typescript";
 
-import { FavoriteFile, Model } from "../index";
+import { FavoriteFile, FileIssuer, FileType, Model } from "../index";
 
-type FileType = "DIR" | "FILE" | "OTHER" | "SHORTCUT";
+type _FileType = "DIR" | "FILE" | "OTHER" | "SHORTCUT";
 
 @DefaultScope(() => ({
   order: [
@@ -23,18 +23,18 @@ type FileType = "DIR" | "FILE" | "OTHER" | "SHORTCUT";
     ['fileName', 'ASC'],
 
   ],
-  include: [FavoriteFile]
+  include: [FavoriteFile,FileType, FileIssuer]
 }))
 @Scopes(() => ({
   default: {
-    include: []
+    include: [FileType, FileIssuer]
   },
 
   trashed: {
     where: { isActive: false }
   },
   full: {
-    include: [{ model: File, 'as': 'dir', include: [{ model: File, 'as': 'dir', include: [{ model: File, 'as': 'dir' }] }] }]
+    include: [FileType, FileIssuer,{ model: File, 'as': 'dir', include: [{ model: File, 'as': 'dir', include: [{ model: File, 'as': 'dir' }] }] }]
   },
 
 
@@ -54,7 +54,21 @@ export default class File extends Model {
     type: DataType.STRING,
     allowNull: true,
   })
-  type!: FileType;
+  type!: _FileType;
+
+  @ForeignKey(() => FileType)
+  docTypeId!: string;
+
+
+  @BelongsTo(() => FileType)
+  docType!: FileType;
+
+  @ForeignKey(() => FileIssuer)
+  issuerId!: string;
+
+
+  @BelongsTo(() => FileIssuer)
+  issuer?: FileIssuer;
 
   @Column({
     type: DataType.VIRTUAL,
@@ -79,6 +93,18 @@ export default class File extends Model {
     allowNull: true,
   })
   descriptions?: string;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  issueDate?: Date;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  validationDate?: Date;
 
   @BelongsTo(() => File)
   dir?: File;

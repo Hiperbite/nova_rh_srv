@@ -26,7 +26,7 @@ export const routerRequest = (
     // throw { code: 403 }
   }
 
-  logger.info('START: ---------------------------------------------------------');
+  
   logger.info(req);
   const currentKey = null;//decode(apikey ?? '')
 

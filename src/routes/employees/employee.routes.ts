@@ -1,6 +1,8 @@
 
 import { EmployeeApi } from "../../api/employees/employee.api";
 import express from "express";
+import { afterUpload, uploader } from "../../services/drive/multer.uploader";
+import multer from "multer";
 
 /**
  * TODO: Find best place to put this stash
@@ -14,10 +16,30 @@ const api = new EmployeeApi();
 // asyncHandler(
 const router = express.Router();
 
+const prepareAvatarUpload = (req: any, res: any, next: any) => {
+
+  const { fieldname, mimetype, buffer } = req.file
+  if (fieldname === 'avatar') {
+    const avatar = 'data:' + mimetype + ';base64,' + buffer.toString('base64')
+    req.body = { ...req.body, avatar }
+  }
+
+  next();
+};
 router
   .post(
     "/",
     // validateResource(createStudentSchema),
+
+    asyncHandler(
+      multer(
+        {
+          storage: multer.memoryStorage()
+        }
+      ).single('avatar')),
+
+    asyncHandler(prepareAvatarUpload),
+
     asyncHandler(api.create)
   )
 
@@ -25,11 +47,23 @@ router
 
   .put(
     "/:id",
+
+    asyncHandler(
+      multer(
+        {
+          storage: multer.memoryStorage()
+        }
+      ).single('avatar')),
+
+    asyncHandler(prepareAvatarUpload),
+
     asyncHandler(api.update)
   )
 
   .put(
     "/close-contract/:id",
+
+
     // validateResource(updateStudentSchema),
     asyncHandler(api.closeContract)
   )

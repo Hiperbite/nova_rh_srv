@@ -1,9 +1,8 @@
-import { File } from "../../models";
+import { FileIssuer } from "../../models";
 import express from "express";
 import Api from "../../api/Api";
 import { afterUpload, dirSize, downloader, uploader } from "../../services/drive/multer.uploader";
 import { DISK_PATH } from "../../config";
-import deserializeUser from "../../application/middleware/deserializeUser";
 
 /**
  * TODO: Find best place to put this stash
@@ -14,7 +13,7 @@ const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
 
-const api = new Api(File);
+const api = new Api(FileIssuer);
 
 // asyncHandler(
 const router = express.Router();
@@ -23,11 +22,6 @@ router
   .post(
     "/",
     // validateResource(createStudentSchema),
-    asyncHandler(uploader),
-
-    asyncHandler(afterUpload),
-    //afterUpload,
-    deserializeUser,
     asyncHandler(api.create),
   )
 
@@ -51,26 +45,6 @@ router
     // validateResource(updateStudentSchema),
     asyncHandler(api.findBy)
   )
-  .get("/download/:id",
-    // validateResource(updateStudentSchema),
-    //asyncHandler(api.find),
-
-    asyncHandler(downloader)
-
-  )
-  .get("/my-disk/size",
-    // validateResource(updateStudentSchema),
-    //asyncHandler(api.find),
-
-    asyncHandler(async (req: any, res: any) => {
-      const size = await dirSize(DISK_PATH ?? '');
-      console.log(size);
-      res.send({ size })
-    })
-
-  )
-
   ;
-;
 
 export default router;
