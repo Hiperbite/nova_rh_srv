@@ -1,4 +1,4 @@
-import { Address, Company, PayrollLine, PayStub, Procedure, SalaryPackage, SPs } from "../../models/index";
+import { Address, Company, Contract, Payroll, PayrollLine, PayStub, Procedure, SalaryPackage, SPs, User } from "../../models/index";
 import moment from "moment";
 import WITaxApp from "./wi_tax.app";
 
@@ -54,6 +54,130 @@ export default class PayRollApp {
         const xml = json2xml(json, { compact: true, spaces: 4 });
 
         return xml;
+
+    }
+    static generateSocialSecurityMapReportXML = async (payrolId: string, type: number = 0, user: User | null) => {
+
+
+
+        const company = await Company.findOne();
+
+        const payroll: Payroll | null = await Payroll.scope('default').findByPk(payrolId);
+
+        const { date }: any = payroll;
+
+        const year = moment(date).format('YYYY'),
+            month = moment(date).format('MM');
+
+        const _fileName: string = [
+            (company?.socialSecurityNumber ?? '')?.padEnd(4, '0'),
+            year,
+            month,
+            type.toString(),
+        ].join('')
+
+        const _fileHeader: Array<string> = [
+            // Indicador do Tipo de Registro
+            '00',
+            //Data de Referência (Guia de Pagamento)
+            '01' + month.toString().padStart(2, '0') + year.toString().padStart(4, '0'),
+            //Tipo do Ficheiro (N-Normal / C-Complementar)
+            'N',
+            //Número de Inscrição da Empresa no INSS
+            (company?.socialSecurityNumber ?? '').substring(0, 9).padEnd(9, ' '),
+            //Número de Inscrição da Empresa no INSS (Novo)
+            (company?.socialSecurityNewNumber ?? '').substring(0, 20).padStart(20, '0'),
+            //Número do Contribuinte no Ministério das Finanças
+            (company?.nif ?? '')?.padStart(20, '0'),
+            //Nome da empresa
+            (company?.name?.toUpperCase()?.substring(0, 70) ?? '').padEnd(70, ' '),
+            //Código do Município
+            ''.padEnd(5, ' '),
+            //Espaços em Branco
+            ''.padEnd(44, ' ')
+        ]
+
+        let _totalRows = 0;
+        let _totalAmounts = 0;
+        let _totalOtherAmounts = 0;
+        const genLine = (payStub: PayStub) => {
+
+            _totalRows++;
+
+            _totalAmounts += Number(payStub?.lines?.find(({ code }: any) => code === '1000')?.value);
+
+            _totalOtherAmounts += Number(
+                payStub
+                    ?.lines
+                    ?.filter(({ code }: any) => code !== '1000')
+                    ?.map(({ value }: any) => value)
+                    ?.reduce((a: number, b: number) => Number(a) + Number(b), 0),
+            );
+
+            const contracts: Array<Contract> =
+                _.
+                    sortBy(payStub
+                        ?.contract
+                        ?.employee
+                        ?.contracts, ['startDate'])
+
+            const firstContract: Contract | undefined = _.first(contracts);
+            const lastContract: Contract | undefined = _.last(contracts);
+
+            return [
+                //Indicador do Tipo de Registro
+                '10',
+                //Número de Inscrição do Segurado no INSS
+                (payStub?.contract?.employee?.person?.socialSecurityNumber ?? '')?.padStart(9, '0'),
+                //Número de Inscrição do Segurado no INSS(NOVO)
+                (payStub?.contract?.employee?.person?.socialSecurityNumber ?? '')?.padStart(20, '0'),
+
+                //Nome do Funcionário (Segurado)
+                payStub?.contract?.employee?.person?.fullName.toUpperCase()?.padEnd(70, ' '),
+
+                //TODO: Código da Categoria Profissional
+                payStub?.contract?.role?.name?.substring(0, 5)?.toUpperCase(),
+
+                //Valor do Salário Base
+                payStub?.lines?.find(({ code }: any) => code === '1000')?.value.toString().substring(0, 14).replace('.', '').padStart(14, '0'),
+                //Valor Outras Remunerações Adicionais
+                payStub?.lines?.filter(({ code }: any) => code !== '1000')?.map(({ value }: any) => value)?.reduce((a: number, b: number) => Number(a) + Number(b), 0).toString().substring(0, 14).replace('.', '').padStart(14, '0'),
+                //TODO: Inicio do Vínculo
+                moment(firstContract?.startDate).format('DDMMYYYY'),
+                //TODO: FIm do Vínculo
+                moment(lastContract?.endDate).format('DDMMYYYY')
+            ]
+        }
+
+
+        const _fileLines: Array<String> = payroll?.payStubs?.map(genLine)?.map((a: string[]) => a.join('')) ?? [];
+
+        const _fileFooter = [
+
+            //Indicador do Tipo de Registo
+            '99',
+            //Número Total de Registos do Tipo 10
+            _totalRows.toString().padStart(10, '0'),
+            //Preencher com zeros
+            ''.padEnd(10, '0'),
+            //Soma do Campo "Valor do Salário Base"
+            _totalAmounts.toString().replace('.', '').toString().padStart(14, '0'),
+            //Soma do Campo "Valor Outras Remunerações Adicionais"
+            _totalOtherAmounts.toString().replace('.', '').toString().padStart(14, '0'),
+            //Nome Do Responsável Pela Geração Do Ficheiro
+            'abcd efgh'.substring(40).padEnd(40, ' '),
+            //E-Mail Do Responsável Pela Geração Do Ficheiro
+            user?.email?.padEnd(50, ' '),
+            //Espaços em Branco
+            ''.padEnd(40, ' ')
+        ]
+
+
+
+        const final = [
+            [_fileHeader.join(''), ..._fileLines, _fileFooter?.join('')].join('\n'), 'text/plain', _fileName];
+
+        return final;
 
     }
 

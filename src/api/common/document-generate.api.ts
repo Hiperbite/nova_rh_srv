@@ -3,7 +3,7 @@ import { generateDocument, generatePayStub } from "../../application/common/docs
 import { Request, Response } from "express";
 import PayRollApp from "../../application/payrolls/pay_roll.app";
 import PayRollExtract from "../../application/payrolls/pay_roll_extract";
-import { Payroll } from "../../models/index";
+import { Payroll, User } from "../../models/index";
 var stream = require('stream');
 
 export const getGeneratedDocument = async (req: Request, res: Response) =>
@@ -17,8 +17,8 @@ export const getGeneratePayStub = async (req: Request, res: Response) =>
 export const getGenerateWiTaxFile = async (req: Request, res: Response) => {
   const xml = await PayRollApp.generateWiTaxReportXML(2023, 10)
 
-  
-  const blob = new Blob([xml], { type : 'application/xml' });
+
+  const blob = new Blob([xml], { type: 'application/xml' });
   const arrayBuffer = await blob.arrayBuffer();
   var fileContents = Buffer.from(arrayBuffer);
 
@@ -26,6 +26,22 @@ export const getGenerateWiTaxFile = async (req: Request, res: Response) => {
   res.send({ fileContent, fileName: 'wix.xml' });
 }
 
+
+export const getGenerateSocialSecurityMapFile = async (req: any, res: Response) => {
+  const { id } = req?.params
+  //const { user } = req?.locals.user;
+
+  const user = await User.findOne();
+  const [file, type, fileName] = await PayRollApp.generateSocialSecurityMapReportXML(id, 0, user)
+
+
+  const blob = new Blob([file], { type });
+  const arrayBuffer = await blob.arrayBuffer();
+  var fileContents = Buffer.from(arrayBuffer);
+
+  const fileContent = "data:" + blob.type + ';base64,' + fileContents.toString('base64');
+  res.send({ fileContent, fileName });
+}
 
 export const getGeneratePayRollExtractFile = async (req: Request, res: Response) => {
 

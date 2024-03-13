@@ -69,6 +69,19 @@ export default class Company extends Model {
     })
     integrationToken?: string;
 
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: true
+    })
+    socialSecurityNumber?: string
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: true
+    })
+    socialSecurityNewNumber?: string
+
     @Column({
         type: DataType.TEXT,
         allowNull: true

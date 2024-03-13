@@ -173,14 +173,14 @@ export default class PayStub extends Model {
 
 
         const { month, year, contractId } = payStub
-        if (month && year && contractId) {
-            const existPayStub = await PayStub.findOne({ where: { month, year, contractId } });
+        //if (month && year && contractId) {
+          //  const existPayStub = await PayStub.findOne({ where: { month, year, contractId } });
             /**
              * TODO: FIX THIS PEACE OF CODE
              */
-            if (existPayStub)
-                throw { existPayStub }
-        }
+           // if (existPayStub)
+            //    throw { existPayStub }
+        //}
         const payroll = await Payroll.findByPk(payStub?.payrollId);
 
         if (Number(payroll?.type) === 0)
