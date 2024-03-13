@@ -84,7 +84,11 @@ const sequelizeOptions: SequelizeOptions = {
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-
+  define: {
+    charset: 'utf8mb3',
+    collate: 'utf8mb3_general_ci', 
+    timestamps: true
+  },
   retry: {
     match: [
       /SQLITE_BUSY/,

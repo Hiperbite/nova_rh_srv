@@ -71,10 +71,10 @@ export default class Attendance extends Model {
     state!: number;
 
     @BelongsTo(() => AttendanceType)
-    type!: AttendanceType
+    type?: AttendanceType
 
     @ForeignKey(() => AttendanceType)
-    typeId!: string;
+    typeId?: string;
 
     @HasMany(() => AttendanceJustification)
     justifications?: AttendanceJustification[]
