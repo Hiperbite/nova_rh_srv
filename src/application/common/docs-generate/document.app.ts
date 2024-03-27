@@ -1,3 +1,4 @@
+import { DocumentTypeSetting } from '../../../models';
 
 import { number } from 'zod';
 import moment from 'moment';
@@ -13,13 +14,25 @@ const fonts = {
   }
 };
 
+var pdfMake = require("pdfmake/build/pdfmake");
+var pdfFonts = require("pdfmake/build/vfs_fonts");
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+var jsdom = require("jsdom");
+var { JSDOM } = jsdom;
+var { window } = new JSDOM("");
+
+var htmlToPdfmake = require("html-to-pdfmake");
+
+
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { AccountPaymentData, Address, Company, Contact, Employee, PayStub, Currency } from '../../../models/index';
 import { toDataURL } from '../../../routes/hendlers';
 
 
+
 //let USDollar =
-const currency = (value: number = 0, { currency, tax }: any = { currency: 'AOA', tax: 1 }) => (new Intl.NumberFormat('pt-PT',
+export const currency = (value: number = 0, { currency, tax }: any = { currency: 'AOA', tax: 1 }) => (new Intl.NumberFormat('pt-PT',
   { style: 'currency', currency },
 )).format(value * tax);
 
@@ -58,50 +71,16 @@ async function getDocDefinitions({ employeeId, data }: any): Promise<TDocumentDe
   const logo = company?.logos?.includes('http')
     ? await toDataURL(company?.logos ?? '')
     : company?.logos
+
+
+
+  const { body }: any = await DocumentTypeSetting.findOne()
+
+  const html = htmlToPdfmake(textComposer(body, { employee, company }), { window: window });
   return {
 
     pageMargins: [80, 60, 80, 60],
-    content: [
-      {
-        columnGap: 10,
-        columns: [
-          [{
-            image: logo ?? novaIcon,
-            width: 100,
-          },
-          company?.name + '\n' +
-          'NIF: ' + company?.nif + '\n'
-          ],
-          ''
-        ],
-
-      },
-      {
-        text: 'Declaração de trabalho',
-        style: 'header',
-        alignment: 'center',
-      },
-      {
-        text: [
-          '\nPara os devidos efeitos julgados convenientes sobre ', { text: data.about, bold: true }, ' junto da ', { text: data.entity + ", ", bold: true }, ' declara', '-se que ', { text: employee?.person?.fullName + ",", bold: true }, ' de nacionalidade ', { text: employee?.person?.nationality?.nationality + ", ", bold: true }, 'portadora do ', { text: documents[document?.type], bold: true }, ' com o número ', { text: document?.number, bold: true }, ', é Colaborador desta Empresa onde exerce a função de ', { text: employee?.role?.name, bold: true }, ' no/a ', { text: employee?.department?.name, bold: true }, ' auferindo o vencimento base mensal de ', { text: currency(employee?.contract?.salaryPackage?.baseValue), bold: true }, '.\n\n',
-          'Por ser verdade e me ter sido solicitado, mandei passar a presente declaração que vai por mim assinada e autenticada com carimbo a óleo em uso nesta Empresa\n\n',
-          { text: 'A PRESENTE DECLARAÇÃO SERVE UNICAMENTE PARA A ENTIDADE ', bold: true },
-          { text: data.entity.toUpperCase(), bold: true },
-          '\n\n\nDirecção dos Recursos Humanos ' + company?.name + ', em ',
-          { text: moment().format('DD [de] MMMM [de] YYYY') }, '\n\n'
-        ],
-        style: 'body',
-        bold: false
-      },
-      {
-        text: [
-          '\n\n\nO Diretor dos Recursos Humanos\n\n',
-          '___________________________\n\n',
-
-        ],
-        style: 'footer',
-      }
-    ],
+    content: [html],
     footer: [
 
 
@@ -447,6 +426,11 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
   const myCurrency = payStub?.currency ?? defaultCurrency ?? { value: 1 };
   const parseValue = (value: number) => value / (myCurrency?.value ?? 1)
 
+
+  const { body }: any = await DocumentTypeSetting.findOne()
+
+  const html = htmlToPdfmake(textComposer(body, {}), { window: window });
+
   return {
 
 
@@ -533,6 +517,7 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
           headerRows: 1,
           widths: [95, '*', 95, '*'],
           body: [
+            html,
             [
               { text: 'Nome:', style: 'd3' },
               { text: payStub?.contract?.employee?.person?.fullName, style: 'd2' },
@@ -863,23 +848,7 @@ async function template_0({ cur, address, company, banckAccount, payStub, logo }
   }
 
 }
-/*
-const writeRotatedText = function (text: string) {
-  var ctx, canvas: any = document?.createElement('canvas');
-  // I am using predefined dimensions so either make this part of the arguments or change at will 
-  canvas.width = 36;
-  canvas.height = 270;
-  ctx = canvas.getContext('2d');
-  ctx.font = '36pt Arial';
-  ctx.save();
-  ctx.translate(36, 270);
-  ctx.rotate(-0.5 * Math.PI);
-  ctx.fillStyle = '#000';
-  ctx.fillText(text, 0, 0);
-  ctx.restore();
-  return canvas.toDataURL();
-};
-*/
+
 export async function generateDocument({ employeeId, callBack, type, ...data }: any) {
 
   const printer = new PdfPrinter(fonts);
@@ -919,6 +888,77 @@ export async function generatePayStub({ payStubId, callBack, type, ...data }: an
   })
 }
 
+
+const dictionary = [
+  { value: 'employee.person.fullName', key: '[EMPLOYEE_FULLNAME]' },
+  { value: 'employee.person.firstName', key: '[EMPLOYEE_FIRSTNAME]' },
+  { value: 'employee.person.lastName', key: '[EMPLOYEE_LASTNAME]' },
+  { value: 'Outros nomes do colaborador', key: '[EMPLOYEE_OTHERNAME]' },
+  { value: 'employee.person.gender', key: '[EMPLOYEE_GENDER]' },
+  { value: 'employee.person.age', key: '[EMPLOYEE_AGE]' },
+  { value: 'employee.person.birthDate', key: '[EMPLOYEE_BIRTHDAY]' },
+  { value: 'employee.person.nationality.nationality', key: '[EMPLOYEE_NATIONALITY]' },
+  { value: 'employee.person.socialSecurity', key: '[EMPLOYEE_SOCIALSECURITY]' },
+  { value: 'employee.code', key: '[EMPLOYEE_CODE]' },
+  { value: 'employee.person.email', key: '[EMPLOYEE_EMAIL]' },
+  { value: 'employee.person.phoneNumber', key: '[EMPLOYEE_PHONENUMBER]' },
+
+  { value: 'employee.person.idcard', key: '[EMPLOYEE_IDCARD]' },
+  { value: 'employee.person.address.details', key: '[EMPLOYEE_ADDRESS]' },
+  { value: 'employee.person.birthPlace.details', key: '[EMPLOYEE_BIRTHPLACE]' },
+
+  { value: 'employee.contract.role.name', key: '[EMPLOYEE_ROLE]' },
+  { value: 'employee.contract.category.name', key: '[EMPLOYEE_CATEGORY]' },
+  { value: 'employee.contract.department.name', key: '[EMPLOYEE_DEPARTMENT]' },
+  { value: 'Tipo de contrato do colaborador', key: '[EMPLOYEE_CONTRACTTYPE]' },
+  { value: 'Data de inicio de contrato do colaborador', key: '[EMPLOYEE_CONTRACSTARTDATE]' },
+  { value: 'Data de fim de contrato do colaborador', key: '[EMPLOYEE_CONTRACENDDATE]' },
+  { value: 'Data de registo do colaborador', key: '[EMPLOYEE_STARTDATE]' },
+
+  { value: 'Salário base do colaborador', key: '[EMPLOYEE_BASEVALUE]' },
+  { value: 'Salário líquido do colaborador', key: '[EMPLOYEE_NETVALUE]' },
+  { value: 'Salário bruto do colaborador', key: '[EMPLOYEE_GROSSVALUE]' },
+  { value: 'Outros Subsidios do colaborador', key: '[EMPLOYEE_ADITIONALPEYMENTS]' },
+
+  { value: 'Nome da Empresa', key: '[COMPANY_NAME]' },
+  { value: 'NIF da Empresa', key: '[COMPANY_NIF]' },
+  { value: 'Slogam da Empresa', key: '[COMPANY_SLOGAM]' },
+  { value: 'Descrição da Empresa', key: '[COMPANY_DESCRPTIONS]' },
+  { value: 'Negócio da Empresa', key: '[COMPANY_BUSINESS]' },
+  { value: 'Capital social da Empresa', key: '[COMPANY_SOCIALCAPITAL]' },
+
+  { value: 'Email da Empresa', key: '[COMPANY_EMAIL]' },
+  { value: 'Número de telefone da Empresa', key: '[COMPANY_PHONENUMBER]' },
+  { value: 'Endereço da Empresa', key: '[COMPANY_PHONENUMBER]' },
+
+  { value: 'Objectivo do documento', key: '[DOCUMENT_OBJECTIVE]' },
+  { value: 'Entidade do documento', key: '[DOCUMENT_ENTITY]' },
+  { value: 'Data actual', key: '[CURRENT_DATE]' },
+  { value: 'Hora actual', key: '[CURRENT_TIME]' },
+  { value: 'Data e hora actual', key: '[CURRENT_DATETIME]' },
+]
+
+const textComposer = (originalText: string, data: any) => {
+
+  let text = originalText;
+
+  const replacer = ({ key, value }: any) => {
+
+    let v: any = data;
+    const path = value.split('.')
+
+    path.forEach((k: any) => {
+      v = v ? v[k] : null
+    });
+
+    text = text.split(key).join(v??'----')
+  }
+
+
+  dictionary.forEach(replacer)
+
+  return text;
+}
 
 
 

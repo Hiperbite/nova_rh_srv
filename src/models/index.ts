@@ -71,6 +71,7 @@ import Currency from './common/currency';
 import AdvancePayment from './payroll/advance-payment';
 import FileType from './doc-manager/file-type';
 import FileIssuer from './doc-manager/file-issuer';
+import DocumentTypeSetting from './Settings/document-type.settings';
 
 
 
@@ -87,10 +88,9 @@ const sequelizeOptions: SequelizeOptions = {
   password: DB_PASSWORD,
   database: DB_NAME,
   define: {
-    //charset: 'utf8mb3',
-    //collate: 'utf8mb3_general_ci',
-    //timestamps: true
-    
+    //charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci',
+    timestamps: true
   },
   retry: {
     match: [
@@ -166,6 +166,9 @@ const sequelizeOptions: SequelizeOptions = {
     RoleModule,
     PayrollSetting,
     Frequency,
+
+
+    DocumentTypeSetting
   ],
 }
 const UniqIndex = createIndexDecorator({
@@ -218,7 +221,7 @@ const Repo = sequelize.getRepository;
 (true &&
   sequelize
     .sync({ alter: true, force: false })
-    //.then(initializer)
+    // .then(initializer)
     .catch(console.error)
 )
 
@@ -318,7 +321,8 @@ export {
   PayrollSetting,
   Currency,
   Frequency,
-  AdvancePayment
-};
+  AdvancePayment,
 
+  DocumentTypeSetting
+};
 

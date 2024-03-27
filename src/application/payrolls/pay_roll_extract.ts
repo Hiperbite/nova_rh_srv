@@ -7,6 +7,7 @@ import XLSX from "xlsx";
 import XLSX2 from "xlsx-js-style";
 import { AccessDeniedError, Op, UUID } from "sequelize";
 import { PayStubLineTypeConst } from "./pay_stub_line.app";
+import { currency } from "../../application/common/docs-generate/document.app";
 
 type PayStubDataType = {
     fullName: string | undefined,
@@ -22,7 +23,7 @@ class PayRollExtract {
     static generate = async (type: string, payroll: Payroll) => {
 
 
-        const name = '28' + String(payroll?.month).padStart(2, '0') + '' + String(payroll?.year) + 'Ordenado';
+        const name = '28' + String(payroll?.month)?.padStart(2, '0') + '' + String(payroll?.year) + 'Ordenado';
 
         const payStubs = await PayStub.scope('xfull').findAll({ where: { payrollId: payroll.id } });
         const [company] = await Company.findAll();
@@ -46,7 +47,8 @@ class PayRollExtract {
                 value: parseFloat(String(payStub?.netValue)).toFixed(2),
                 descriptions: 'Salario de ' + moment(payStub?.payroll?.date).format('MMMM [de] YYYY'),
                 address: 'Luanda Angola',
-                swift: account?.swift
+                swift: account?.swift,
+                localCurrency: payStub?.localCurrency
             }
 
         })
@@ -58,9 +60,9 @@ class PayRollExtract {
 
 
         const blob = new Blob([data], { type: contentType },);
-        const fileName = [name, type.toUpperCase()].join('.')
+        const fileName = [name, type?.toUpperCase()].join('.')
 
-        return { blob, fileName , contentType };
+        return { blob, fileName, contentType };
     }
 
     static psx = (data: PayStubDataType[], payroll: Payroll, { bankAccount, company }: { bankAccount: AccountPaymentData, company: Company }) => {
@@ -73,7 +75,7 @@ class PayRollExtract {
                 //[MOEDA]
                 bankAccount?.currency,
                 //[DATA]
-                String(payroll?.year) + String(payroll?.month).padStart(2, '0') + '28',
+                String(payroll?.year) + String(payroll?.month)?.padStart(2, '0') + '28',
 
                 //[DESCRICAO]
                 "Ordenandos".padEnd(39, '0')
@@ -82,28 +84,28 @@ class PayRollExtract {
         const generateLine = (params: any) => {
 
             const { fullName, iban, value, descriptions, address, swift } = params;
-            const nib = iban.substring(4)
+            const nib = iban?.substring(4)
             return [
                 //[constante]
                 'PSX208000'
                 //[NIB]
                 , nib,
                 //[13digitos]
-                String(value).replace('.', '').padStart(13, '0')
+                String(value)?.replace('.', '')?.padStart(13, '0')
                 //[20 caracteres]
-                , fullName.replace(/ /g, '.').padEnd(20, '.')
+                , fullName?.replace(/ /g, '.')?.padEnd(20, '.')
                 //[15 caracteres]
-                , descriptions.replace(/ /g, '.').padEnd(15, '.')
+                , descriptions?.replace(/ /g, '.')?.padEnd(15, '.')
                 // [constante]
                 , '001'
                 //[40 digitos] 
-                , fullName.replace(/ /g, '.').padEnd(40, '.')
+                , fullName?.replace(/ /g, '.')?.padEnd(40, '.')
                 // [80 digitos]
-                , address.padEnd(80, ' ')
+                , address?.padEnd(80, ' ')
                 //[11 caracteres]     
-                , swift.padEnd(11, ' ')
+                , swift?.padEnd(11, ' ')
                 //[34 caracteres]
-                , iban.padEnd(34, ' ')
+                , iban?.padEnd(34, ' ')
                 //[constante]
                 , 'SALASALA'
             ].join('')
@@ -168,8 +170,11 @@ class PayRollExtract {
         }
         const generateLine = (params: any, no: number) => {
 
-            const { fullName, iban, value, descriptions, address, swift } = params;
-            const nib = iban.substring(4).padEnd(21, '0');
+            const { fullName, iban, value: v, descriptions, address, swift, localCurrency } = params;
+
+            const value = Number(v * (localCurrency?.value ?? 1)).toFixed(2);
+
+            const nib = iban?.substring(4)?.padEnd(21, '0');
             return {
                 no: no + 1,
                 fullName,
@@ -177,7 +182,7 @@ class PayRollExtract {
                 ii: company?.name?.toUpperCase(),
                 address,
                 nib,
-                value
+                value, 
             }
 
         }
@@ -367,7 +372,7 @@ class PayRollExtract {
 
             do {
 
-                worksheet[a.toUpperCase() + String(i++)].s = {
+                worksheet[a?.toUpperCase() + String(i++)].s = {
                     font: { sz: 8 },
                     border: {
                         top: { style: 'thin' },
@@ -389,8 +394,8 @@ class PayRollExtract {
 
             do {
 
-                let styles = worksheet[a.toUpperCase() + String(i++)].s;
-                worksheet[a.toUpperCase() + String(i++)].s = {
+                let styles = worksheet[a?.toUpperCase() + String(i++)].s;
+                worksheet[a?.toUpperCase() + String(i++)].s = {
                     font: { sz: 10 },
                     ...styles,
                     border: {
@@ -464,30 +469,30 @@ class PayRollExtract {
                 //[MOEDA]
                 bankAccount?.currency,
                 //[DATA]
-                String(payroll?.year) + String(payroll?.month).padStart(2, '0') + '28',
+                String(payroll?.year) + String(payroll?.month)?.padStart(2, '0') + '28',
 
                 //[DESCRICAO]
                 "PGT".padEnd(4, ' '),
 
-                ('SALARIOS DE ' + moment(payroll?.date).format('MMMM').toUpperCase()).padEnd(35, ' '),
+                ('SALARIOS DE ' + moment(payroll?.date).format('MMMM')?.toUpperCase())?.padEnd(35, ' '),
             ].join('');
         }
 
         const generateLine = (params: any) => {
 
             const { fullName, iban, value, descriptions, address, swift } = params;
-            const nib = iban.substring(4)
+            const nib = iban?.substring(4)
             return [
                 //[constante]
                 'PS2208000'
                 //[NIB]
-                , nib.padStart(21, '0'),
+                , nib?.padStart(21, '0'),
                 //[13digitos]
-                String(value).replace('.', '').padStart(13, '0')
+                String(value)?.replace('.', '')?.padStart(13, '0')
                 //[15 caracteres]
-                , company?.name?.toUpperCase().replace(',', ' ').padEnd(20, ' ')
+                , company?.name?.toUpperCase()?.replace(',', ' ')?.padEnd(20, ' ')
                 //[20 caracteres]
-                , fullName.toUpperCase().replace(/ /g, ' ').padEnd(15, ' ')
+                , fullName?.toUpperCase()?.replace(/ /g, ' ')?.padEnd(15, ' ')
 
             ].join('')
             //[constante][NIB][13digitos][20 caracteres [constante][40 digitos]  [80 digitos][11 caracteres]     [34 caracteres][constante]

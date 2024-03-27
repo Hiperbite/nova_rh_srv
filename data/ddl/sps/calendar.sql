@@ -1,44 +1,44 @@
 -- Active: 1667157413070@@127.0.0.1@3306@nova_ri
 
-DROP PROCEDURE GetCalendarDate;
+DROP if EXISTS PROCEDURE GetCalendarDate;
 
+DELIMITER $$
 
-
-CREATE PROCEDURE GetCalendarDate(IN BEGIN_DATE VARCHAR(100),IN end_date VARCHAR(100))
-
+CREATE PROCEDURE GetCalendarDate(IN BEGIN_DATE VARCHAR(100), IN END_DATE VARCHAR(100))
 BEGIN
-	select
-	    
-			Employees.id,
-	        Persons.firstName,
-			Persons.otherNames,
-	        Persons.lastName,
-	    	Employees.code as code,
-	    	Contracts.startDate as date,
-			SUBSTRING(startDate, 6, 2) as month,
-			1 as type	   
-	from Contracts
-	    inner join Employees on Employees.id = Contracts.employeeId
-	    inner join Persons on Persons.employeeId = Employees.id
-	where
-	 SUBSTRING(startDate, 6, 2) = SUBSTRING(begin_date, 6, 2)
-	 --   startDate between begin_date and end_date
-	union
-	select
-	    
-			Employees.id,
-	        Persons.firstName,
-			Persons.otherNames,
-	        Persons.lastName,
-	    	Employees.code as code,
-	    	Persons.birthDate as date,
-			SUBSTRING(birthDate, 6, 2) as month,
-			2 as type	   
-	from Employees
-	    left join Contracts on Employees.id = Contracts.employeeId
-	    inner join Persons on Persons.employeeId = Employees.id
-	where
-	SUBSTRING(birthDate, 6, 2) = SUBSTRING(begin_date, 6, 2)
-	  --  birthDate between begin_date and end_date
-	;
-END
+    SELECT
+        Employees.id,
+        Persons.firstName,
+        Persons.otherNames,
+        Persons.lastName,
+        Employees.code AS code,
+        Contracts.startDate AS date,
+        SUBSTRING(startDate, 6, 2) AS month,
+        1 AS type
+    FROM
+        Contracts
+    INNER JOIN Employees ON Employees.id = Contracts.employeeId
+    INNER JOIN Persons ON Persons.employeeId = Employees.id
+    WHERE
+        SUBSTRING(startDate, 6, 2) = SUBSTRING(begin_date, 6, 2)
+
+    UNION
+
+    SELECT
+        Employees.id,
+        Persons.firstName,
+        Persons.otherNames,
+        Persons.lastName,
+        Employees.code AS code,
+        Persons.birthDate AS date,
+        SUBSTRING(birthDate, 6, 2) AS month,
+        2 AS type
+    FROM
+        Employees
+    LEFT JOIN Contracts ON Employees.id = Contracts.employeeId
+    INNER JOIN Persons ON Persons.employeeId = Employees.id
+    WHERE
+        SUBSTRING(birthDate, 6, 2) = SUBSTRING(begin_date, 6, 2);
+END$$
+
+DELIMITER ;

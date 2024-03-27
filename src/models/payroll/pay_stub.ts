@@ -211,3 +211,4 @@ export default class PayStub extends Model {
     }
 
 }
+

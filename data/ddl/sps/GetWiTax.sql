@@ -2,7 +2,6 @@
 
 DELIMITER //
 
-DROP PROCEDURE GetWiTax;
 
 -- Active: 1667157413070@@127.0.0.1@3306@nova_rh
 

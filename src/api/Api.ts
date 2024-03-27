@@ -91,7 +91,6 @@ class Api<T extends M> implements IApi {
     const models: Paginate<M> | undefined =
       await this.repo
         .paginate({
-
           include,
           ...req.query,
         });

@@ -18,10 +18,14 @@ const router = express.Router();
 
 const prepareAvatarUpload = (req: any, res: any, next: any) => {
 
-  const { fieldname, mimetype, buffer } = req.file
-  if (fieldname === 'avatar') {
-    const avatar = 'data:' + mimetype + ';base64,' + buffer.toString('base64')
-    req.body = { ...req.body, avatar }
+  if (req?.file) {
+
+    const { fieldname, mimetype, buffer } = req?.file
+    if (fieldname === 'avatar') {
+      const avatar = 'data:' + mimetype + ';base64,' + buffer.toString('base64')
+      req.body = { ...req.body, avatar }
+    }
+
   }
 
   next();

@@ -57,14 +57,14 @@ export default class File extends Model {
   type!: _FileType;
 
   @ForeignKey(() => FileType)
-  docTypeId!: string;
+  docTypeId?: string;
 
 
   @BelongsTo(() => FileType)
-  docType!: FileType;
+  docType?: FileType;
 
   @ForeignKey(() => FileIssuer)
-  issuerId!: string;
+  issuerId?: string;
 
 
   @BelongsTo(() => FileIssuer)

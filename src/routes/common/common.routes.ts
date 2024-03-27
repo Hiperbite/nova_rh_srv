@@ -38,8 +38,10 @@ import {
   PayrollLineType,
   Currency,
   AdvancePayment,
+  DocumentTypeSetting 
 } from "../../models/index";
 import { DefaultRepository as Repository } from "../../repository/index";
+
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
@@ -72,6 +74,8 @@ const models: modelsType[] = [
   { key: "wi-tax-tables", model: WITaxTable },
   { key: "account-payment-datas", model: AccountPaymentData },
   { key: "banks", model: Bank },
+
+  { key: "settings/document-types", model: DocumentTypeSetting },
 
   { key: "persons", model: Person },
   { key: "documents", model: Document },
